@@ -1,0 +1,28 @@
+---
+
+title: "Datadrevne værmodeller og ekstremvær"
+date: "2026-05-19"
+excerpt: "Tanker rundt fysikkbaserte og datadrevne værmodeller ved prediksjon av ekstreme hendelser"
+tags: ["kartlegging"]
+---------------------
+
+## Fysikkbaserte modeller
+
+Fysikkbaserte værmodeller løser fysiske ligninger for atmosfæren og er derfor ikke direkte avhengige av å ha observert en bestemt ekstremhendelse tidligere. Dersom de atmosfæriske forholdene tilsier en svært sjelden hendelse, kan modellen i prinsippet simulere denne selv om tilsvarende forhold ikke finnes i historiske data.
+
+## Datadrevne modeller
+
+Datadrevne modeller som GNN-er og Transformere lærer statistiske sammenhenger fra historiske værdata. Siden ekstreme hendelser forekommer svært sjelden, vil modellen få langt færre eksempler på disse under trening. Dette kan gjøre det vanskeligere å predikere situasjoner som ligger langt ute i distribusjonens ytterpunkter.
+
+## Tapsfunksjoner og ekstremverdier
+
+Vanlige tapsfunksjoner vil i stor grad påvirkes av normalt vær, siden dette utgjør mesteparten av treningsdataene. En modell kan derfor oppnå svært gode resultater i gjennomsnitt, samtidig som den systematisk undervurderer ekstreme verdier. Det kan være interessant å undersøke tapsfunksjoner som legger større vekt på sjeldne hendelser.
+
+## Geografisk kontekst
+
+En datadrevet modell kan likevel lære mønstre knyttet til ekstremvær fra lignende situasjoner andre steder. En Transformer med stor geografisk kontekst kan eksempelvis lære sammenhenger mellom forhold i Nord-Atlanteren og senere ekstremvær i Norge. Attention kan dermed være interessant for å undersøke hvilke geografiske områder og atmosfæriske forhold modellen bruker i prediksjonen.
+
+## Hale-bevisst trening
+
+En mulig forskningsretning er å undersøke om datadrevne værmodeller kan trenes spesifikt for å bevare bedre ytelse i ytterkantene av værdistribusjonen. Dette kan eksempelvis gjøres ved å vekte ekstreme observasjoner sterkere eller benytte en tail-weighted variant av CRPS. Et sentralt spørsmål blir da om ekstremvær kan predikeres bedre uten at den generelle værvarslingen blir dårligere.
+
