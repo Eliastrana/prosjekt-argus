@@ -1,4 +1,5 @@
 import { getAllPosts } from "@/lib/blog";
+import type { BlogPost } from "@/lib/blog";
 import BlogCard from "./BlogCard";
 import Link from "next/link";
 
@@ -39,7 +40,7 @@ export default function NewestPost() {
   );
 }
 
-function SmallBlogCard({ post }: { post: any }) {
+function SmallBlogCard({ post }: { post: BlogPost }) {
   const { slug, frontmatter } = post;
 
   const date = new Date(frontmatter.date).toLocaleDateString("no-NO", {

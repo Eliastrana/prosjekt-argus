@@ -4,7 +4,23 @@ title: "Datadrevne værmodeller og ekstremvær"
 date: "2026-08-18"
 excerpt: "Tanker rundt fysikkbaserte og datadrevne værmodeller ved prediksjon av ekstreme hendelser"
 tags: ["kartlegging"]
----------------------
+---
+
+Værmodellering handler ikke bare om å velge én metode. De ulike tilnærmingene har forskjellige styrker, og det mest interessante kan ligge i samspillet mellom dem.
+
+<CardGrid>
+  <InfoCard eyebrow="01" title="Fysikkbasert">
+    Kan simulere sjeldne hendelser ut fra atmosfærens fysiske lover, selv uten et tilsvarende historisk eksempel.
+  </InfoCard>
+
+  <InfoCard eyebrow="02" title="Datadrevet">
+    Lærer komplekse mønstre effektivt, men trenger nok representative observasjoner i treningsdataene.
+  </InfoCard>
+
+  <InfoCard eyebrow="03" title="Kombinert">
+    Kan forene fysiske rammer med mønstergjenkjenning og gi et mer robust utgangspunkt for ekstremvær.
+  </InfoCard>
+</CardGrid>
 
 ## Fysikkbaserte modeller
 
@@ -26,3 +42,6 @@ En datadrevet modell kan likevel lære mønstre knyttet til ekstremvær fra lign
 
 En mulig forskningsretning er å undersøke om datadrevne værmodeller kan trenes spesifikt for å bevare bedre ytelse i ytterkantene av værdistribusjonen. Dette kan eksempelvis gjøres ved å vekte ekstreme observasjoner sterkere eller benytte en tail-weighted variant av CRPS. Et sentralt spørsmål blir da om ekstremvær kan predikeres bedre uten at den generelle værvarslingen blir dårligere.
 
+<Callout title="Mulig forskningsspørsmål">
+  Hvordan kan en modell forbedre prediksjoner i distribusjonens ytterkanter uten at presisjonen for normalt vær svekkes?
+</Callout>

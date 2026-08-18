@@ -6,40 +6,71 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString("no-NO", { year: "numeric", month: "long", day: "numeric" });
 }
 
-export default function BlogCard({ post }: { post: BlogPost }) {
+export default function BlogCard({
+  post,
+  featured = false,
+}: {
+  post: BlogPost;
+  featured?: boolean;
+}) {
   const { slug, frontmatter } = post;
 
   return (
     <Link
       href={`/blog/${slug}`}
-      className="block rounded-2xl bg-card p-6 shadow-soft transition hover:shadow-lift"
+      className={[
+        "group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-card",
+        "p-6 shadow-[0_16px_45px_rgba(15,23,42,0.06)] transition duration-300",
+        "hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_22px_60px_rgba(15,23,42,0.12)]",
+        featured ? "min-h-[22rem] justify-end sm:p-9" : "min-h-[17rem]",
+      ].join(" ")}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-lg font-semibold">{frontmatter.title}</h3>
-          <p className="mt-1 text-sm text-muted">{formatDate(frontmatter.date)}</p>
-        </div>
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent via-emerald-300 to-transparent opacity-70"
+      />
 
-        <span className="rounded-full bg-tint px-3 py-1 text-xs font-semibold">
-          Blogg
+      <div className="mb-auto flex items-center justify-between gap-3">
+        <time
+          dateTime={frontmatter.date}
+          className="text-xs font-semibold uppercase tracking-[0.16em] text-muted"
+        >
+          {formatDate(frontmatter.date)}
+        </time>
+        <span className="grid size-9 place-items-center rounded-full border border-foreground/10 text-lg transition group-hover:border-accent/40 group-hover:bg-tint group-hover:text-accent">
+          <span aria-hidden="true">↗</span>
         </span>
       </div>
 
-      {frontmatter.excerpt && (
-        <p className="mt-3 text-sm leading-relaxed text-muted">
-          {frontmatter.excerpt}
-        </p>
-      )}
+      <div className={featured ? "mt-20 max-w-2xl" : "mt-12"}>
+        <h2
+          className={[
+            "font-semibold leading-tight tracking-[-0.025em] text-foreground",
+            featured ? "text-3xl sm:text-4xl" : "text-xl",
+          ].join(" ")}
+        >
+          {frontmatter.title}
+        </h2>
 
-      {!!frontmatter.tags?.length && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {frontmatter.tags.slice(0, 4).map((t) => (
-            <span key={t} className="rounded-full bg-card-2 px-3 py-1 text-xs text-muted">
-              {t}
-            </span>
-          ))}
-        </div>
-      )}
+        {frontmatter.excerpt ? (
+          <p className={featured ? "mt-4 text-base leading-7 text-muted" : "mt-3 text-sm leading-6 text-muted"}>
+            {frontmatter.excerpt}
+          </p>
+        ) : null}
+
+        {!!frontmatter.tags?.length ? (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {frontmatter.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-card-2 px-3 py-1 text-xs font-medium text-muted"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        ) : null}
+      </div>
     </Link>
   );
 }

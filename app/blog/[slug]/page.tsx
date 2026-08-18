@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import type { Metadata } from "next";
+import { blogMdxComponents } from "@/app/components/BlogContent";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -19,19 +21,31 @@ function formatDate(dateStr: string) {
   });
 }
 
-const mdxComponents = {
-  h1: (props: any) => (
-    <h1 className="text-3xl font-semibold tracking-tight mt-2 mb-4" {...props} />
-  ),
-  h2: (props: any) => (
-    <h2 className="text-2xl font-semibold tracking-tight mt-8 mb-3" {...props} />
-  ),
-  p: (props: any) => (
-    <p className="text-sm text-muted leading-relaxed my-3" {...props} />
-  ),
-  ul: (props: any) => <ul className="list-disc pl-6 my-3 space-y-1" {...props} />,
-  li: (props: any) => <li className="text-sm text-muted" {...props} />,
-};
+function getReadingTime(content: string) {
+  const words = content
+    .replace(/<[^>]*>/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+
+  return Math.max(1, Math.ceil(words / 220));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+
+  if (!post) return {};
+
+  return {
+    title: `${post.frontmatter.title} | Prosjekt Argus`,
+    description: post.frontmatter.excerpt,
+  };
+}
 
 // ✅ params is async in newer Next versions
 export default async function BlogPostPage({
@@ -45,32 +59,72 @@ export default async function BlogPostPage({
   if (!post) return notFound();
 
   const { frontmatter, content } = post;
+  const readingTime = getReadingTime(content);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-3xl px-6 py-16">
-        <header className="mt-6 rounded-2xl bg-card p-6 shadow-soft">
-          <h1 className="text-3xl font-semibold tracking-tight">{frontmatter.title}</h1>
-          <p className="mt-2 text-sm text-muted">{formatDate(frontmatter.date)}</p>
+      <div className="mx-auto max-w-5xl px-6 pb-24 pt-12 sm:pt-20">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
+        >
+          <span aria-hidden="true">←</span>
+          Alle innlegg
+        </Link>
+
+        <header className="mt-10 border-b border-foreground/10 pb-10 sm:pb-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+            Prosjektjournal
+          </p>
+          <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl">
+            {frontmatter.title}
+          </h1>
+
+          {frontmatter.excerpt ? (
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
+              {frontmatter.excerpt}
+            </p>
+          ) : null}
+
+          <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
+            <time dateTime={frontmatter.date}>{formatDate(frontmatter.date)}</time>
+            <span aria-hidden="true" className="size-1 rounded-full bg-foreground/25" />
+            <span>{readingTime} min lesetid</span>
+          </div>
 
           {!!frontmatter.tags?.length && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {frontmatter.tags.map((t) => (
-                <span key={t} className="rounded-full bg-tint px-3 py-1 text-xs font-semibold">
-                  {t}
+            <div className="mt-6 flex flex-wrap gap-2">
+              {frontmatter.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-foreground/10 bg-card px-3 py-1 text-xs font-medium text-muted"
+                >
+                  {tag}
                 </span>
               ))}
             </div>
           )}
         </header>
 
-       <article className="mt-10 rounded-2xl bg-card p-6 shadow-soft prose max-w-none prose-slate dark:prose-invert">
- <MDXRemote
-  source={content}
-  components={mdxComponents}
-  options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-/>
-</article>
+        <article className="blog-prose mt-10 sm:mt-14">
+          <MDXRemote
+            source={content}
+            components={blogMdxComponents}
+            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          />
+        </article>
+
+        <footer className="mt-16 border-t border-foreground/10 pt-8">
+          <Link
+            href="/blog"
+            className="group inline-flex items-center gap-3 font-semibold text-foreground"
+          >
+            <span className="grid size-10 place-items-center rounded-full border border-foreground/10 transition group-hover:border-accent/40 group-hover:bg-tint">
+              <span aria-hidden="true">←</span>
+            </span>
+            Tilbake til prosjektjournalen
+          </Link>
+        </footer>
       </div>
     </main>
   );
