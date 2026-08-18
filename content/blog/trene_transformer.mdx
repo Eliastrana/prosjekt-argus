@@ -1,0 +1,40 @@
+---
+title: "Realistisk trening av en Transformer-værmodell"
+date: "2026-08-18"
+excerpt: "Vurdering av hvor realistisk det er å trene en regional Transformer-modell for værvarsling som proof-of-concept"
+tags: ["kartlegging"]
+---
+
+## Omfang
+Det er ikke realistisk eller nødvendig å trene en full global Transformer-modell på nivå med Pangu-Weather som del av en masteroppgave. Slike modeller trenes på flere tiår med globale værdata og krever svært store GPU-ressurser. For å demonstrere at en Transformer-arkitektur er egnet for problemstillingen, kan modellen i stedet avgrenses til Norge og områdene rundt Nord-Atlanteren og Skandinavia.
+
+## Regional proof-of-concept
+En realistisk modell kan trenes på et begrenset antall meteorologiske variabler og med lavere romlig oppløsning enn operative værmodeller. Et mulig første oppsett kan være rundt 10–25 km oppløsning, 6–12 atmosfæriske variabler og prognoser 6–24 timer frem i tid. Nedbør kan være hovedvariabel, med vind og temperatur som sekundære variabler.
+
+En mindre Swin Transformer eller tilsvarende arkitektur på omtrent 20–80 millioner parametere vil være tilstrekkelig for å undersøke om modellen lærer meningsfulle regionale værmønstre.
+
+## Beregningsbehov
+En troverdig proof-of-concept bør kunne trenes med noen få moderne GPU-er fremfor hundrevis av GPU-er. Med tilgang til GPU-ressurser gjennom Simula vil det være realistisk å gjennomføre både baseline-trening og flere eksperimenter med ulike tapsfunksjoner og samplingstrategier.
+
+Et mulig omfang kan være noen dager med trening på 1–4 A100/H100-lignende GPU-er for én modellkonfigurasjon. Et større mastereksperiment med flere modeller, tapsfunksjoner og seeds vil kreve mer samlet GPU-tid, men er fortsatt langt mindre krevende enn å trene en global værmodell fra bunnen av.
+
+## Avgrensning av forskningsspørsmålet
+Målet trenger ikke være å konkurrere med ECMWF eller MET på generell værvarsling. Det er tilstrekkelig å demonstrere at Transformer-modellen lærer regionale atmosfæriske sammenhenger og har nok prognoseferdighet til at det er meningsfullt å undersøke ekstremvær spesielt.
+
+Et naturlig oppsett kan være å sammenligne en vanlig modell mot en variant som er trent med større vekt på ekstreme hendelser. Dette kan gjøres gjennom oversampling av ekstremvær eller en tail-aware tapsfunksjon.
+
+## Mest realistiske forskningsretning
+Den mest realistiske retningen er derfor å trene en relativt liten regional Transformer-modell eller finjustere en eksisterende værmodell, fremfor å utvikle en komplett global modell fra bunnen av.
+
+Et mulig eksperiment er:
+
+- regionalt område som dekker Norge, Skandinavia og deler av Nord-Atlanteren
+- 5–10 år med ERA5/CERRA-data
+- Swin Transformer på omtrent 20–50 millioner parametere
+- prognoser av nedbør 6–24 timer frem i tid
+- baseline med vanlig tapsfunksjon
+- variant med tail-aware loss eller oversampling av ekstremvær
+- evaluering på både generell prognosekvalitet og Q95, Q99 og Q99.9-hendelser
+
+Dersom en slik modell viser bedre ytelse på ekstreme hendelser uten en stor reduksjon i generell prognosekvalitet, vil dette være tilstrekkelig til å demonstrere at forskningsretningen er levedyktig.
+
