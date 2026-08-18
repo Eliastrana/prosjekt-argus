@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme inline {
   --color-background: rgb(var(--background));
   --color-foreground: rgb(var(--foreground));
@@ -12,7 +14,8 @@
 }
 
 @layer base {
-  :root {
+  :root,
+  :root[data-theme="light"] {
     --background: 248 250 252;
     --foreground: 15 23 42;
     --muted: 71 85 105;
@@ -23,25 +26,54 @@
     --tint: 236 253 245;
   }
 
-    @media (prefers-color-scheme: dark) {
-    :root {
+  :root[data-theme="dark"] {
+    --background: 9 9 11;
+    --foreground: 244 244 245;
+    --muted: 161 161 170;
+
+    --card: 24 24 27;
+    --card-2: 39 39 42;
+
+    --accent: 16 185 129;
+    --accent-foreground: 9 9 11;
+
+    --tint: 20 83 45;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
       --background: 9 9 11;
       --foreground: 244 244 245;
       --muted: 161 161 170;
-
       --card: 24 24 27;
       --card-2: 39 39 42;
-
       --accent: 16 185 129;
       --accent-foreground: 9 9 11;
-
       --tint: 20 83 45;
     }
   }
 
   body {
     @apply bg-background text-foreground;
+    transition: background-color 180ms ease, color 180ms ease;
   }
+}
+
+.theme-icon {
+  font-size: 1.12rem;
+  line-height: 1;
+}
+
+.theme-icon--dark {
+  display: none;
+}
+
+[data-theme="dark"] .theme-icon--light {
+  display: none;
+}
+
+[data-theme="dark"] .theme-icon--dark {
+  display: inline;
 }
 
 @keyframes loading-bar-slide {
@@ -77,17 +109,22 @@
   color: rgb(var(--foreground));
   font-size: 1.0625rem;
   line-height: 1.8;
+  width: 100%;
 }
 
 .blog-prose > * {
-  margin-inline: auto;
-  max-width: 45rem;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+  max-width: none;
+  width: 100%;
 }
 
-.blog-prose > .article-grid,
-.blog-prose > .article-image,
-.blog-prose > .article-table-wrap {
-  max-width: 56rem;
+.blog-post-column,
+.blog-post-column > header,
+.blog-post-column > article,
+.blog-post-column > footer {
+  width: 100%;
 }
 
 .article-h1,
@@ -192,11 +229,9 @@
 
 .article-info-card__eyebrow {
   color: rgb(var(--accent));
-  font-size: 0.7rem;
-  font-weight: 750;
-  letter-spacing: 0.16em;
+  font-size: 0.8rem;
+  font-weight: 650;
   margin: 0 0 0.85rem;
-  text-transform: uppercase;
 }
 
 .article-info-card__title {
@@ -222,8 +257,7 @@
 .article-callout {
   background: rgb(var(--tint));
   border: 1px solid rgb(var(--accent) / 0.28);
-  border-left: 4px solid rgb(var(--accent));
-  border-radius: 0 1.25rem 1.25rem 0;
+  border-radius: 1.25rem;
   margin-bottom: 2.5rem;
   margin-top: 2.5rem;
   padding: 1.3rem 1.5rem;
@@ -231,11 +265,9 @@
 
 .article-callout__title {
   color: rgb(var(--foreground));
-  font-size: 0.75rem;
-  font-weight: 750;
-  letter-spacing: 0.13em;
+  font-size: 0.85rem;
+  font-weight: 650;
   margin: 0;
-  text-transform: uppercase;
 }
 
 .article-callout .article-paragraph {
@@ -245,7 +277,8 @@
 }
 
 .article-quote {
-  border-left: 3px solid rgb(var(--accent));
+  background: rgb(var(--card-2));
+  border-radius: 1.25rem;
   color: rgb(var(--foreground));
   font-size: 1.25rem;
   font-weight: 500;
@@ -253,7 +286,7 @@
   line-height: 1.55;
   margin-bottom: 2.5rem;
   margin-top: 2.5rem;
-  padding: 0.4rem 0 0.4rem 1.5rem;
+  padding: 1.5rem;
 }
 
 .article-quote .article-paragraph {

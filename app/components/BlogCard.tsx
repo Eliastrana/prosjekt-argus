@@ -20,20 +20,15 @@ export default function BlogCard({
       href={`/blog/${slug}`}
       className={[
         "group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-card",
-        "p-6 shadow-[0_16px_45px_rgba(15,23,42,0.06)] transition duration-300",
-        "hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_22px_60px_rgba(15,23,42,0.12)]",
+        "p-6 transition duration-300",
+        "hover:border-accent/40",
         featured ? "min-h-[22rem] justify-end sm:p-9" : "min-h-[17rem]",
       ].join(" ")}
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent via-emerald-300 to-transparent opacity-70"
-      />
-
       <div className="mb-auto flex items-center justify-between gap-3">
         <time
           dateTime={frontmatter.date}
-          className="text-xs font-semibold uppercase tracking-[0.16em] text-muted"
+          className="text-sm font-medium text-muted"
         >
           {formatDate(frontmatter.date)}
         </time>

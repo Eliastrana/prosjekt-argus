@@ -63,7 +63,7 @@ export default async function BlogPostPage({
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-5xl px-6 pb-24 pt-12 sm:pt-20">
+      <div className="blog-post-column mx-auto max-w-5xl px-6 pb-24 pt-12 sm:pt-20">
         <Link
           href="/blog"
           className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
@@ -73,15 +73,15 @@ export default async function BlogPostPage({
         </Link>
 
         <header className="mt-10 border-b border-foreground/10 pb-10 sm:pb-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          <p className="text-sm font-medium text-accent">
             Prosjektjournal
           </p>
-          <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl">
+          <h1 className="mt-5 text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl">
             {frontmatter.title}
           </h1>
 
           {frontmatter.excerpt ? (
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
+            <p className="mt-6 text-lg leading-8 text-muted">
               {frontmatter.excerpt}
             </p>
           ) : null}

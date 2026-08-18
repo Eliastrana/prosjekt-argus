@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 const navItems = [
   { href: "/", label: "Hjem" },
@@ -14,7 +15,16 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isVisible, setIsVisible] = useState(pathname !== "/");
+  const [visibility, setVisibility] = useState(() => ({
+    pathname,
+    isVisible: pathname !== "/",
+  }));
+
+  if (visibility.pathname !== pathname) {
+    setVisibility({ pathname, isVisible: pathname !== "/" });
+  }
+
+  const isVisible = visibility.pathname === pathname && visibility.isVisible;
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -22,15 +32,14 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    if (pathname !== "/") {
-      setIsVisible(true);
-      return;
-    }
-
-    setIsVisible(false);
+    if (pathname !== "/") return;
 
     const handleReveal = () => {
-      setIsVisible(true);
+      setVisibility((current) =>
+        current.pathname === pathname
+          ? { ...current, isVisible: true }
+          : current,
+      );
     };
 
     window.addEventListener("frontpage:reveal", handleReveal);
@@ -48,7 +57,7 @@ export default function Navbar() {
       ].join(" ")}
     >
       <nav className="relative mx-auto flex max-w-5xl items-center justify-center px-6 py-4">
-        <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-card px-2 py-2">
+        <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-foreground/8 bg-card/95 px-2 py-2 shadow-[0_10px_35px_rgba(15,23,42,0.08)] backdrop-blur-md">
           {navItems.map((item) => {
             const active = isActive(item.href);
 
@@ -68,6 +77,8 @@ export default function Navbar() {
               </Link>
             );
           })}
+          <span className="mx-1 h-5 w-px bg-foreground/10" aria-hidden="true" />
+          <ThemeToggle />
         </div>
       </nav>
     </header>
