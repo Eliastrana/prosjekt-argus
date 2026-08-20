@@ -23,8 +23,7 @@ export function getRelevantPapers(): RelevantPaper[] {
   const raw = fs.readFileSync(PAPERS_PATH, "utf8");
   return splitEntries(raw)
     .map(parseEntry)
-    .filter((paper): paper is RelevantPaper => paper !== null)
-    .sort((left, right) => getSortYear(right.year) - getSortYear(left.year));
+    .filter((paper): paper is RelevantPaper => paper !== null);
 }
 
 function splitEntries(raw: string): string[] {
@@ -93,7 +92,7 @@ function parseEntry(entryRaw: string): RelevantPaper | null {
     type,
     title,
     authors: formatAuthors(fields.author),
-    year: normalizeValue(fields.year) || normalizeValue(fields.urldate),
+    year: formatDate(normalizeValue(fields.year) || normalizeValue(fields.urldate)),
     venue: pickVenue(fields),
     note: normalizeValue(fields.note),
     url: normalizeValue(fields.url) || extractUrl(fields.howpublished),
@@ -253,6 +252,36 @@ function normalizeValue(value?: string): string | null {
   return normalized || null;
 }
 
+const MONTHS_NB = [
+  "januar",
+  "februar",
+  "mars",
+  "april",
+  "mai",
+  "juni",
+  "juli",
+  "august",
+  "september",
+  "oktober",
+  "november",
+  "desember",
+];
+
+function formatDate(value: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+
+  return value.replace(/(\d{4})-(\d{2})-(\d{2})/g, (match, year, month, day) => {
+    const monthName = MONTHS_NB[Number(month) - 1];
+    if (!monthName) {
+      return match;
+    }
+
+    return `${Number(day)}. ${monthName} ${year}`;
+  });
+}
+
 function formatAuthors(value?: string): string | null {
   const normalized = normalizeValue(value);
   if (!normalized) {
@@ -294,13 +323,4 @@ function extractUrl(value?: string): string | null {
 
   const urlMatch = normalized.match(/https?:\/\/\S+/);
   return urlMatch ? urlMatch[0] : null;
-}
-
-function getSortYear(value: string | null): number {
-  if (!value) {
-    return 0;
-  }
-
-  const match = value.match(/\d{4}/);
-  return match ? Number(match[0]) : 0;
 }

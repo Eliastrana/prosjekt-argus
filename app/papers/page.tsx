@@ -14,7 +14,7 @@ export default function PapersPage() {
         <header className="flex flex-col gap-2">
           <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Relevant Papers</h1>
           <p className="max-w-2xl text-sm text-muted md:text-base">
-            Referanser for prosjektet hentet fra en BibTeX-fil, sortert fra nyest til eldst.
+            Referanser for prosjektet hentet fra en BibTeX-fil, i den rekkefølgen de ble lagt til.
           </p>
         </header>
 
