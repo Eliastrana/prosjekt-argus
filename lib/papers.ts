@@ -7,6 +7,7 @@ export type RelevantPaper = {
   title: string;
   authors: string | null;
   year: string | null;
+  sortYear: number;
   venue: string | null;
   note: string | null;
   url: string | null;
@@ -87,12 +88,15 @@ function parseEntry(entryRaw: string): RelevantPaper | null {
     return null;
   }
 
+  const dateValue = normalizeValue(fields.year) || normalizeValue(fields.urldate);
+
   return {
     id,
     type,
     title,
     authors: formatAuthors(fields.author),
-    year: formatDate(normalizeValue(fields.year) || normalizeValue(fields.urldate)),
+    year: formatDate(dateValue),
+    sortYear: getSortYear(dateValue),
     venue: pickVenue(fields),
     note: normalizeValue(fields.note),
     url: normalizeValue(fields.url) || extractUrl(fields.howpublished),
@@ -323,4 +327,13 @@ function extractUrl(value?: string): string | null {
 
   const urlMatch = normalized.match(/https?:\/\/\S+/);
   return urlMatch ? urlMatch[0] : null;
+}
+
+function getSortYear(value: string | null): number {
+  if (!value) {
+    return 0;
+  }
+
+  const match = value.match(/\d{4}/);
+  return match ? Number(match[0]) : 0;
 }

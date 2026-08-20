@@ -1,5 +1,5 @@
 import { getRelevantPapers } from "@/lib/papers";
-import PaperCard from "../components/PaperCard";
+import PaperList from "../components/PaperList";
 
 export const metadata = {
   title: "Relevante Artikler",
@@ -14,15 +14,11 @@ export default function PapersPage() {
         <header className="flex flex-col gap-2">
           <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Relevant Papers</h1>
           <p className="max-w-2xl text-sm text-muted md:text-base">
-            Referanser for prosjektet hentet fra en BibTeX-fil, i den rekkefølgen de ble lagt til.
+            Referanser for prosjektet hentet fra en BibTeX-fil.
           </p>
         </header>
 
-        <section className="mt-10 grid gap-4">
-          {papers.map((paper) => (
-            <PaperCard key={paper.id} paper={paper} />
-          ))}
-        </section>
+        <PaperList papers={papers} />
       </div>
     </main>
   );
