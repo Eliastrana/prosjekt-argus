@@ -67,9 +67,21 @@ Det gode er at omfanget er langt mindre enn det høres ut som. Inferens trenger 
 
 ## Det som gjenstår
 
-**Rutenettet må stemme eksakt.** `switch_graph` er `null`, så modellen bruker grafen som ligger i sjekkpunktet, med faste nodeposisjoner. MEPS-datasettet må da ha samme domene, projeksjon og utstrekning som MET brukte. N320 er trygt fordi det er et standard rutenett; MEPS er MET sitt eget. Utstrekningen 949 × 1069 er utledet bakover fra `CRPSFFTLoss` og er ikke oppgitt noe sted.
+**Rutenettet må stemme eksakt** — men det er nå løst. `switch_graph` er `null`, så modellen bruker grafen som ligger i sjekkpunktet, med faste nodeposisjoner. Det samme forholdet som gjør dette til en hard begrensning, løser det også: en Anemoi-graf bærer eksplisitte lat/lon-koordinater for hver node, så definisjonen lå allerede i filen jeg hadde lastet ned.
 
-Men det samme forholdet som gjør dette til en hard begrensning, løser det også: grafen *ligger* i sjekkpunktet, og en Anemoi-graf bærer eksplisitte lat/lon-koordinater for hver node. Rutenettdefinisjonen er altså allerede i hus, og kan leses ut direkte fremfor å spørres om eller gjettes.
+Utlest og delt opp gir det:
+
+| | |
+|---|---|
+| datanoder | 1 359 281 |
+| LAM (MEPS) | **822 681 = 849 × 969** |
+| global (N320) | 536 600 |
+| breddegradsrader globalt | **640** — bekrefter N320 |
+| fjernet under LAM | 5 480 |
+
+MEPS-domenet etter `trim_edge: 50` spenner 51,119–74,131 °N og 13,150 °V–49,418 °Ø. Utstrekningen før trimming er dermed 949 × 1069, som er nøyaktig det `CRPSFFTLoss` antydet. De 5 480 globale punktene som forsvinner under LAM-en stemmer med de ~5 350 man venter av fotavtrykket mot en 31 km-celle — overskuddet er det et krumt Lambert-domene skjærer ut av et gaussisk rutenett.
+
+Ingen av dette måtte spørres om.
 
 **Hvor kommer normaliseringsstatistikken fra?** Sjekkpunktet har den, og Anemoi bruker normalt den ved inferens. Men dersom en kodesti i stedet regner den ut fra input-datasettet, vil statistikk basert på to tidspunkt være meningsløs — og feilmodusen er en kjøring som fullfører og skriver fysisk gale felter, ikke en som feiler. Må sjekkes før den første prognosen tros på.
 
@@ -79,8 +91,6 @@ Men det samme forholdet som gjør dette til en hard begrensning, løser det ogs�
 
 ## Neste steg
 
-Første steg er å lese koordinatene ut av sjekkpunktet og se om de bekrefter eller avkrefter 949 × 1069. Det koster ingenting og gir det autoritative svaret, siden det er nettopp de nodene modellen indekseres mot.
-
-Deretter kan MEPS-oppskriften ta form mot det offentlige arkivet på thredds.met.no, der NetCDF-headerne uansett bærer projeksjon og utstrekning.
+Rutenettet er lest ut, så neste steg er MEPS-oppskriften mot det offentlige arkivet på thredds.met.no. Koordinatene fra sjekkpunktet er fasiten å validere mot — nodeekkefølgen inkludert, siden det er den modellen indekseres på.
 
 MET er fortsatt verdt å kontakte, men for spørsmålet som ikke lar seg lese ut av filene: om ERA5 er en akseptabel erstatning for `od`, og om de vil dele datasettene direkte. Ikke for rutenettet.
