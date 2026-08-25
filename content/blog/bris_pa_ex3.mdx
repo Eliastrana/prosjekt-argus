@@ -5,11 +5,11 @@ excerpt: "Første dag med tilgang til eX3. Modellen laster, men datasettene den 
 tags: ["kartlegging"]
 ---
 
-Målet for dagen var enkelt: få én Bris-prognose ut av det publiserte sjekkpunktet på eX3. Det målet ble ikke nådd, men alt som ligger foran datasteget er nå verifisert, og underveis dukket det opp flere ting som endrer planen.
+Målet for dagen var enkelt: få én Bris-prognose ut av MET sitt publiserte sjekkpunkt, kjørt på Simula sin eX3-klynge. Det målet ble ikke nådd, men alt som ligger foran datasteget er nå verifisert, og underveis dukket det opp flere ting som endrer planen.
 
 ## Tilgang
 
-Tilgangen til eX3 tok lengre tid enn ventet. FortiClient-VPN-en som MET anbefaler lar seg ikke koble til: `remote.simula.no` svarer på port 443, men det som ligger der er et ACME-endepunkt for sertifikatfornyelse, ikke en SSL-VPN-portal. Klienten sender brukernavn og passord til en sertifikattjeneste, får et svar den ikke kan tolke, og rapporterer «Insufficient credential(s)». Feilmeldingen peker altså på feil årsak.
+Tilgangen tok lengre tid enn ventet. FortiClient-VPN-en eX3-teamet anbefaler lar seg ikke koble til: `remote.simula.no` svarer på port 443, men det som ligger der er et ACME-endepunkt for sertifikatfornyelse, ikke en SSL-VPN-portal. Klienten sender brukernavn og passord til en sertifikattjeneste, får et svar den ikke kan tolke, og rapporterer «Insufficient credential(s)». Feilmeldingen peker altså på feil årsak.
 
 SSH-tunnelen til `dnat.simula.no` fungerer derimot, og med nøkkelbasert autentisering er innlogging nå passordfri fra hvilket som helst nett. Det er ruten som brukes videre.
 
