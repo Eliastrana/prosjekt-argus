@@ -9,9 +9,7 @@ Målet for dagen var enkelt: få én Bris-prognose ut av MET sitt publiserte sje
 
 ## Tilgang
 
-Tilgangen tok lengre tid enn ventet. FortiClient-VPN-en eX3-teamet anbefaler lar seg ikke koble til: `remote.simula.no` svarer på port 443, men det som ligger der er et ACME-endepunkt for sertifikatfornyelse, ikke en SSL-VPN-portal. Klienten sender brukernavn og passord til en sertifikattjeneste, får et svar den ikke kan tolke, og rapporterer «Insufficient credential(s)». Feilmeldingen peker altså på feil årsak.
-
-SSH-tunnelen til `dnat.simula.no` fungerer derimot, og med nøkkelbasert autentisering er innlogging nå passordfri fra hvilket som helst nett. Det er ruten som brukes videre.
+Jeg har fått tilgang til eX3, og satt det opp for tilgang både on prem, men også hvor enn ellers jeg befinner meg. 
 
 ## Miljø
 
