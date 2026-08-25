@@ -1,0 +1,84 @@
+---
+title: "Bris på eX3: miljøet står, dataene mangler"
+date: "2026-08-25"
+excerpt: "Første dag med tilgang til eX3. Modellen laster, men datasettene den trenger er ikke publisert noe sted"
+tags: ["kartlegging"]
+---
+
+Målet for dagen var enkelt: få én Bris-prognose ut av det publiserte sjekkpunktet på eX3. Det målet ble ikke nådd, men alt som ligger foran datasteget er nå verifisert, og underveis dukket det opp flere ting som endrer planen.
+
+## Tilgang
+
+Tilgangen til eX3 tok lengre tid enn ventet. FortiClient-VPN-en som MET anbefaler lar seg ikke koble til: `remote.simula.no` svarer på port 443, men det som ligger der er et ACME-endepunkt for sertifikatfornyelse, ikke en SSL-VPN-portal. Klienten sender brukernavn og passord til en sertifikattjeneste, får et svar den ikke kan tolke, og rapporterer «Insufficient credential(s)». Feilmeldingen peker altså på feil årsak.
+
+SSH-tunnelen til `dnat.simula.no` fungerer derimot, og med nøkkelbasert autentisering er innlogging nå passordfri fra hvilket som helst nett. Det er ruten som brukes videre.
+
+## Miljø
+
+To ting måtte løses før miljøet lot seg bygge.
+
+eX3 gjør TLS-inspeksjon: utgående HTTPS signeres på nytt av en lokal CA som ligger i systemets sertifikatlager. `curl` og `git` fungerer derfor, mens verktøy som har med seg sine egne rotsertifikater feiler. `uv` bruker webpki og stoppet på `invalid peer certificate: UnknownIssuer`. Løsningen er å peke `uv`, `requests` og `curl` mot systemets sertifikatpakke — altså å stole på det maskinen allerede stoler på, ikke å slå av verifisering.
+
+I tillegg peker låsefilen fra MET på inferenspakken over SSH:
+
+```
+bris = { git = "ssh://git@github.com/metno/bris-inference.git", rev = "d1d27c1..." }
+```
+
+Det krever en GitHub-SSH-nøkkel på beregningsnoden. Siden repoet er offentlig, kan transporten skrives om til HTTPS med `insteadOf`. Da står URL-strengen i `uv.lock` urørt, og `--locked` validerer fortsatt.
+
+Etter dette bygger miljøet, og sjekkpunktet laster.
+
+## Hva sjekkpunktet faktisk sier
+
+Anemoi lagrer variabellisten og indeksgruppene i selve sjekkpunktet. Det er den autoritative kilden — YAML-filene sier bare hva MET tilfeldigvis kjørte med.
+
+| gruppe | antall |
+|---|---|
+| prognostiske | 84 |
+| forcings | 11 |
+| diagnostiske | 3 — `tp`, `ssrd`, `strd` |
+| modellinput | 95 |
+| modelloutput | 87 |
+
+Tre tall som er lette å blande sammen: **89** felter må ligge i datasettet, **95** går inn i modellen (89 minus de tre diagnostiske, pluss ni forcings som regnes ut ved innlasting), og **87** kommer ut. Tallet 87, som har vært brukt i notatene mine, er altså outputtallet.
+
+`multistep_input` er 2. Én prognose trenger to påfølgende analysetidspunkt, t-6t og t0, på begge sider av rutenettet. Det er et korrekthetskrav, ikke en detalj: én tilstand vil enten feile eller stille produsere et ubrukelig første steg.
+
+## Nedbør er en diagnostisk variabel
+
+Dette er det mest interessante funnet for oppgaven. `tp` predikeres, men mates aldri tilbake inn i modellens tilstand. Et tail-aware `twCRPS`-ledd på nedbør virker dermed på et diagnostisk hode, med en kortere og mer isolert gradientvei enn en prognostisk variabel ville hatt.
+
+Det er verdt å vite før tapsfunksjonen designes, og det taler for at en finjustering begrenset til dekoderen er en fornuftig avgrensning.
+
+## Hvorfor 600 hPa mangler
+
+Treningskonfigurasjonen dropper `u/v/w/q/z/t` på 600 hPa uten forklaring. HourGlass-artikkelen (Ingstad et al., arXiv:2607.11457) oppgir grunnen i forbifarten, når de forklarer hvorfor Bris-HourGlass ikke kunne finjusteres fra den globale modellen: MEPS har ikke variablene på 600 hPa. Mangelen er arkivmessig, ikke et modelleringsvalg, og ethvert MEPS-datasett bygget her vil arve den.
+
+## Problemet: datasettene finnes ikke
+
+Ingen av de to artiklene har en data availability-erklæring. HourGlass publiserer kun kode. Det finnes ingen anemoi-formaterte zarr-datasett å laste ned:
+
+- ingen `met-no`-datasett på Hugging Face
+- ECMWFs objektlager svarer 403
+- data.met.no publiserer MEPS som GRIB/NetCDF, ikke anemoi-format
+
+Steget er altså å *bygge* datasett, ikke å laste dem ned.
+
+Det gode er at omfanget er langt mindre enn det høres ut som. Inferens trenger initialbetingelser, ikke treningsarkivet: to tilstander, 89 felter, omtrent 1,1 GB til sammen. Treningsarkivet er på TB-skala. Forskjellen er fire år mot to tidspunkt.
+
+## Det som gjenstår
+
+**Rutenettet må stemme eksakt.** `switch_graph` er `null`, så modellen bruker grafen som ligger i sjekkpunktet, med faste nodeposisjoner. MEPS-datasettet må da ha samme domene, projeksjon og utstrekning som MET brukte. N320 er trygt fordi det er et standard rutenett; MEPS er MET sitt eget. Utstrekningen 949 × 1069 er dessuten utledet bakover fra `CRPSFFTLoss`, ikke oppgitt noe sted, og bør bekreftes.
+
+**Hvor kommer normaliseringsstatistikken fra?** Sjekkpunktet har den, og Anemoi bruker normalt den ved inferens. Men dersom en kodesti i stedet regner den ut fra input-datasettet, vil statistikk basert på to tidspunkt være meningsløs — og feilmodusen er en kjøring som fullfører og skriver fysisk gale felter, ikke en som feiler. Må sjekkes før den første prognosen tros på.
+
+**Hvor mange GPU-er trengs egentlig?** Konfigurasjonen fra MET ber om `num_gpus_per_model: 4` og `num_members: 2`, altså åtte kort — nøyaktig én `hgx2q`-node. Det er tallene de kjørte med på Leonardos 64 GB-kort under trening. Om modellen lar seg kjøre usharded på ett kort ved inferens er uprøvd.
+
+**ERA5 som erstatning for operasjonell analyse.** Den atmosfæriske N320-komponenten MET brukte er MARS-klasse `od`, som jeg ikke har tilgang til. Planen er å bruke offentlig ERA5 i stedet. Samme rutenett og samme variabler, men modellen er trent på `od`, så det er et distribusjonsskifte. Godt nok til å avgjøre om modellen kjører og gir fysiske felter — ikke godt nok til å oppgi et verifikasjonsresultat.
+
+## Neste steg
+
+Det billigste neste steget er å kontakte MET. Jeg trenger strengt tatt ikke dataene deres, men rutenettdefinisjonen — og de kan samtidig si om ERA5 er en akseptabel erstatning for `od`. Det er et lite spørsmål som sparer mye reversering.
+
+Parallelt kan MEPS-oppskriften begynne å ta form mot det offentlige arkivet, siden noe uansett må bygges.
