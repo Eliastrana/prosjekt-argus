@@ -69,7 +69,9 @@ Det gode er at omfanget er langt mindre enn det høres ut som. Inferens trenger 
 
 ## Det som gjenstår
 
-**Rutenettet må stemme eksakt.** `switch_graph` er `null`, så modellen bruker grafen som ligger i sjekkpunktet, med faste nodeposisjoner. MEPS-datasettet må da ha samme domene, projeksjon og utstrekning som MET brukte. N320 er trygt fordi det er et standard rutenett; MEPS er MET sitt eget. Utstrekningen 949 × 1069 er dessuten utledet bakover fra `CRPSFFTLoss`, ikke oppgitt noe sted, og bør bekreftes.
+**Rutenettet må stemme eksakt.** `switch_graph` er `null`, så modellen bruker grafen som ligger i sjekkpunktet, med faste nodeposisjoner. MEPS-datasettet må da ha samme domene, projeksjon og utstrekning som MET brukte. N320 er trygt fordi det er et standard rutenett; MEPS er MET sitt eget. Utstrekningen 949 × 1069 er utledet bakover fra `CRPSFFTLoss` og er ikke oppgitt noe sted.
+
+Men det samme forholdet som gjør dette til en hard begrensning, løser det også: grafen *ligger* i sjekkpunktet, og en Anemoi-graf bærer eksplisitte lat/lon-koordinater for hver node. Rutenettdefinisjonen er altså allerede i hus, og kan leses ut direkte fremfor å spørres om eller gjettes.
 
 **Hvor kommer normaliseringsstatistikken fra?** Sjekkpunktet har den, og Anemoi bruker normalt den ved inferens. Men dersom en kodesti i stedet regner den ut fra input-datasettet, vil statistikk basert på to tidspunkt være meningsløs — og feilmodusen er en kjøring som fullfører og skriver fysisk gale felter, ikke en som feiler. Må sjekkes før den første prognosen tros på.
 
@@ -79,6 +81,8 @@ Det gode er at omfanget er langt mindre enn det høres ut som. Inferens trenger 
 
 ## Neste steg
 
-Det billigste neste steget er å kontakte MET. Jeg trenger strengt tatt ikke dataene deres, men rutenettdefinisjonen — og de kan samtidig si om ERA5 er en akseptabel erstatning for `od`. Det er et lite spørsmål som sparer mye reversering.
+Første steg er å lese koordinatene ut av sjekkpunktet og se om de bekrefter eller avkrefter 949 × 1069. Det koster ingenting og gir det autoritative svaret, siden det er nettopp de nodene modellen indekseres mot.
 
-Parallelt kan MEPS-oppskriften begynne å ta form mot det offentlige arkivet, siden noe uansett må bygges.
+Deretter kan MEPS-oppskriften ta form mot det offentlige arkivet på thredds.met.no, der NetCDF-headerne uansett bærer projeksjon og utstrekning.
+
+MET er fortsatt verdt å kontakte, men for spørsmålet som ikke lar seg lese ut av filene: om ERA5 er en akseptabel erstatning for `od`, og om de vil dele datasettene direkte. Ikke for rutenettet.
