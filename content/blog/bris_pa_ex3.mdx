@@ -83,7 +83,11 @@ MEPS-domenet etter `trim_edge: 50` spenner 51,119–74,131 °N og 13,150 °V–4
 
 Ingen av dette måtte spørres om.
 
-**Hvor kommer normaliseringsstatistikken fra?** Sjekkpunktet har den, og Anemoi bruker normalt den ved inferens. Men dersom en kodesti i stedet regner den ut fra input-datasettet, vil statistikk basert på to tidspunkt være meningsløs — og feilmodusen er en kjøring som fullfører og skriver fysisk gale felter, ikke en som feiler. Må sjekkes før den første prognosen tros på.
+**Hvor kommer normaliseringsstatistikken fra?** Avklart, og svaret er sjekkpunktet. Normaliseringen går gjennom `self.model.pre_processors`, og modellen settes til `checkpoint.model` — så prosessorene, med treningsstatistikken i seg, kommer fra vektene. Utenfor legacy-modulen finnes ikke én referanse til `statistics` i bris-inference.
+
+Det betyr at statistikk regnet over to tilstander er ufarlig: `anemoi-datasets` skriver den inn i zarr-en, men ingenting ved inferens leser den. Dette var den ene identifiserte feilmodusen som ville fullført tilsynelatende vellykket og likevel skrevet fysisk gale felter. Den gjelder ikke.
+
+Den gjelder derimot fortsatt for trening. Finjustering går gjennom anemoi-training, som er en annen kodesti og som faktisk leser datasettets statistikk.
 
 **Hvor mange GPU-er trengs egentlig?** Konfigurasjonen fra MET ber om `num_gpus_per_model: 4` og `num_members: 2`, altså åtte kort — nøyaktig én `hgx2q`-node. Det er tallene de kjørte med på Leonardos 64 GB-kort under trening. Om modellen lar seg kjøre usharded på ett kort ved inferens er uprøvd.
 
