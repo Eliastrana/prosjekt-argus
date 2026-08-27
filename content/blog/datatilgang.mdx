@@ -1,0 +1,115 @@
+---
+title: "Hva jeg har tilgang til, og hva jeg mangler"
+date: "2026-08-26"
+excerpt: "En opptelling av datagrunnlaget for Bris-arbeidet: modellene er åpne, inferensdataene er offentlige, treningskorpuset er ikke"
+tags: ["kartlegging"]
+---
+
+Etter et par dager med å grave i hva som faktisk finnes åpent, er det verdt å sette opp regnskapet. Kortversjonen: **alt jeg trenger for å kjøre modellen er offentlig. Alt jeg trenger for å finjustere den, er det ikke.**
+
+Det er en nyttig todeling, fordi den sier hvilke deler av oppgaven som kan gå videre uavhengig av at noen svarer meg.
+
+## Det jeg har
+
+### Modellvektene
+
+Alle under Apache 2.0 på Hugging Face, uten innlogging:
+
+| Repo | Innhold |
+|---|---|
+| `met-no/bris-forecaster` | CRPS-FFT: inferens-sjekkpunkt (1,45 GB) og trenings-sjekkpunkt med optimizer-state (3,29 GB) |
+| `met-no/Bris-HourGlass` | fire sjekkpunkter, 6t → 1t nedskalering |
+| `met-no/bris_cloudy-skies` | fem sjekkpunkter, 2025-02 til 2026-01 |
+| `met-no/bris-forecaster-pretrained` | kun konfigurasjoner — **ingen vekter** |
+
+Den siste er verdt å merke seg: den globale pretrenings-modellen er ikke publisert, bare oppskriftene. Jeg hadde håpet å røyktest-kjøre den, siden den bare trenger ett datasett i stedet for et cutout. Den snarveien finnes ikke.
+
+### Koden
+
+`metno/bris-inference` er inferenspakken. `evenmn/anemoi-core` på grenen `feat/crps-fft-loss` er nødvendig for trening — upstream Anemoi har ikke det spektrale CRPS-tapet. Begge offentlige.
+
+I tillegg fant jeg tre ting jeg ikke visste fantes, alle fra MET: `anemoi-regional-tutorial` er deres egen guide til å bygge regionale datasett, skrevet av Bris-forfatterne. `bris-anemoi-demo` er et fungerende ende-til-ende-eksempel. `bris-configs` har konfigurasjoner for flere av modellene deres.
+
+### Rutenettdefinisjonen
+
+Denne trodde jeg lenge at jeg måtte spørre MET om. Det viste seg at den ligger i sjekkpunktet: `switch_graph` er `null`, så modellen bruker grafen som følger med vektene, og en Anemoi-graf bærer eksplisitte koordinater for hver node.
+
+Utlest gir det 1 359 281 datanoder — 822 681 på MEPS-siden (849 × 969 etter trimming) og 536 600 globalt på N320, med 640 breddegradsrader. Nøyaktig det modellen indekseres mot, uten å spørre noen.
+
+### ERA5
+
+Konto på Copernicus Climate Data Store, lisens akseptert. Den globale halvparten av inputdataene er allerede bygget: 89 variabler på N320, to tilstander, 204 MiB.
+
+Et forbehold: ERA5 er ikke det modellen ble trent på. Det kommer jeg tilbake til.
+
+### MEPS
+
+Offentlig på thredds.met.no under NLOD / CC BY 4.0, ingen innlogging. Og — dette var den beste overraskelsen — **på nøyaktig samme rutenett som MET trente på**: `x = 949`, `y = 1069`, Lambert-projeksjon. Alle trykknivåene modellen trenger finnes, og 16 av 17 overflatefelt kartlegger direkte fra CF-navn.
+
+Her er ikke tilgang problemet. Arbeidet er å konvertere til anemoi-format, med de riktige enhetene og rotasjonene.
+
+### Regnekraft
+
+eX3 hos Simula. Åtte A100 med 80 GB på `hgx2q`, som er nøyaktig det den publiserte inferenskonfigurasjonen ber om.
+
+## Det jeg mangler
+
+### Anemoi-datasettkatalogen
+
+`anemoi.ecmwf.int/datasets`. METs egen tutorial peker hit for ferdige datasett, med nedlastingslenker til S3 og stier på LUMI og Leonardo.
+
+Innlogging fungerer. Deretter svarer den **403**. Kontoen er gyldig, men mangler rollen. Jeg har søkt om tilgang.
+
+### IFS operasjonell analyse
+
+Den globale atmosfæriske komponenten Bris faktisk ble trent på er MARS-klasse `od` — operasjonell analyse, ikke offentlig. Søkt om, ikke innvilget.
+
+Jeg bruker ERA5 (`ea`) i stedet. Samme rutenett, samme variabler, offentlig. Men modellen er trent på `od`, så det er et distribusjonsskifte. Godt nok til å avgjøre om modellen kjører og gir fysiske felter — ikke godt nok til å oppgi et verifikasjonsresultat.
+
+### Treningskorpuset
+
+Dette er den store. For å finjustere trengs år med data på det strekkede rutenettet:
+
+| Periode | MEPS | N320 | Sum |
+|---|---|---|---|
+| 1 år | 0,53 TB | 0,28 TB | 0,81 TB |
+| 2 år | 1,06 TB | 0,56 TB | 1,62 TB |
+| 2020–2023 | 2,11 TB | 1,13 TB | 3,24 TB |
+
+Ingen av artiklene har en data availability-erklæring. HourGlass publiserer kun kode. Datasettene beskrives i prosa og er ikke sluppet. Det finnes ingen `met-no`-datasett på Hugging Face, ECMWFs objektlager svarer 403, og thredds serverer GRIB/NetCDF, ikke anemoi-format.
+
+Det gode er at det trolig ikke er fire år som trengs. For en dekoder-kun finjustering med tail-aware tap er spørsmålet hvor mange ekstremhendelser korpuset inneholder, ikke hvor mange år det spenner. Ett til to år over Norden er sannsynligvis nok for et proof-of-concept — altså under 1,6 TB, og `/home` på eX3 har 274 TB ledig.
+
+Lagring er ikke begrensningen. Anskaffelse er det.
+
+## Hva hver mangel faktisk blokkerer
+
+Dette er poenget med hele opptellingen:
+
+| | Inferens | Finjustering |
+|---|---|---|
+| Modellvekter | ✅ har | ✅ har |
+| Kode | ✅ har | ✅ har (fork) |
+| Rutenett | ✅ lest ut av sjekkpunktet | ✅ samme |
+| Data | 🔶 bygger selv, ~1,1 GB | ❌ ~1,6–3,2 TB, ikke publisert |
+| Regnekraft | ✅ eX3 | ✅ eX3 |
+
+**Inferens er ikke blokkert av tilgang i det hele tatt.** Den globale halvparten er bygget, MEPS-halvparten er offentlig og på riktig rutenett. Det som gjenstår er ingeniørarbeid jeg kan gjøre selv.
+
+**Finjustering er blokkert på nøyaktig én ting:** treningskorpuset, som henger på katalogtilgangen. Ingen mengde arbeid fra min side løser det.
+
+## Det jeg faktisk ber om
+
+Fordi opptellingen ble gjort før e-posten, ble forespørselen mye mindre enn den kunne blitt. Jeg ber ikke om rutenettdefinisjonen — den lå i vektene. Ikke om MEPS — det er offentlig. Ikke om inferensdata — de bygger jeg selv.
+
+Tre spørsmål står igjen:
+
+1. Hvilken rolle trengs for `anemoi.ecmwf.int/datasets`, og kan den gis?
+2. Ligger Bris' strekkede datasett der, og er de **nedlastbare** — eller bare som en sti på LUMI, som jeg ikke har konto på?
+3. Kan ERA5 erstatte operasjonell analyse for initialbetingelser?
+
+Spørsmål 2 er verdt å stille eksplisitt. Katalogen oppgir både S3-lenker og maskinstier, og de to er ikke det samme: å se datasettet listet er ikke å ha det.
+
+## Status
+
+Inferenssporet går videre uavhengig av svar. Den globale siden er bygget og fysisk verifisert, MEPS-oppskriften er skrevet og skal testes. Finjusteringen venter.
