@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BlogPost } from "@/lib/blog";
+import { AuthorByline } from "./AuthorByline";
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr);
@@ -26,12 +27,23 @@ export default function BlogCard({
       ].join(" ")}
     >
       <div className="mb-auto flex items-center justify-between gap-3">
-        <time
-          dateTime={frontmatter.date}
-          className="text-sm font-medium text-muted"
-        >
-          {formatDate(frontmatter.date)}
-        </time>
+        <div className="flex min-w-0 items-center gap-3">
+          <time
+            dateTime={frontmatter.date}
+            className="text-sm font-medium text-muted"
+          >
+            {formatDate(frontmatter.date)}
+          </time>
+          {frontmatter.author ? (
+            <>
+              <span
+                aria-hidden="true"
+                className="size-1 shrink-0 rounded-full bg-foreground/25"
+              />
+              <AuthorByline author={frontmatter.author} size="sm" />
+            </>
+          ) : null}
+        </div>
         <span className="grid size-9 place-items-center rounded-full border border-foreground/10 text-lg transition group-hover:border-accent/40 group-hover:bg-tint group-hover:text-accent">
           <span aria-hidden="true">↗</span>
         </span>

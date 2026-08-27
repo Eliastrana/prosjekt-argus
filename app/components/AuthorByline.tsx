@@ -1,6 +1,10 @@
 import Image from "next/image";
 
-const AUTHORS: Record<string, { name: string; image: string; role: string }> = {
+type Profile = { name: string; image: string; role: string };
+
+/** One source of truth for who wrote what. `author` in a post's frontmatter
+ *  keys into this; anything unrecognised falls back to an initial. */
+export const AUTHORS: Record<string, Profile> = {
   Elias: {
     name: "Elias Trana",
     image: "/authors/elias.jpg",
@@ -9,38 +13,63 @@ const AUTHORS: Record<string, { name: string; image: string; role: string }> = {
   Claude: {
     name: "Claude",
     image: "/authors/claude.webp",
-    role: "Skrevet av AI",
+    role: "Skrevet med AI",
   },
 };
 
-export function AuthorByline({ author }: { author?: string }) {
+export function getAuthor(author?: string): Profile | null {
   if (!author) return null;
+  return AUTHORS[author] ?? { name: author, image: "", role: "" };
+}
 
-  const profile = AUTHORS[author] ?? { name: author, image: "", role: "" };
+export function AuthorByline({
+  author,
+  size = "md",
+}: {
+  author?: string;
+  /** "sm" is for cards, where the byline sits beside a date and must not
+   *  compete with the title. "md" is the post header. */
+  size?: "sm" | "md";
+}) {
+  const profile = getAuthor(author);
+  if (!profile) return null;
+
+  const sm = size === "sm";
+  const px = sm ? 28 : 48;
 
   return (
-    <div className="mt-8 flex items-center gap-4">
+    <div className={sm ? "flex items-center gap-2" : "mt-8 flex items-center gap-4"}>
       {profile.image ? (
         <Image
           src={profile.image}
           alt=""
-          width={48}
-          height={48}
-          className="size-12 shrink-0 rounded-full object-cover ring-1 ring-foreground/10"
+          width={px}
+          height={px}
+          className={[
+            sm ? "size-7" : "size-12",
+            "shrink-0 rounded-2xl object-cover",
+          ].join(" ")}
         />
       ) : (
         <span
           aria-hidden="true"
-          className="flex size-12 shrink-0 items-center justify-center rounded-full bg-card-2 text-lg font-semibold text-muted ring-1 ring-foreground/10"
+          className={[
+            sm ? "size-7 text-xs" : "size-12 text-lg",
+            "flex shrink-0 items-center justify-center rounded-2xl bg-card-2 font-semibold text-muted",
+          ].join(" ")}
         >
           {profile.name.charAt(0)}
         </span>
       )}
 
-      <div className="min-w-0">
-        <div className="text-sm font-semibold text-foreground">{profile.name}</div>
-        {profile.role ? <div className="text-xs text-muted">{profile.role}</div> : null}
-      </div>
+      {sm ? (
+        <span className="truncate text-xs font-medium text-muted">{profile.name}</span>
+      ) : (
+        <div className="min-w-0">
+          <div className="text-sm font-semibold text-foreground">{profile.name}</div>
+          {profile.role ? <div className="text-xs text-muted">{profile.role}</div> : null}
+        </div>
+      )}
     </div>
   );
 }
