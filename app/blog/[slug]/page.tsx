@@ -6,6 +6,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import type { Metadata } from "next";
 import { blogMdxComponents } from "@/app/components/BlogContent";
+import { AuthorByline } from "@/app/components/AuthorByline";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -90,13 +91,9 @@ export default async function BlogPostPage({
             <time dateTime={frontmatter.date}>{formatDate(frontmatter.date)}</time>
             <span aria-hidden="true" className="size-1 rounded-full bg-foreground/25" />
             <span>{readingTime} min lesetid</span>
-            {frontmatter.author ? (
-              <>
-                <span aria-hidden="true" className="size-1 rounded-full bg-foreground/25" />
-                <span>Skrevet av {frontmatter.author}</span>
-              </>
-            ) : null}
           </div>
+
+          <AuthorByline author={frontmatter.author} />
 
           {!!frontmatter.tags?.length && (
             <div className="mt-6 flex flex-wrap gap-2">
