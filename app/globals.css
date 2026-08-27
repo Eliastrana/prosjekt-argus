@@ -373,7 +373,6 @@
 
 @media (prefers-color-scheme: dark) {
   .article-info-card {
-    box-shadow: 0 16px 44px rgb(0 0 0 / 0.2);
   }
 
   .article-code-block {

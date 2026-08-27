@@ -8,6 +8,8 @@ export type BlogFrontmatter = {
   date: string; // ISO string
   excerpt?: string;
   tags?: string[];
+  /** Who wrote the post: "Elias" or "Claude". Shown next to the date. */
+  author?: string;
 };
 
 export type BlogPost = {
@@ -42,6 +44,7 @@ export function getAllPosts(): BlogPost[] {
       date: data.date ?? "1970-01-01",
       excerpt: data.excerpt ?? "",
       tags: data.tags ?? [],
+      author: data.author ?? "",
     };
 
     return { slug, frontmatter, content };
@@ -72,6 +75,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     date: data.date ?? "1970-01-01",
     excerpt: data.excerpt ?? "",
     tags: data.tags ?? [],
+    author: data.author ?? "",
   };
 
   return { slug, frontmatter, content };
