@@ -1,0 +1,121 @@
+---
+title: "Å bygge inputdataene til Bris fra offentlige kilder"
+date: "2026-08-27"
+excerpt: "Begge halvdelene av cutoutet er bygget. Underveis dukket det opp en rekke ting som ikke står dokumentert noe sted"
+tags: ["kartlegging"]
+---
+
+Etter gårsdagens opptelling var konklusjonen at inferens ikke er blokkert av tilgang — bare av arbeid. I dag ble det arbeidet gjort. Begge datasettene finnes nå, med 98 variabler hver, på nøyaktig de rutenettene sjekkpunktet forventer.
+
+Veien dit gikk gjennom omtrent femten feil. De fleste av dem var mine, men et halvt dusin var reelle egenskaper ved verktøykjeden som ikke står i noen dokumentasjon. Det er de sistnevnte som er verdt å skrive ned.
+
+## Hva som ble bygget
+
+| | ERA5 (global) | MEPS (LAM) |
+|---|---|---|
+| Rutenett | N320, 542 080 punkter | 949 × 1069, Lambert |
+| Variabler | 98 | 98 |
+| Tidspunkt | 2 (t−6t og t0) | 2 |
+| Størrelse | 206 MiB | 373 MiB |
+| Kilde | CDS, `reanalysis-era5-complete` | thredds.met.no, OPeNDAP |
+
+Til sammen under 600 MB. Til sammenligning er treningskorpuset for finjustering rundt 3 TB — omtrent fem tusen ganger mer.
+
+## eX3 gjør TLS-inspeksjon, og hver klient må håndteres for seg
+
+Dette var dagens mest tidkrevende innsikt, fordi den dukket opp fire ganger i ulike forkledninger.
+
+Utgående HTTPS signeres på nytt av en lokal CA. `curl` og `git` virker, fordi de bruker systemets sertifikatlager. Alt som har med seg sine egne rotsertifikater feiler — men hver på sin måte:
+
+- **`uv`** bruker webpki: `invalid peer certificate: UnknownIssuer`. Løses med `UV_SYSTEM_CERTS`.
+- **`requests`, og dermed `pydap`**, bruker `certifi`. Løses med `REQUESTS_CA_BUNDLE`.
+- **netCDFs DAP-klient** leser ingen av delene. Den leser `~/.dodsrc`, og uten CA der feiler den med `NetCDF: I/O failure` — en melding som ikke nevner sertifikater med ett ord.
+
+Verst var pydap-tilfellet. Uten CA feiler TLS-oppkoblingen, og forespørselen ender som klartekst gjennom proxyen, som svarer **421 Misdirected Request**. Jeg brukte flere runder på å lete etter en pydap-feil som ikke fantes. Da miljøvariablene endelig var satt, virket den på første forsøk.
+
+Lærdommen er en sjekkliste: når noe nettverksrelatert feiler her, er første spørsmål om sertifikatoppsettet er lastet i *den prosessen*.
+
+## `.ncml`-filene er ikke data
+
+MEPS ligger på thredds som `meps_det_sfc_*.ncml`. Filene er **8 kilobyte**. De er NcML-aggregeringer som peker på 67 filer per ledetid på METs interne Lustre:
+
+```
+<netcdf location="/lustre/arkivB/.../meps_sfc_00_20250331T18Z.nc"/>
+<netcdf location="/lustre/arkivB/.../meps_sfc_01_20250331T18Z.nc"/>
+```
+
+De stiene er ikke URL-er, og enkeltfilene ligger ikke i katalogen. Så `fileServer` gir deg beskrivelsen, ikke dataene, og **`dodsC` er eneste vei inn** — å laste ned først er ikke et alternativ.
+
+## Alle fysiske filtre i anemoi-datasets er GRIB-only
+
+Dette er den funksjonelt viktigste oppdagelsen, og den gjelder alle som bygger et anemoi-datasett fra NetCDF.
+
+`rotate_winds`, `wz_to_w`, `orog_to_z`, `sum` og alle seks fuktighetskonverteringene leser `f.metadata(namespace="mars")["param"]`. For felter fra xarray returnerer `_as_mars()` bokstavelig talt `{}`. Alle feiler derfor med `KeyError: 'param'` mot enhver NetCDF- eller OPeNDAP-kilde.
+
+Bare `rename`, `transform` og no-ops virker.
+
+Det betyr at tre nødvendige konverteringer måtte gjøres utenfor anemoi:
+
+**Vindrotasjon.** MEPS lagrer `x_wind`/`y_wind` langs Lambert-aksene; modellen forventer jordrelative `u`/`v`. Uten rotasjon er feltene feil med en vinkel som vokser med avstand fra referanselengdegraden — plausible overalt, riktige ingen steder.
+
+**Vertikalvind.** `upward_air_velocity_pl` er i m/s, ECMWFs `w` er Pa/s. De skiller seg med −ρg, altså en faktor rundt ti *og* fortegn.
+
+**Duggpunkt.** MEPS har ikke `2d`, men har relativ fuktighet.
+
+Løsningen ble å la oppskriften omdøpe kolonnene til målnavnet mens de fortsatt holder kildestørrelsen, og konvertere verdiene på plass etterpå. For punktvise konverteringer spiller det ingen rolle hvor de skjer. Hver av dem er testet mot et tilfelle med kjent fasit: rotasjon på et rutenett konstruert med 20° gjenfant 19,82° med vindstyrken bevart til 1,8e−15, og oppadgående 1 m/s ved 500 hPa gir −6,83 Pa/s.
+
+## Nivåutvelgelsen bruker koordinatens eget navn
+
+MEPS' trykknivåkoordinat heter `pressure`. Jeg antok at `level:` ville treffe, siden dokumentasjonen sier at `level` og `levelist` er synonymer og `LevelCoordinate.mars_names` er `("level", "levelist")`.
+
+Det gjorde den ikke. Bygget rapporterte `No data found` og produserte et datasett med 17 variabler i stedet for 89 — **uten feilmelding**, fordi en tom gren i en `join` bare advarer.
+
+Da jeg endelig kjørte utvelgelsen isolert i stedet for å resonnere om den, var svaret entydig:
+
+| Nøkkel | Treff |
+|---|---|
+| `level` (int eller float) | 0 |
+| `levelist` | 0 |
+| **`pressure`** | **1608** |
+
+1608 = 2 variabler × 12 nivåer × 67 ledetider.
+
+Og da nivåene endelig kom inn, kolliderte de alle: standardnavngivningen er `"{param}_{levelist}"`, så nivået falt ut av navnet. Fiksen er `variable_naming: "{param}_{pressure}"` i `build`-seksjonen — noe feilmeldingen faktisk peker på, når man leser den nøye.
+
+## Forcings må lagres, ikke bare beregnes
+
+Modellen trenger ni forcings: sin/cos av julian day, lokaltid, bredde- og lengdegrad, pluss innstråling. Jeg behandlet dem hele veien som «beregnet ved innlasting», fordi det er slik de beskrives.
+
+Det beskriver hvordan verdiene oppstår, ikke hvor modellen leser dem fra. Inferenskonfigurasjonen velger alle 98 variablene ved navn, så forcings må finnes som **lagrede** variabler i datasettet. Feilen kom først etter at sjekkpunktet var lastet og modellen bygget:
+
+```
+KeyError: 'cos_julian_day'
+```
+
+anemoi har en egen `forcings`-kilde for dette, med en `template` som låner rutenettet fra en annen gren.
+
+## Tre feil i anemoi-datasets selv
+
+Ikke konfigurasjonsfeil, men hull i pakken:
+
+**`json_tidy`** håndterer `np.float32` og `np.float64`, men ingen numpy-heltallstype. MEPS har `int16`-koordinatverdier, så bygget kom gjennom lesing og statistikk og døde på metadataskriving.
+
+**`fix_provenance`** kaller `.startswith` på hver verdi i `module_versions`, mens nyere `anemoi-utils` skriver dict-er der.
+
+**`output.order_by`** er avviklet i nyere versjoner, men 0.5.24 setter den til `["valid_datetime", "param_level", "number"]` om den utelates — som er nøyaktig det nyere versjoner hardkoder. Å utelate feltet virker altså i begge.
+
+De to første er omgått i en wrapper som utvider funksjonene og delegerer resten til originalen. Begge påvirker bare hvordan metadata serialiseres, aldri hva som beregnes. De er verdt å melde oppstrøms — de rammer i praksis all regional data.
+
+## Rutenettet lå i vektene
+
+Verdt å gjenta fra i går, siden det sparte mest tid: `switch_graph` er `null`, så modellen bruker grafen som følger sjekkpunktet, og en Anemoi-graf bærer eksplisitte koordinater per node.
+
+Utlest ga det 822 681 MEPS-punkter (849 × 969 etter trimming) og 536 600 globale på N320. Det offentlige MEPS-arkivet viste seg å ligge på **nøyaktig samme rutenett** — `x = 949`, `y = 1069` — så ingen domenetilpasning var nødvendig.
+
+## Hva som gjenstår
+
+Prognosejobben står i kø. Alle åtte A100-ene på `hgx2q` er opptatt, `dgx2q` er reservert til én bruker til 29. august, og `a40q` og `gh200q` er ARM og dermed uaktuelle for et x86/CUDA-miljø.
+
+Sjekkpunktet laster og modellen bygges opp uten feil — det kom vi til i dag. Det eneste som aldri har vært prøvd er at den setter sammen cutoutet av *disse* to datasettene og faktisk regner.
+
+Det står nå på en ledig GPU, ikke på arbeid.
