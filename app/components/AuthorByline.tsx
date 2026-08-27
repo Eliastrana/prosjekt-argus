@@ -8,12 +8,12 @@ export const AUTHORS: Record<string, Profile> = {
   Elias: {
     name: "Elias Trana",
     image: "/authors/elias.jpg",
-    role: "Masterstudent, UiO",
+    role: "Et ekte menneske",
   },
   Claude: {
     name: "Claude",
     image: "/authors/claude.webp",
-    role: "Skrevet med AI",
+    role: "Skrevet av AI",
   },
 };
 
@@ -35,7 +35,7 @@ export function AuthorByline({
   if (!profile) return null;
 
   const sm = size === "sm";
-  const px = sm ? 28 : 48;
+  const px = sm ? 100 : 200;
 
   return (
     <div className={sm ? "flex items-center gap-2" : "mt-8 flex items-center gap-4"}>
@@ -46,8 +46,9 @@ export function AuthorByline({
           width={px}
           height={px}
           className={[
-            sm ? "size-7" : "size-12",
-            "shrink-0 rounded-2xl object-cover",
+            sm ? "size-7 rounded-xl" : "size-12 rounded-2xl",
+
+            "shrink-0 object-cover",
           ].join(" ")}
         />
       ) : (
