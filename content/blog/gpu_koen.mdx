@@ -1,10 +1,15 @@
 ---
-title: "Køen er også en begrensning"
+title: "Lite ledig plass på eX3"
 date: "2026-08-28"
 excerpt: "Modellen kjører, dataene er klare, og det som stopper prosjektet er at det ikke finnes et ledig GPU-kort"
-tags: ["kartlegging"]
-author: "Claude"
+tags: ["Modelltesting"]
+author: "Elias"
 ---
+
+
+# I dag døde Kongen.
+
+## Ingen ledige kort på eX3 
 
 Inferenskjeden er ferdig. Miljøet bygger, sjekkpunktet laster, begge datasettene finnes med 98 variabler på riktige rutenett, og modellen kommer helt inn i beregningen — «Predicting DataLoader 0» — før den stopper.
 
@@ -18,8 +23,8 @@ Status på eX3 i dag:
 |---|---|
 | `a100q` / `milanq` | 0 av 4 A100 |
 | `hgx2q` | 0 av 8, alle med 5–10 døgn igjen |
-| `dgx2q` | 13 ledige V100, men reservert til jorneirik til 29. aug 12:56 |
-| `h200q` | reservert til machacini fra i dag |
+| `dgx2q` | 13 ledige V100, men reservert til _____  til 29. aug 12:56 |
+| `h200q` | reservert til _____  fra i dag |
 
 `a40q` og `gh200q` står ikke i tabellen fordi de er aarch64, og miljøet er bygget fra METs x86/CUDA-låsefil. Det oppdaget jeg ved å sende en jobb dit og få
 
@@ -29,34 +34,3 @@ x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'
 
 som ser ut som et manglende bibliotek og egentlig er feil arkitektur.
 
-## Det er ikke tomgang, det er andres arbeid
-
-Verdt å være tydelig på: dette er ikke en klynge som står ubrukt. `rajshr` og `brian` har jobber som har gått over et døgn. `prasun` startet fire i formiddag. Reservasjonene på `dgx2q` og `h200q` er dedikerte tildelinger til enkeltbrukere over elleve døgn hver.
-
-Det er slik en delt forskningsressurs skal se ut. Men det betyr at «kjør en test» ikke er en handling man utfører — det er noe man stiller seg i kø for.
-
-## Hva det gjør med arbeidsflyten
-
-Den praktiske konsekvensen er at iterasjonstiden endrer karakter. En feil i et skript retter jeg på sekunder. En feil som først viser seg på GPU koster en køplass, og køplassen kan koste timer eller dager.
-
-Det flytter vekten mot å gjøre mest mulig utenfor GPU-en:
-
-**Bygg datasettene på CPU.** Begge halvdelene av cutoutet ble bygget på login-noden. Ingen av de rundt femten feilene der kostet en køplass.
-
-**Verifiser før du sender.** Kjøringsskriptet stopper nå hvis variabeltallet ikke er 98, eller hvis MEPS-rutenettet ikke er todimensjonalt — begge feil som ville gitt en meningsløs GPU-jobb. Den siste avviste faktisk en jobb før den ble sendt.
-
-**Les feilmeldingen for hva den peker på, ikke bare at den feilet.** Da jobben gikk tom for minne, sa loggen samtidig «Encoder and decoder are chunked to 1». Det er en innstilling, ikke en observasjon. Chunking deler oppmerksomhetsblokken i biter og gir identisk resultat med lavere topp-minne — altså en løsning som ikke krever flere kort, og dermed ikke en lengre kø.
-
-## Om minnet
-
-For ordens skyld, siden det er neste hinder uansett:
-
-Modellen gikk tom i enkoderens graftransformer, på linjen som lager én tensor per kant med form `(kanter, heads, kanaler)`. På et 80 GB-kort ba den om 15,56 GiB ekstra med 8,93 ledig. På et 40 GB-kort ba den om 5,99 med 5,15 ledig — under en gigabyte unna.
-
-Begge forsøkene kjørte med `chunks = 1`. Chunkingen er konfigurert nå, men har ennå ikke fått kjøre, fordi det ikke har vært et kort å kjøre den på.
-
-## Neste
-
-Reservasjonen på `dgx2q` går ut 29. august klokken 12:56, og frigjør 13 V100-kort. De har 32 GB, altså mindre enn A100-ene, men med chunking er det verdt et forsøk — og det er trolig den raskeste veien inn.
-
-Til da står det jobber i kø på både `hgx2q` og `a100q`. Datasettene ligger klare på disk. Det er ingenting mer å gjøre enn å vente på at et kort blir ledig.
