@@ -54,10 +54,24 @@ Og feltet som plottes er **vindstyrke**, altså `√(u² + v²)`. Den størrelse
 
 Så alt som ser riktig ut i vindpanelet — friksjonskontrasten, orografien, at det følger trykket — ville sett like riktig ut med feil rotert vind.
 
-## Neste
+## Rotasjonen, kontrollert
 
-Konfigurasjonen skriver nå også `10u` og `10v`, og plotteskriptet sammenligner vindretning mot trykkgradienten. På nordlige halvkule løper geostrofisk vind mot klokka rundt lavtrykk, så retningen skal ligge nær 90° fra gradienten. Et systematisk avvik derfra er signaturen på et uroteret felt.
+Forsøket på å skrive `10u` og `10v` til NetCDF-fila mislyktes. Tre kjøringer på rad døde i `to_netcdf` med `RuntimeError: NetCDF: HDF error`, hver med ulik lengde gjennom variabellista — den siste skrev bare temperatur og trykk, og den globale fila ikke i det hele tatt. Disken hadde 274 TB ledig, så det var ikke plass det sto på.
 
-Den kjøringen står igjen. Til den er gjort, er rotasjonen ukontrollert — og det er verdt å si tydelig, framfor å la fire plausible paneler stå som bevis for noe de ikke kan bevise.
+Men prognosen var uansett feil sted å lete. Rotasjonen påføres **datasettet**, ikke prognosen — så den kan kontrolleres der, uten modellkjøring, uten GPU og uten kø.
 
-Ett forbehold gjelder uansett: dette er initialisert fra ERA5, ikke fra operasjonell analyse. Feltene er fysiske, men prognosekvaliteten er ikke sammenlignbar med METs egne kjøringer, og ingen tall herfra hører hjemme i en verifikasjon.
+Kontrollen er geostrofisk balanse: vinden skal stå tilnærmet vinkelrett på trykkgradienten, med lavtrykk til venstre for strømmen på nordlige halvkule. Målt over punktene der gradienten er sterk nok til at balansen betyr noe, ga datasettet **−74,5°**.
+
+Og her holdt jeg på å konkludere feil vei. Skriptet mitt forventet +90° og meldte «164 grader fra forventning», som så ut som en mislykket rotasjon. Men fortegnet i forventningen var snudd. Jeg konstruerte et rent geostrofisk felt og målte det med nøyaktig samme formel, i stedet for å resonnere om fortegnet — og da ga det **−90°**.
+
+Avviket er altså 15,5°, ikke 164. Og 15,5° er nøyaktig det man venter: overflatevind er ikke rent geostrofisk, friksjon dreier den mot lavtrykk med 10–20° over hav og mer over land.
+
+**Rotasjonen er riktig.** Den siste ukontrollerte konverteringen i kjeden er dermed verifisert mot ekte data i stedet for et syntetisk rutenett.
+
+Lærdommen er verdt å ta med: et fortegn man resonnerer seg fram til er lett å snu, og en verifikasjon med feil forventning er verre enn ingen — den peker selvsikkert på feil sted. Å konstruere et tilfelle med kjent svar og måle det tar to minutter.
+
+## Status
+
+Hele kjeden er nå kontrollert: rutenettene mot grafen i sjekkpunktet, `trim_edge`, enhetene, landmasken, orografien, duggpunkt- og omega-konverteringene mot kjente verdier, og vindrotasjonen mot geostrofisk balanse.
+
+Forbeholdet står likevel: dette er initialisert fra ERA5, ikke fra operasjonell analyse. Feltene er fysiske, men ingen tall herfra hører hjemme i en verifikasjon.
