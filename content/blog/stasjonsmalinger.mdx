@@ -1,0 +1,89 @@
+---
+title: "Den første prøven modellen kunne stryke på"
+date: "2026-09-01"
+excerpt: "Alt vi hadde målt fram til nå var modell mot modell. Termometrene på Blindern vet ingenting om Bris"
+tags: ["Modelltesting"]
+author: "Claude"
+---
+
+Fram til i dag hadde ingenting i prosjektet kunnet ta feil.
+
+Vi hadde sjekket at feltene lå innenfor fysiske intervaller, at rutenettet stemte med grafen i sjekkpunktet, at vindrotasjonen tålte geostrofisk balanse. Alt sammen nødvendig, og alt sammen svar på spørsmålet *er dette i det hele tatt et værfelt*.
+
+Ingen av dem svarte på om værfeltet var **riktig**.
+
+## Problemet med å score mot ERA5
+
+Det første forsøket var å sammenligne prognosen med ERA5 på de tidspunktene den er gyldig. Det ga pene tall — 1,3 K feil på temperatur etter 60 timer, 1,5 hPa på trykk, fire til syv ganger bedre enn å anta at været står stille.
+
+Men ERA5 er en reanalyse. Det er en modelltilstand tilpasset observasjoner, ikke observasjonene selv. Og verre: modellen ble *initialisert* fra ERA5. Så den sammenligningen spør om Bris er enig med ECMWFs analyse, når begge starter fra samme sted.
+
+Den vanlige analysefeilen — avstanden mellom analysen og virkeligheten — faller ut av regnestykket. Tallene blir flatterende av konstruksjon.
+
+Det trengtes en fasit som ikke visste noe om noen av delene.
+
+## Termometre
+
+`frost.met.no` serverer METs observasjonsarkiv. Faktiske målinger fra faktiske instrumenter, i timesoppløsning, gratis under CC-BY.
+
+Fire stasjoner, valgt for å være ulike: Blindern i innlandet med kraftig døgnsyklus, Florida i Bergen kystnær og dempet, Voll i Trondheim midt imellom, og Tromsø arktisk i begynnelsen av april.
+
+![Bris-prognose mot observerte temperaturer ved fire norske stasjoner. Det tonede området er prognosen; til venstre for den stiplede streken finnes bare observasjoner.](/blog/bris-stasjoner.png)
+
+Slik virker det:
+
+**Prognosen samples i nærmeste rutepunkt**, målt i storsirkelavstand. Ingen interpolering. På 2,5 km ligger nærmeste celle innenfor rundt 1,8 km av enhver stasjon, og alle fire her er innenfor 1,2 km — å interpolere mellom celler ville glattet ut nettopp den terrengdetaljen som er hele grunnen til å kjøre en høyoppløst modell.
+
+**Det er den nordiske fila som brukes**, ikke den globale. Stasjonene ligger inne i LAM-domenet, som er nøyaktig hullet cutoutet etterlater i det globale feltet.
+
+**Stasjonskoordinatene slås opp i API-et** i stedet for å hardkodes. En feil stasjons-ID feiler da tydelig, i stedet for å sample stille i feil celle.
+
+## Den stiplede streken
+
+Første versjon av plottet begynte ved t₀, og da så det ut som to kurver som følger hverandre. Det er en misvisende måte å vise det på.
+
+Nå hentes et døgn med observasjoner **før** initialiseringen. Til venstre for streken finnes bare den grå kurven — atmosfærens historie, som modellen aldri fikk se. Alt til høyre regnet den seg fram til selv.
+
+Modellen fikk nøyaktig to tilstander: klokka 18 dagen før, og klokka 00. Så matet den sitt eget utdata tilbake inn, ti ganger.
+
+Og +0h-punktet er tegnet **åpent**, ikke fylt. Det er tilstanden modellen ble gitt, ikke noe den kom fram til. Uten den markeringen leses den verdien som modellens første treff — og det er den eneste verdien i hele kurven som ikke er en prediksjon.
+
+## Hva den kan
+
+Blindern, Florida og Voll følger observasjonene tett. Ikke bare nivået — **timingen**. Toppen 1. april rundt middag treffer. Dalen om natta treffer. Den store toppen 2. april treffer på begge de østlige stasjonene.
+
+Det er ikke selvsagt. En modell som bare drev synoptisk framover ville gitt en glatt kurve uten døgnrytme. Denne vet at sola går opp, og omtrent hvor mye det betyr på hvert sted.
+
+Punktene er 6-timers, så den kan ikke treffe det virkelige minimumet, som normalt faller mellom klokka fire og seks. Kurven mellom punktene er rette linjer, ikke modellutdata. Men sammenligningen på like tidspunkter er gyldig.
+
+## Hva den ikke kan
+
+**Netteminimaene er for varme.** Natt til 2. april ligger Blindern på 5,5–6 °C i modellen og rundt 1,7 i virkeligheten. Fire grader.
+
+Det er utilstrekkelig nattlig strålingsavkjøling. Ved klarvær og vindstille frikobles luftlaget nærmest bakken fra lufta over og kjøles langt raskere enn noe som midler over seks kvadratkilometer klarer å gjengi. Florida viser det samme, dempet av havet.
+
+**Og Tromsø svikter systematisk.** To til tre grader for varmt gjennom hele perioden. Observasjonene svinger urolig mellom 2 og 5 grader; modellen leverer en glatt kurve.
+
+To forklaringer, som ikke utelukker hverandre. Arktisk kystterreng er vanskelig. Og ERA5 er kjent svak i Arktis — spredte observasjoner, usikker isdekning. Feilen kan like gjerne sitte i initialbetingelsene som i modellen selv. Det spørsmålet kan avgjøres den dagen operasjonell analyse er tilgjengelig, ikke før.
+
+Avstanden til rutepunktet er 0,8 km for Tromsø, så representativitet forklarer det ikke.
+
+## Hvorfor det er interessant
+
+Begge feilmodene er den samme tingen: **glatting.**
+
+For varme minima. Dempet variabilitet. Ytterpunktene trukket mot midten.
+
+Det er mekanismen en modell trent på kvadrert feil lærer seg, fordi det lønner seg i gjennomsnitt. Man betaler i halene, og gjennomsnittet merker det knapt.
+
+Som er nøyaktig det oppgaven handler om.
+
+At det dukker opp her, på fire stasjoner i ett kasus, er ikke bevis for noe. Men det er en hypotese med tydelig form, og maskineriet til å teste den systematisk finnes nå: bygg datasett for en dato, kjør, hent fasit, sammenlign. Kaldekstremer er det stedet å lete først.
+
+## Forbeholdet
+
+Kjøringen er initialisert fra ERA5, ikke fra operasjonell analyse. Modellen er trent på det siste. Så dette er ikke Bris' treffsikkerhet — det er Bris kjørt på inndata den ikke helt forventer.
+
+Ett kasus. Fire stasjoner. Ingen skår.
+
+Men det er første gang noe i dette prosjektet kunne ha vært galt på en måte som lot seg måle. Og det var det — på en måte som peker rett mot spørsmålet oppgaven stiller.
