@@ -157,9 +157,12 @@ export default function BrisMap() {
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: isDark ? MAP_STYLE.dark : MAP_STYLE.light,
-      // Mercator, not the v3 globe default. The rasters were warped to Web
-      // Mercator on the cluster; drawing them on a globe places them by their
-      // corners onto a different projection than the one they were built for.
+      // Mercator, not the v3 globe default, and this is not a preference.
+      // Tested both with the real export: on globe the LAM image source is
+      // drawn as its full bounding rectangle, losing the transparent corners
+      // and with them the shape of the Lambert domain. In Mercator it renders
+      // as the trapezoid it actually is. The cost is that zooming out gives a
+      // flat map rather than a globe.
       projection: { name: "mercator" },
       bounds: fitAll(manifest),
       fitBoundsOptions: { padding: 24 },
