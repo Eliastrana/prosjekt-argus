@@ -101,11 +101,12 @@ export default function BrisMap() {
   const appliedStyleRef = useRef<string | null>(null);
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [index, setIndex] = useState(0);
-  // Full by default. The layers overlap where the LAM sits, and two rasters at
-  // 0.82 compose to 0.97 there - a visibly brighter rectangle around the LAM
-  // that is an artefact of drawing, not anything in the data. At 1.0 the top
-  // simply covers the one beneath and the seam disappears. Turning it down to
-  // read the basemap underneath brings the faint box back; that is the trade.
+  // Full by default, and this matters. The layers overlap where the LAM sits,
+  // and two rasters at 0.82 compose to 0.97 there - the LAM domain shows as a
+  // brighter trapezoid, which is an artefact of drawing it twice and nothing
+  // in the data. At 1.0 the top simply covers the one beneath and it goes
+  // away. Turning it down to read the basemap brings it back; that is the
+  // trade, and it is the reason the default is not lower.
   const [opacity, setOpacity] = useState(1);
   const [playing, setPlaying] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -163,13 +164,8 @@ export default function BrisMap() {
       container: containerRef.current,
       style: isDark ? MAP_STYLE.dark : MAP_STYLE.light,
       // Globe, the v3 default, which flattens to Mercator as you zoom in.
-      //
-      // This only works because the exporter fills each layer's no-data pixels
-      // from the layer beneath, leaving every raster fully opaque. Mapbox's
-      // globe view draws an image source as its whole bounding rectangle and
-      // discards the alpha channel, so a LAM raster with transparent corners
-      // renders as a square over Scandinavia instead of the Lambert trapezoid
-      // it is. With nothing transparent left, there is nothing to lose.
+      // Image sources keep their alpha here - the LAM's transparent corners
+      // are honoured and the Lambert domain renders with its own shape.
       projection: { name: "globe" },
       bounds: fitAll(manifest),
       fitBoundsOptions: { padding: 24 },
