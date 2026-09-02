@@ -152,9 +152,11 @@ export default function BrisShowcase() {
               style={{
                 width: `${crop.width}%`,
                 height: `${crop.height}%`,
+                // left/top are the image's TOP-LEFT corner, already solved so
+                // the crop centre lands in the middle. A translate(-50%,-50%)
+                // on top of that shifts it by half the image again.
                 left: `${crop.left}%`,
                 top: `${crop.top}%`,
-                transform: "translate(-50%, -50%)",
                 opacity: i === index ? 1 : 0,
               }}
             />
