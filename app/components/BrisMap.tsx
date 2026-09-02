@@ -8,7 +8,20 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
-const MAP_STYLE_DARK = "mapbox://styles/mapbox/dark-v11";
+const MAP_STYLE = {
+  dark: "mapbox://styles/mapbox/dark-v11",
+  light: "mapbox://styles/mapbox/light-v11",
+};
+
+// globals.css resolves dark as `:root[data-theme="dark"]`, or no attribute at
+// all plus a dark system preference. The basemap has to follow the same rule,
+// or a light-mode reader gets a dark map with a panel styled for the other one.
+function resolveDark() {
+  if (typeof document === "undefined") return true;
+  const attr = document.documentElement.getAttribute("data-theme");
+  if (attr) return attr === "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
 const BASE = "/bris";
 const SOURCE_ID = "bris-field";
 
@@ -62,12 +75,33 @@ function formatValid(iso: string) {
 export default function BrisMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const addFieldRef = useRef<(() => void) | null>(null);
+  const appliedStyleRef = useRef<string | null>(null);
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [index, setIndex] = useState(0);
   const [opacity, setOpacity] = useState(0.82);
   const [playing, setPlaying] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    const sync = () => setIsDark(resolveDark());
+    sync();
+    // The toggle writes an attribute; the system preference fires its own
+    // event. Both have to be watched or the map lags a theme behind.
+    const obs = new MutationObserver(sync);
+    obs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    mq.addEventListener("change", sync);
+    return () => {
+      obs.disconnect();
+      mq.removeEventListener("change", sync);
+    };
+  }, []);
 
   // --- manifest -------------------------------------------------------------
   useEffect(() => {
@@ -99,7 +133,7 @@ export default function BrisMap() {
     const { west, east, south, north } = manifest.bounds;
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: MAP_STYLE_DARK,
+      style: isDark ? MAP_STYLE.dark : MAP_STYLE.light,
       bounds: [
         [west, south],
         [east, north],
@@ -133,6 +167,8 @@ export default function BrisMap() {
       setReady(true);
     };
 
+    addFieldRef.current = addField;
+    appliedStyleRef.current = isDark ? MAP_STYLE.dark : MAP_STYLE.light;
     if (map.isStyleLoaded()) addField();
     else {
       map.once("style.load", addField);
@@ -159,6 +195,18 @@ export default function BrisMap() {
     if (!map || !ready) return;
     map.setPaintProperty(`${SOURCE_ID}-layer`, "raster-opacity", opacity);
   }, [opacity, ready]);
+
+  // Switching basemap wipes every source and layer the style did not declare,
+  // so the field has to be put back once the new style is parsed.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready) return;
+    const wanted = isDark ? MAP_STYLE.dark : MAP_STYLE.light;
+    if (appliedStyleRef.current === wanted) return;
+    appliedStyleRef.current = wanted;
+    map.setStyle(wanted);
+    map.once("style.load", () => addFieldRef.current?.());
+  }, [isDark, ready]);
 
   // --- autoplay -------------------------------------------------------------
   // Frames were preloaded when the manifest arrived, so stepping is a texture
@@ -195,6 +243,19 @@ export default function BrisMap() {
   const frame = manifest.frames[index];
   const label = LABELS[manifest.variable] ?? manifest.variable;
 
+  // The panel sits on the basemap, so it takes its contrast from the basemap
+  // rather than from the site theme tokens. Glass needs a tint: a near-clear
+  // wash leaves legibility to whatever the raster happens to be doing behind
+  // it, which changes with every frame.
+  const glass = isDark
+    ? "border-white/15 bg-black/55 ring-white/[0.06]"
+    : "border-black/10 bg-white/70 ring-black/[0.04]";
+  const strong = isDark ? "text-white" : "text-neutral-900";
+  const soft = isDark ? "text-white/70" : "text-neutral-700";
+  const chip = isDark
+    ? "border-white/25 bg-white/10 text-white hover:bg-white/20"
+    : "border-black/15 bg-black/5 text-neutral-900 hover:bg-black/10";
+
   return (
     <div className="fixed inset-0">
       <div className="relative h-full w-full">
@@ -207,14 +268,14 @@ export default function BrisMap() {
             the time, the scale and the controls all describe the same frame, so
             splitting them across corners made the eye travel for no reason. */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 sm:p-5">
-          <div className="pointer-events-auto mx-auto w-full max-w-2xl rounded-2xl border border-white/[0.12] bg-white/[0.07] px-4 py-3 shadow-lg backdrop-blur-2xl">
+          <div className={`pointer-events-auto mx-auto w-full max-w-2xl rounded-2xl border px-4 py-3 shadow-2xl ring-1 ring-inset backdrop-blur-xl ${glass}`}>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setPlaying((p) => !p)}
                 aria-label={playing ? "Pause" : "Spill av"}
                 aria-pressed={playing}
-                className="grid size-8 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-[10px] transition hover:border-accent/50 hover:text-accent"
+                className={`grid size-8 shrink-0 place-items-center rounded-full border text-[10px] transition hover:border-accent/60 hover:text-accent ${chip}`}
               >
                 <span aria-hidden="true">{playing ? "❚❚" : "▶"}</span>
               </button>
@@ -234,13 +295,13 @@ export default function BrisMap() {
                 aria-label="Ledetid"
               />
 
-              <span className="w-12 shrink-0 text-right text-xs font-medium tabular-nums">
+              <span className={`w-12 shrink-0 text-right text-xs font-semibold tabular-nums ${strong}`}>
                 +{frame.lead_hours} t
               </span>
             </div>
 
-            <div className="mt-2.5 flex items-center gap-3 text-[11px] text-muted">
-              <span className="shrink-0 font-medium text-foreground">{label}</span>
+            <div className={`mt-2.5 flex items-center gap-3 text-xs ${soft}`}>
+              <span className={`shrink-0 font-semibold ${strong}`}>{label}</span>
               <span className="shrink-0">{formatValid(frame.valid)}</span>
 
               <span className="ml-auto flex shrink-0 items-center gap-1.5">
