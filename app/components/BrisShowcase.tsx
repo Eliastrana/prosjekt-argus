@@ -171,7 +171,7 @@ export default function BrisShowcase() {
         <div className="flex flex-col justify-center rounded-[1.75rem] border border-foreground/10 bg-card p-6">
           <p className="text-sm leading-6 text-muted">
             Modellen fikk to tilstander og regnet 120 timer framover på egen
-            hånd. Feltet over Norge er 2,5 km — det er den delen Bris løser
+            hånd. Feltet over Norge er 2,5 km, det er den delen Bris løser
             fint, og den som ligger øverst på kartet.
           </p>
           <p className="mt-3 text-xs leading-5 text-muted">

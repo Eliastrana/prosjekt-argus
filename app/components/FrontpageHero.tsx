@@ -121,7 +121,7 @@ export default function FrontpageHero() {
             </h1>
 
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-200 md:text-lg">
-              Forbedre oversikten over kaskadeeffekter av naturkatastrofer i Norge ved å utvikle et system som kombinerer spatio-temporal maskinlæring med interaktive kartvisualiseringer.
+              Forbedre beregning av ekstremvær og naturkatastrofer i Norge, ved bruk av dyp lærings-teknikker og spatio-temporal data.
             </p>
           </div>
 
