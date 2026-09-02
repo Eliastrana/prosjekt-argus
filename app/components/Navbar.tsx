@@ -10,6 +10,7 @@ const navItems = [
   { href: "/", label: "Hjem" },
   { href: "/papers", label: "Artikler" },
   // { href: "/steps", label: "Fremgang" },
+  { href: "/bris", label: "Prognose" },
   { href: "/blog", label: "Blog" },
 ];
 
