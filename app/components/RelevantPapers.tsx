@@ -3,7 +3,9 @@ import { getRelevantPapers } from "@/lib/papers";
 import PaperCard from "./PaperCard";
 
 export default function RelevantPapers() {
-  const papers = getRelevantPapers().slice(0, 5);
+  // Four, not five: the grid is two-up, so an odd count leaves a gap in the
+  // last row.
+  const papers = getRelevantPapers().slice(0, 4);
   if (papers.length === 0) {
     return null;
   }
