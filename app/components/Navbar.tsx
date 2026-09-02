@@ -10,7 +10,6 @@ const navItems = [
   { href: "/", label: "Hjem" },
   { href: "/papers", label: "Artikler" },
   // { href: "/steps", label: "Fremgang" },
-  { href: "/bris", label: "Prognose" },
   { href: "/blog", label: "Blog" },
 ];
 
@@ -79,6 +78,35 @@ export default function Navbar() {
             );
           })}
           <span className="mx-1 h-5 w-px bg-foreground/10" aria-hidden="true" />
+          <Link
+            href="/bris"
+            aria-label="Prognosekart"
+            title="Prognosekart"
+            aria-current={isActive("/bris") ? "page" : undefined}
+            className={[
+              // Matches ThemeToggle's shape so the two icon controls sit as a
+              // pair after the divider.
+              "grid size-10 shrink-0 place-items-center rounded-full transition",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95",
+              isActive("/bris")
+                ? "bg-tint text-foreground"
+                : "text-muted hover:bg-tint hover:text-foreground",
+            ].join(" ")}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              className="size-5"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <ellipse cx="12" cy="12" rx="4" ry="9" />
+              <path d="M3.5 9h17M3.5 15h17" />
+            </svg>
+          </Link>
           <ThemeToggle />
         </div>
       </nav>
