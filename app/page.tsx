@@ -10,9 +10,9 @@ export default function HomePage() {
       <FrontpageHero />
 
       <section className="mx-auto max-w-5xl px-6 py-16">
+          <BrisShowcase />
 
         <NewestPost />
-        <BrisShowcase />
         <RelevantPapers />
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
