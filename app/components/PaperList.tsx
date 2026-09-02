@@ -65,7 +65,7 @@ export default function PaperList({ papers }: { papers: RelevantPaper[] }) {
         </div>
       </div>
 
-      <section className="mt-4 grid gap-4">
+      <section className="mt-4 grid gap-4 md:grid-cols-2">
         {sorted.map((paper) => (
           <PaperCard key={paper.id} paper={paper} />
         ))}

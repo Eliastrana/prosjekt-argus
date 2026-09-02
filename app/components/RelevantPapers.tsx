@@ -24,7 +24,7 @@ export default function RelevantPapers() {
         </Link>
       </div>
 
-      <div className="mt-4 grid gap-4">
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
         {papers.map((paper) => (
           <PaperCard key={paper.id} paper={paper} />
         ))}
