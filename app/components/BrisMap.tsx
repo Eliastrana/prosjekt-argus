@@ -23,7 +23,6 @@ function resolveDark() {
   return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 const BASE = "/bris";
-const SOURCE_ID = "bris-field";
 
 type Frame = {
   step: number;
@@ -32,10 +31,8 @@ type Frame = {
   image: string;
 };
 
-type Manifest = {
-  variable: string;
-  unit: string;
-  projection: string;
+type Layer = {
+  name: string;
   // [lon, lat] corners in Mapbox order: TL, TR, BR, BL. Typed as a 4-tuple
   // because an image source takes exactly four - a plain array is not assignable.
   coordinates: [
@@ -44,14 +41,39 @@ type Manifest = {
     [number, number],
     [number, number],
   ];
-  bounds: { west: number; east: number; south: number; north: number };
+  width: number;
+  height: number;
+  frames: Frame[];
+};
+
+type Manifest = {
+  variable: string;
+  unit: string;
+  projection: string;
   vmin: number;
   vmax: number;
   legend: { value: number; color: string }[];
   initialised: string;
   caveat: string;
-  frames: Frame[];
+  // Draw order, bottom first. The LAM comes last so it covers the hole the
+  // cutout leaves in the global field.
+  layers: Layer[];
 };
+
+const srcId = (name: string) => `bris-${name}`;
+
+// Every layer shares one timeline, checked at export, so the first one speaks
+// for all of them.
+const timeline = (m: Manifest) => m.layers[0].frames;
+
+function fitAll(m: Manifest): [[number, number], [number, number]] {
+  const lons = m.layers.flatMap((l) => l.coordinates.map((c) => c[0]));
+  const lats = m.layers.flatMap((l) => l.coordinates.map((c) => c[1]));
+  return [
+    [Math.min(...lons), Math.min(...lats)],
+    [Math.max(...lons), Math.max(...lats)],
+  ];
+}
 
 const LABELS: Record<string, string> = {
   air_temperature_2m: "2 m temperatur",
@@ -115,10 +137,12 @@ export default function BrisMap() {
         if (cancelled) return;
         setManifest(m);
         // Warm the cache so dragging the slider does not blink through white.
-        m.frames.forEach((f) => {
-          const img = new Image();
-          img.src = `${BASE}/${f.image}`;
-        });
+        m.layers.forEach((layer) =>
+          layer.frames.forEach((f) => {
+            const img = new Image();
+            img.src = `${BASE}/${f.image}`;
+          }),
+        );
       })
       .catch((e: Error) => !cancelled && setError(e.message));
     return () => {
@@ -130,14 +154,14 @@ export default function BrisMap() {
   useEffect(() => {
     if (!containerRef.current || !manifest || mapRef.current) return;
 
-    const { west, east, south, north } = manifest.bounds;
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: isDark ? MAP_STYLE.dark : MAP_STYLE.light,
-      bounds: [
-        [west, south],
-        [east, north],
-      ],
+      // Mercator, not the v3 globe default. The rasters were warped to Web
+      // Mercator on the cluster; drawing them on a globe places them by their
+      // corners onto a different projection than the one they were built for.
+      projection: { name: "mercator" },
+      bounds: fitAll(manifest),
       fitBoundsOptions: { padding: 24 },
     });
     mapRef.current = map;
@@ -149,20 +173,24 @@ export default function BrisMap() {
     // The style being parsed is all that is needed to add a source. Guarded so
     // it is harmless if both events arrive.
     const addField = () => {
-      if (map.getSource(SOURCE_ID)) return;
-      map.addSource(SOURCE_ID, {
-        type: "image",
-        url: `${BASE}/${manifest.frames[0].image}`,
-        // The raster is uniform in Mercator y, which is exactly how an image
-        // source is interpolated between its corners. A raster uniform in
-        // latitude would land here looking plausible and be wrong.
-        coordinates: manifest.coordinates,
-      });
-      map.addLayer({
-        id: `${SOURCE_ID}-layer`,
-        type: "raster",
-        source: SOURCE_ID,
-        paint: { "raster-opacity": opacity, "raster-fade-duration": 0 },
+      // Manifest order is draw order: global first, LAM on top of it.
+      manifest.layers.forEach((layer) => {
+        const id = srcId(layer.name);
+        if (map.getSource(id)) return;
+        map.addSource(id, {
+          type: "image",
+          url: `${BASE}/${layer.frames[0].image}`,
+          // Each raster is uniform in Mercator y, which is exactly how an image
+          // source is interpolated between its corners. A raster uniform in
+          // latitude would land here looking plausible and be wrong.
+          coordinates: layer.coordinates,
+        });
+        map.addLayer({
+          id: `${id}-layer`,
+          type: "raster",
+          source: id,
+          paint: { "raster-opacity": opacity, "raster-fade-duration": 0 },
+        });
       });
       setReady(true);
     };
@@ -186,15 +214,21 @@ export default function BrisMap() {
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready || !manifest) return;
-    const source = map.getSource(SOURCE_ID) as mapboxgl.ImageSource | undefined;
-    source?.updateImage({ url: `${BASE}/${manifest.frames[index].image}` });
+    manifest.layers.forEach((layer) => {
+      const source = map.getSource(srcId(layer.name)) as
+        | mapboxgl.ImageSource
+        | undefined;
+      source?.updateImage({ url: `${BASE}/${layer.frames[index].image}` });
+    });
   }, [index, ready, manifest]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !ready) return;
-    map.setPaintProperty(`${SOURCE_ID}-layer`, "raster-opacity", opacity);
-  }, [opacity, ready]);
+    if (!map || !ready || !manifest) return;
+    manifest.layers.forEach((layer) =>
+      map.setPaintProperty(`${srcId(layer.name)}-layer`, "raster-opacity", opacity),
+    );
+  }, [opacity, ready, manifest]);
 
   // Switching basemap wipes every source and layer the style did not declare,
   // so the field has to be put back once the new style is parsed.
@@ -213,9 +247,9 @@ export default function BrisMap() {
   // swap rather than a fetch. 650 ms reads as weather moving; much faster and
   // the eye cannot follow a front, much slower and it stops being motion.
   useEffect(() => {
-    if (!playing || !ready || !manifest || manifest.frames.length < 2) return;
+    if (!playing || !ready || !manifest || timeline(manifest).length < 2) return;
     const id = window.setInterval(
-      () => setIndex((i) => (i + 1) % manifest.frames.length),
+      () => setIndex((i) => (i + 1) % timeline(manifest).length),
       650,
     );
     return () => window.clearInterval(id);
@@ -240,7 +274,7 @@ export default function BrisMap() {
     );
   }
 
-  const frame = manifest.frames[index];
+  const frame = timeline(manifest)[index];
   const label = LABELS[manifest.variable] ?? manifest.variable;
 
   // The panel sits on the basemap, so it takes its contrast from the basemap
@@ -283,7 +317,7 @@ export default function BrisMap() {
               <input
                 type="range"
                 min={0}
-                max={manifest.frames.length - 1}
+                max={timeline(manifest).length - 1}
                 value={index}
                 // Dragging is a deliberate act; keep playing and the slider
                 // fights the hand holding it.
