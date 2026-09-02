@@ -171,7 +171,17 @@ export default function BrisMap() {
       fitBoundsOptions: { padding: 24 },
     });
     mapRef.current = map;
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+    // Zoom buttons on desktop only. A phone pinches to zoom, so the control
+    // is two more things covering a small map. Watched rather than set once,
+    // so rotating the device gets it right.
+    const nav = new mapboxgl.NavigationControl({ showCompass: false });
+    const wide = window.matchMedia("(min-width: 640px)");
+    const syncNav = () => {
+      if (wide.matches && !map.hasControl(nav)) map.addControl(nav, "top-right");
+      else if (!wide.matches && map.hasControl(nav)) map.removeControl(nav);
+    };
+    syncNav();
+    wide.addEventListener("change", syncNav);
 
     // Added on `style.load`, not `load`. `load` waits for every source, sprite
     // and glyph the basemap pulls, and if any of those hangs it never fires -
@@ -210,6 +220,7 @@ export default function BrisMap() {
     }
 
     return () => {
+      wide.removeEventListener("change", syncNav);
       map.remove();
       mapRef.current = null;
     };
@@ -297,7 +308,7 @@ export default function BrisMap() {
     : "border-black/15 bg-black/5 text-neutral-900 hover:bg-black/10";
 
   return (
-    <div className="fixed inset-0">
+    <div className="fixed inset-0 ">
       <div className="relative h-full w-full">
         {/* h-full, not `absolute inset-0`: mapbox-gl.css sets `position:
             relative` on .mapboxgl-map, which overrides the absolute
@@ -307,7 +318,7 @@ export default function BrisMap() {
         {/* One compact glass panel rather than three floating boxes: the field,
             the time, the scale and the controls all describe the same frame, so
             splitting them across corners made the eye travel for no reason. */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 sm:p-5">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 pb-14 sm:p-5 sm:pb-5">
           <div className={`pointer-events-auto mx-auto w-full max-w-2xl rounded-2xl border px-4 py-3 shadow-2xl ring-1 ring-inset backdrop-blur-xl ${glass}`}>
             <div className="flex items-center gap-3">
               <button
@@ -340,11 +351,20 @@ export default function BrisMap() {
               </span>
             </div>
 
-            <div className={`mt-2.5 flex items-center gap-3 text-xs ${soft}`}>
-              <span className={`shrink-0 font-semibold ${strong}`}>{label}</span>
-              <span className="shrink-0">{formatValid(frame.valid)}</span>
+            {/* Stacked on a phone, one row from sm up. The four pieces do not
+                fit across a narrow screen without the date wrapping mid-word. */}
+            <div
+              className={`mt-2.5 flex flex-col gap-2 text-xs sm:flex-row sm:items-center sm:gap-3 ${soft}`}
+            >
+              <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+                <span className={`shrink-0 font-semibold ${strong}`}>{label}</span>
+                <span className="shrink-0">{formatValid(frame.valid)}</span>
+              </div>
 
-              <span className="ml-auto flex shrink-0 items-center gap-1.5">
+              {/* ml-auto has to sit on a flex CHILD of the row to push right;
+                  on a block wrapper it does nothing. */}
+              <div className="flex items-center gap-3 sm:ml-auto">
+              <span className="flex shrink-0 items-center gap-1.5">
                 <span className="tabular-nums">
                   {manifest.vmin.toFixed(0)}
                 </span>
@@ -377,6 +397,7 @@ export default function BrisMap() {
                 aria-label="Dekkevne"
                 title="Dekkevne"
               />
+            </div>
             </div>
           </div>
         </div>
