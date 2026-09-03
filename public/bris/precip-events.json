@@ -1,0 +1,2050 @@
+{
+  "generated": "2026-09-03T14:44:42Z",
+  "window": [
+    "2016-09-01",
+    "2026-09-03"
+  ],
+  "quantile": 0.99,
+  "stations": 57,
+  "widespread": [
+    {
+      "date": "2025-10-04",
+      "stations": 17,
+      "max_ratio": 2.27,
+      "sites": [
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 88.6,
+          "ratio": 2.27
+        },
+        {
+          "id": "SN44300",
+          "name": "S\u00c6RHEIM",
+          "lat": 58.7605,
+          "lon": 5.6508,
+          "mm": 88.5,
+          "ratio": 2.22
+        },
+        {
+          "id": "SN26790",
+          "name": "MJ\u00d8NDALEN - ORKIDEH\u00d8GDA",
+          "lat": 59.7498,
+          "lon": 10.0275,
+          "mm": 68.2,
+          "ratio": 1.94
+        },
+        {
+          "id": "SN40420",
+          "name": "BYKLE - KULTRAN",
+          "lat": 59.3505771,
+          "lon": 7.3439563,
+          "mm": 63.9,
+          "ratio": 1.84
+        },
+        {
+          "id": "SN26934",
+          "name": "DRAMMEN - SOLUMSTRAND",
+          "lat": 59.7112,
+          "lon": 10.2688,
+          "mm": 74.4,
+          "ratio": 1.81
+        },
+        {
+          "id": "SN32060",
+          "name": "GVARV - NES",
+          "lat": 59.3822,
+          "lon": 9.2128,
+          "mm": 62.9,
+          "ratio": 1.71
+        },
+        {
+          "id": "SN27435",
+          "name": "N\u00d8TTER\u00d8Y - VESTSKOGEN",
+          "lat": 59.2417,
+          "lon": 10.4023,
+          "mm": 67.1,
+          "ratio": 1.49
+        },
+        {
+          "id": "SN47300",
+          "name": "UTSIRA FYR",
+          "lat": 59.3065,
+          "lon": 4.8723,
+          "mm": 45.4,
+          "ratio": 1.46
+        }
+      ]
+    },
+    {
+      "date": "2023-08-07",
+      "stations": 13,
+      "max_ratio": 2.11,
+      "sites": [
+        {
+          "id": "SN4110",
+          "name": "L\u00d8RENSKOG - HANEBORG",
+          "lat": 59.946,
+          "lon": 10.9762,
+          "mm": 70.7,
+          "ratio": 2.11
+        },
+        {
+          "id": "SN18020",
+          "name": "OSLO - LAMBERTSETER",
+          "lat": 59.8775,
+          "lon": 10.8185,
+          "mm": 62.4,
+          "ratio": 1.84
+        },
+        {
+          "id": "SN18310",
+          "name": "OSLO - T\u00d8YEN",
+          "lat": 59.9147,
+          "lon": 10.7747,
+          "mm": 52.9,
+          "ratio": 1.68
+        },
+        {
+          "id": "SN19490",
+          "name": "GJETTUM PLU",
+          "lat": 59.9058,
+          "lon": 10.5122,
+          "mm": 68.9,
+          "ratio": 1.64
+        },
+        {
+          "id": "SN20540",
+          "name": "GRAN",
+          "lat": 60.3558,
+          "lon": 10.5592,
+          "mm": 49.2,
+          "ratio": 1.61
+        },
+        {
+          "id": "SN19510",
+          "name": "\u00d8VREVOLL",
+          "lat": 59.94046,
+          "lon": 10.6227,
+          "mm": 61.5,
+          "ratio": 1.55
+        },
+        {
+          "id": "SN18500",
+          "name": "BJ\u00d8RNHOLT",
+          "lat": 60.0514243,
+          "lon": 10.6878682,
+          "mm": 63.1,
+          "ratio": 1.31
+        },
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 50.7,
+          "ratio": 1.3
+        }
+      ]
+    },
+    {
+      "date": "2023-08-27",
+      "stations": 12,
+      "max_ratio": 2.92,
+      "sites": [
+        {
+          "id": "SN18020",
+          "name": "OSLO - LAMBERTSETER",
+          "lat": 59.8775,
+          "lon": 10.8185,
+          "mm": 98.9,
+          "ratio": 2.92
+        },
+        {
+          "id": "SN18310",
+          "name": "OSLO - T\u00d8YEN",
+          "lat": 59.9147,
+          "lon": 10.7747,
+          "mm": 59.2,
+          "ratio": 1.88
+        },
+        {
+          "id": "SN24600",
+          "name": "GRIMELI I KR\u00d8DSHERAD",
+          "lat": 60.1370967,
+          "lon": 9.596057,
+          "mm": 59.1,
+          "ratio": 1.45
+        },
+        {
+          "id": "SN4110",
+          "name": "L\u00d8RENSKOG - HANEBORG",
+          "lat": 59.946,
+          "lon": 10.9762,
+          "mm": 48.8,
+          "ratio": 1.45
+        },
+        {
+          "id": "SN19510",
+          "name": "\u00d8VREVOLL",
+          "lat": 59.94046,
+          "lon": 10.6227,
+          "mm": 57.5,
+          "ratio": 1.45
+        },
+        {
+          "id": "SN1400",
+          "name": "BREKKE SLUSE",
+          "lat": 59.1477,
+          "lon": 11.5583,
+          "mm": 44.5,
+          "ratio": 1.41
+        },
+        {
+          "id": "SN1230",
+          "name": "HALDEN",
+          "lat": 59.1223,
+          "lon": 11.388,
+          "mm": 41.5,
+          "ratio": 1.34
+        },
+        {
+          "id": "SN19490",
+          "name": "GJETTUM PLU",
+          "lat": 59.9058,
+          "lon": 10.5122,
+          "mm": 48.6,
+          "ratio": 1.15
+        }
+      ]
+    },
+    {
+      "date": "2025-03-05",
+      "stations": 11,
+      "max_ratio": 1.97,
+      "sites": [
+        {
+          "id": "SN53101",
+          "name": "VANGSNES",
+          "lat": 61.1724,
+          "lon": 6.6452,
+          "mm": 87.3,
+          "ratio": 1.97
+        },
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 82.1,
+          "ratio": 1.48
+        },
+        {
+          "id": "SN58560",
+          "name": "STRYN",
+          "lat": 61.9037,
+          "lon": 6.7183,
+          "mm": 65.1,
+          "ratio": 1.48
+        },
+        {
+          "id": "SN46610",
+          "name": "SAUDA",
+          "lat": 59.6479,
+          "lon": 6.3499,
+          "mm": 93.4,
+          "ratio": 1.37
+        },
+        {
+          "id": "SN51250",
+          "name": "\u00d8VSTEDAL",
+          "lat": 60.6887,
+          "lon": 5.9647,
+          "mm": 110.5,
+          "ratio": 1.27
+        },
+        {
+          "id": "SN57480",
+          "name": "BOTNEN I F\u00d8RDE",
+          "lat": 61.5349,
+          "lon": 6.0586,
+          "mm": 85.0,
+          "ratio": 1.26
+        },
+        {
+          "id": "SN57660",
+          "name": "EIMHJELLEN",
+          "lat": 61.6407,
+          "lon": 5.8157,
+          "mm": 83.5,
+          "ratio": 1.22
+        },
+        {
+          "id": "SN60400",
+          "name": "NORDDAL",
+          "lat": 62.2473791,
+          "lon": 7.2385587,
+          "mm": 43.7,
+          "ratio": 1.18
+        }
+      ]
+    },
+    {
+      "date": "2020-09-26",
+      "stations": 11,
+      "max_ratio": 1.52,
+      "sites": [
+        {
+          "id": "SN26934",
+          "name": "DRAMMEN - SOLUMSTRAND",
+          "lat": 59.7112,
+          "lon": 10.2688,
+          "mm": 62.3,
+          "ratio": 1.52
+        },
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 57.5,
+          "ratio": 1.47
+        },
+        {
+          "id": "SN27435",
+          "name": "N\u00d8TTER\u00d8Y - VESTSKOGEN",
+          "lat": 59.2417,
+          "lon": 10.4023,
+          "mm": 59.0,
+          "ratio": 1.31
+        },
+        {
+          "id": "SN6020",
+          "name": "FLISA II",
+          "lat": 60.6142156,
+          "lon": 12.0125152,
+          "mm": 32.7,
+          "ratio": 1.25
+        },
+        {
+          "id": "SN18500",
+          "name": "BJ\u00d8RNHOLT",
+          "lat": 60.0514243,
+          "lon": 10.6878682,
+          "mm": 60.1,
+          "ratio": 1.25
+        },
+        {
+          "id": "SN26790",
+          "name": "MJ\u00d8NDALEN - ORKIDEH\u00d8GDA",
+          "lat": 59.7498,
+          "lon": 10.0275,
+          "mm": 43.7,
+          "ratio": 1.24
+        },
+        {
+          "id": "SN1400",
+          "name": "BREKKE SLUSE",
+          "lat": 59.1477,
+          "lon": 11.5583,
+          "mm": 37.0,
+          "ratio": 1.17
+        },
+        {
+          "id": "SN17775",
+          "name": "FAGERSTRAND",
+          "lat": 59.7377,
+          "lon": 10.5886,
+          "mm": 44.5,
+          "ratio": 1.14
+        }
+      ]
+    },
+    {
+      "date": "2019-09-27",
+      "stations": 11,
+      "max_ratio": 1.32,
+      "sites": [
+        {
+          "id": "SN19490",
+          "name": "GJETTUM PLU",
+          "lat": 59.9058,
+          "lon": 10.5122,
+          "mm": 55.7,
+          "ratio": 1.32
+        },
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 50.2,
+          "ratio": 1.29
+        },
+        {
+          "id": "SN18500",
+          "name": "BJ\u00d8RNHOLT",
+          "lat": 60.0514243,
+          "lon": 10.6878682,
+          "mm": 60.8,
+          "ratio": 1.26
+        },
+        {
+          "id": "SN18310",
+          "name": "OSLO - T\u00d8YEN",
+          "lat": 59.9147,
+          "lon": 10.7747,
+          "mm": 35.2,
+          "ratio": 1.12
+        },
+        {
+          "id": "SN19510",
+          "name": "\u00d8VREVOLL",
+          "lat": 59.94046,
+          "lon": 10.6227,
+          "mm": 44.0,
+          "ratio": 1.11
+        },
+        {
+          "id": "SN18020",
+          "name": "OSLO - LAMBERTSETER",
+          "lat": 59.8775,
+          "lon": 10.8185,
+          "mm": 37.0,
+          "ratio": 1.09
+        },
+        {
+          "id": "SN19710",
+          "name": "ASKER",
+          "lat": 59.8558,
+          "lon": 10.4358,
+          "mm": 48.4,
+          "ratio": 1.08
+        },
+        {
+          "id": "SN32060",
+          "name": "GVARV - NES",
+          "lat": 59.3822,
+          "lon": 9.2128,
+          "mm": 39.3,
+          "ratio": 1.07
+        }
+      ]
+    },
+    {
+      "date": "2022-01-13",
+      "stations": 9,
+      "max_ratio": 2.02,
+      "sites": [
+        {
+          "id": "SN64870",
+          "name": "T\u00c5GDALEN",
+          "lat": 63.049333,
+          "lon": 9.087889,
+          "mm": 79.3,
+          "ratio": 2.02
+        },
+        {
+          "id": "SN62900",
+          "name": "EIDE P\u00c5 NORDM\u00d8RE",
+          "lat": 62.8909,
+          "lon": 7.3896,
+          "mm": 125.5,
+          "ratio": 1.79
+        },
+        {
+          "id": "SN57480",
+          "name": "BOTNEN I F\u00d8RDE",
+          "lat": 61.5349,
+          "lon": 6.0586,
+          "mm": 99.5,
+          "ratio": 1.48
+        },
+        {
+          "id": "SN60400",
+          "name": "NORDDAL",
+          "lat": 62.2473791,
+          "lon": 7.2385587,
+          "mm": 49.4,
+          "ratio": 1.34
+        },
+        {
+          "id": "SN51250",
+          "name": "\u00d8VSTEDAL",
+          "lat": 60.6887,
+          "lon": 5.9647,
+          "mm": 100.8,
+          "ratio": 1.16
+        },
+        {
+          "id": "SN63580",
+          "name": "\u00c5NG\u00c5RDSVATNET",
+          "lat": 62.6708,
+          "lon": 9.1967,
+          "mm": 36.2,
+          "ratio": 1.16
+        },
+        {
+          "id": "SN56520",
+          "name": "HOVLANDSDAL",
+          "lat": 61.232,
+          "lon": 5.4342,
+          "mm": 90.5,
+          "ratio": 1.08
+        },
+        {
+          "id": "SN68270",
+          "name": "L\u00d8KSMYR",
+          "lat": 63.2315,
+          "lon": 10.4369,
+          "mm": 36.1,
+          "ratio": 1.03
+        }
+      ]
+    },
+    {
+      "date": "2017-12-23",
+      "stations": 9,
+      "max_ratio": 1.85,
+      "sites": [
+        {
+          "id": "SN46610",
+          "name": "SAUDA",
+          "lat": 59.6479,
+          "lon": 6.3499,
+          "mm": 125.7,
+          "ratio": 1.85
+        },
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 101.7,
+          "ratio": 1.83
+        },
+        {
+          "id": "SN60640",
+          "name": "VALLDAL - MURI",
+          "lat": 62.297,
+          "lon": 7.2525,
+          "mm": 63.2,
+          "ratio": 1.45
+        },
+        {
+          "id": "SN51250",
+          "name": "\u00d8VSTEDAL",
+          "lat": 60.6887,
+          "lon": 5.9647,
+          "mm": 119.0,
+          "ratio": 1.37
+        },
+        {
+          "id": "SN50480",
+          "name": "BERGEN - SANDSLI",
+          "lat": 60.2913,
+          "lon": 5.2777,
+          "mm": 63.2,
+          "ratio": 1.34
+        },
+        {
+          "id": "SN56520",
+          "name": "HOVLANDSDAL",
+          "lat": 61.232,
+          "lon": 5.4342,
+          "mm": 104.0,
+          "ratio": 1.25
+        },
+        {
+          "id": "SN53101",
+          "name": "VANGSNES",
+          "lat": 61.1724,
+          "lon": 6.6452,
+          "mm": 54.9,
+          "ratio": 1.24
+        },
+        {
+          "id": "SN57480",
+          "name": "BOTNEN I F\u00d8RDE",
+          "lat": 61.5349,
+          "lon": 6.0586,
+          "mm": 73.7,
+          "ratio": 1.1
+        }
+      ]
+    },
+    {
+      "date": "2023-11-03",
+      "stations": 8,
+      "max_ratio": 2.01,
+      "sites": [
+        {
+          "id": "SN26934",
+          "name": "DRAMMEN - SOLUMSTRAND",
+          "lat": 59.7112,
+          "lon": 10.2688,
+          "mm": 82.5,
+          "ratio": 2.01
+        },
+        {
+          "id": "SN4110",
+          "name": "L\u00d8RENSKOG - HANEBORG",
+          "lat": 59.946,
+          "lon": 10.9762,
+          "mm": 60.0,
+          "ratio": 1.79
+        },
+        {
+          "id": "SN19710",
+          "name": "ASKER",
+          "lat": 59.8558,
+          "lon": 10.4358,
+          "mm": 71.0,
+          "ratio": 1.59
+        },
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 57.9,
+          "ratio": 1.48
+        },
+        {
+          "id": "SN17775",
+          "name": "FAGERSTRAND",
+          "lat": 59.7377,
+          "lon": 10.5886,
+          "mm": 53.6,
+          "ratio": 1.38
+        },
+        {
+          "id": "SN19490",
+          "name": "GJETTUM PLU",
+          "lat": 59.9058,
+          "lon": 10.5122,
+          "mm": 45.7,
+          "ratio": 1.09
+        },
+        {
+          "id": "SN27770",
+          "name": "STOKKE - SOLLI",
+          "lat": 59.2752,
+          "lon": 10.2022,
+          "mm": 46.6,
+          "ratio": 1.0
+        },
+        {
+          "id": "SN20540",
+          "name": "GRAN",
+          "lat": 60.3558,
+          "lon": 10.5592,
+          "mm": 30.6,
+          "ratio": 1.0
+        }
+      ]
+    },
+    {
+      "date": "2017-11-23",
+      "stations": 8,
+      "max_ratio": 1.59,
+      "sites": [
+        {
+          "id": "SN46610",
+          "name": "SAUDA",
+          "lat": 59.6479,
+          "lon": 6.3499,
+          "mm": 108.5,
+          "ratio": 1.59
+        },
+        {
+          "id": "SN42520",
+          "name": "RISNES I FJOTLAND",
+          "lat": 58.6577,
+          "lon": 6.9443,
+          "mm": 80.5,
+          "ratio": 1.45
+        },
+        {
+          "id": "SN6020",
+          "name": "FLISA II",
+          "lat": 60.6142156,
+          "lon": 12.0125152,
+          "mm": 34.5,
+          "ratio": 1.32
+        },
+        {
+          "id": "SN50480",
+          "name": "BERGEN - SANDSLI",
+          "lat": 60.2913,
+          "lon": 5.2777,
+          "mm": 50.6,
+          "ratio": 1.07
+        },
+        {
+          "id": "SN46300",
+          "name": "SULDALSVATN",
+          "lat": 59.5887,
+          "lon": 6.809,
+          "mm": 58.9,
+          "ratio": 1.07
+        },
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 58.9,
+          "ratio": 1.06
+        },
+        {
+          "id": "SN44300",
+          "name": "S\u00c6RHEIM",
+          "lat": 58.7605,
+          "lon": 5.6508,
+          "mm": 42.0,
+          "ratio": 1.05
+        },
+        {
+          "id": "SN5590",
+          "name": "KONGSVINGER",
+          "lat": 60.1904283,
+          "lon": 12.0069224,
+          "mm": 27.6,
+          "ratio": 1.01
+        }
+      ]
+    },
+    {
+      "date": "2023-08-20",
+      "stations": 8,
+      "max_ratio": 1.45,
+      "sites": [
+        {
+          "id": "SN18020",
+          "name": "OSLO - LAMBERTSETER",
+          "lat": 59.8775,
+          "lon": 10.8185,
+          "mm": 49.1,
+          "ratio": 1.45
+        },
+        {
+          "id": "SN18310",
+          "name": "OSLO - T\u00d8YEN",
+          "lat": 59.9147,
+          "lon": 10.7747,
+          "mm": 42.8,
+          "ratio": 1.36
+        },
+        {
+          "id": "SN19510",
+          "name": "\u00d8VREVOLL",
+          "lat": 59.94046,
+          "lon": 10.6227,
+          "mm": 53.8,
+          "ratio": 1.35
+        },
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 48.9,
+          "ratio": 1.25
+        },
+        {
+          "id": "SN18500",
+          "name": "BJ\u00d8RNHOLT",
+          "lat": 60.0514243,
+          "lon": 10.6878682,
+          "mm": 59.8,
+          "ratio": 1.24
+        },
+        {
+          "id": "SN4110",
+          "name": "L\u00d8RENSKOG - HANEBORG",
+          "lat": 59.946,
+          "lon": 10.9762,
+          "mm": 37.2,
+          "ratio": 1.11
+        },
+        {
+          "id": "SN19490",
+          "name": "GJETTUM PLU",
+          "lat": 59.9058,
+          "lon": 10.5122,
+          "mm": 44.0,
+          "ratio": 1.05
+        },
+        {
+          "id": "SN19710",
+          "name": "ASKER",
+          "lat": 59.8558,
+          "lon": 10.4358,
+          "mm": 45.4,
+          "ratio": 1.02
+        }
+      ]
+    },
+    {
+      "date": "2020-11-19",
+      "stations": 7,
+      "max_ratio": 2.34,
+      "sites": [
+        {
+          "id": "SN60400",
+          "name": "NORDDAL",
+          "lat": 62.2473791,
+          "lon": 7.2385587,
+          "mm": 86.4,
+          "ratio": 2.34
+        },
+        {
+          "id": "SN46300",
+          "name": "SULDALSVATN",
+          "lat": 59.5887,
+          "lon": 6.809,
+          "mm": 75.2,
+          "ratio": 1.37
+        },
+        {
+          "id": "SN56520",
+          "name": "HOVLANDSDAL",
+          "lat": 61.232,
+          "lon": 5.4342,
+          "mm": 112.7,
+          "ratio": 1.35
+        },
+        {
+          "id": "SN57660",
+          "name": "EIMHJELLEN",
+          "lat": 61.6407,
+          "lon": 5.8157,
+          "mm": 90.9,
+          "ratio": 1.33
+        },
+        {
+          "id": "SN57480",
+          "name": "BOTNEN I F\u00d8RDE",
+          "lat": 61.5349,
+          "lon": 6.0586,
+          "mm": 76.2,
+          "ratio": 1.13
+        },
+        {
+          "id": "SN60640",
+          "name": "VALLDAL - MURI",
+          "lat": 62.297,
+          "lon": 7.2525,
+          "mm": 48.0,
+          "ratio": 1.1
+        },
+        {
+          "id": "SN16400",
+          "name": "DOVRE-LANNEM",
+          "lat": 62.0172,
+          "lon": 9.2143,
+          "mm": 26.6,
+          "ratio": 1.04
+        }
+      ]
+    },
+    {
+      "date": "2018-11-11",
+      "stations": 7,
+      "max_ratio": 1.66,
+      "sites": [
+        {
+          "id": "SN18500",
+          "name": "BJ\u00d8RNHOLT",
+          "lat": 60.0514243,
+          "lon": 10.6878682,
+          "mm": 80.1,
+          "ratio": 1.66
+        },
+        {
+          "id": "SN6020",
+          "name": "FLISA II",
+          "lat": 60.6142156,
+          "lon": 12.0125152,
+          "mm": 36.3,
+          "ratio": 1.39
+        },
+        {
+          "id": "SN27770",
+          "name": "STOKKE - SOLLI",
+          "lat": 59.2752,
+          "lon": 10.2022,
+          "mm": 59.0,
+          "ratio": 1.27
+        },
+        {
+          "id": "SN19510",
+          "name": "\u00d8VREVOLL",
+          "lat": 59.94046,
+          "lon": 10.6227,
+          "mm": 48.4,
+          "ratio": 1.22
+        },
+        {
+          "id": "SN19710",
+          "name": "ASKER",
+          "lat": 59.8558,
+          "lon": 10.4358,
+          "mm": 52.7,
+          "ratio": 1.18
+        },
+        {
+          "id": "SN17775",
+          "name": "FAGERSTRAND",
+          "lat": 59.7377,
+          "lon": 10.5886,
+          "mm": 39.2,
+          "ratio": 1.01
+        },
+        {
+          "id": "SN4110",
+          "name": "L\u00d8RENSKOG - HANEBORG",
+          "lat": 59.946,
+          "lon": 10.9762,
+          "mm": 33.8,
+          "ratio": 1.01
+        }
+      ]
+    },
+    {
+      "date": "2024-10-31",
+      "stations": 7,
+      "max_ratio": 1.46,
+      "sites": [
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 81.2,
+          "ratio": 1.46
+        },
+        {
+          "id": "SN58533",
+          "name": "LOEN - RAKE",
+          "lat": 61.8723,
+          "lon": 6.786,
+          "mm": 45.6,
+          "ratio": 1.45
+        },
+        {
+          "id": "SN53101",
+          "name": "VANGSNES",
+          "lat": 61.1724,
+          "lon": 6.6452,
+          "mm": 63.2,
+          "ratio": 1.42
+        },
+        {
+          "id": "SN50480",
+          "name": "BERGEN - SANDSLI",
+          "lat": 60.2913,
+          "lon": 5.2777,
+          "mm": 66.7,
+          "ratio": 1.42
+        },
+        {
+          "id": "SN46610",
+          "name": "SAUDA",
+          "lat": 59.6479,
+          "lon": 6.3499,
+          "mm": 79.2,
+          "ratio": 1.16
+        },
+        {
+          "id": "SN58560",
+          "name": "STRYN",
+          "lat": 61.9037,
+          "lon": 6.7183,
+          "mm": 48.0,
+          "ratio": 1.09
+        },
+        {
+          "id": "SN51250",
+          "name": "\u00d8VSTEDAL",
+          "lat": 60.6887,
+          "lon": 5.9647,
+          "mm": 87.5,
+          "ratio": 1.01
+        }
+      ]
+    },
+    {
+      "date": "2020-12-27",
+      "stations": 7,
+      "max_ratio": 1.41,
+      "sites": [
+        {
+          "id": "SN18500",
+          "name": "BJ\u00d8RNHOLT",
+          "lat": 60.0514243,
+          "lon": 10.6878682,
+          "mm": 67.8,
+          "ratio": 1.41
+        },
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 51.5,
+          "ratio": 1.32
+        },
+        {
+          "id": "SN26934",
+          "name": "DRAMMEN - SOLUMSTRAND",
+          "lat": 59.7112,
+          "lon": 10.2688,
+          "mm": 51.1,
+          "ratio": 1.25
+        },
+        {
+          "id": "SN44300",
+          "name": "S\u00c6RHEIM",
+          "lat": 58.7605,
+          "lon": 5.6508,
+          "mm": 44.0,
+          "ratio": 1.1
+        },
+        {
+          "id": "SN26790",
+          "name": "MJ\u00d8NDALEN - ORKIDEH\u00d8GDA",
+          "lat": 59.7498,
+          "lon": 10.0275,
+          "mm": 38.5,
+          "ratio": 1.09
+        },
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 56.9,
+          "ratio": 1.03
+        },
+        {
+          "id": "SN42520",
+          "name": "RISNES I FJOTLAND",
+          "lat": 58.6577,
+          "lon": 6.9443,
+          "mm": 56.8,
+          "ratio": 1.02
+        }
+      ]
+    },
+    {
+      "date": "2018-09-26",
+      "stations": 7,
+      "max_ratio": 1.34,
+      "sites": [
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 74.5,
+          "ratio": 1.34
+        },
+        {
+          "id": "SN57660",
+          "name": "EIMHJELLEN",
+          "lat": 61.6407,
+          "lon": 5.8157,
+          "mm": 91.5,
+          "ratio": 1.34
+        },
+        {
+          "id": "SN56520",
+          "name": "HOVLANDSDAL",
+          "lat": 61.232,
+          "lon": 5.4342,
+          "mm": 111.7,
+          "ratio": 1.34
+        },
+        {
+          "id": "SN57480",
+          "name": "BOTNEN I F\u00d8RDE",
+          "lat": 61.5349,
+          "lon": 6.0586,
+          "mm": 85.0,
+          "ratio": 1.26
+        },
+        {
+          "id": "SN46610",
+          "name": "SAUDA",
+          "lat": 59.6479,
+          "lon": 6.3499,
+          "mm": 79.3,
+          "ratio": 1.16
+        },
+        {
+          "id": "SN50480",
+          "name": "BERGEN - SANDSLI",
+          "lat": 60.2913,
+          "lon": 5.2777,
+          "mm": 52.5,
+          "ratio": 1.11
+        },
+        {
+          "id": "SN51250",
+          "name": "\u00d8VSTEDAL",
+          "lat": 60.6887,
+          "lon": 5.9647,
+          "mm": 94.5,
+          "ratio": 1.09
+        }
+      ]
+    },
+    {
+      "date": "2019-09-15",
+      "stations": 6,
+      "max_ratio": 1.84,
+      "sites": [
+        {
+          "id": "SN33890",
+          "name": "V\u00c5GSLI",
+          "lat": 59.7663671,
+          "lon": 7.3653533,
+          "mm": 57.1,
+          "ratio": 1.84
+        },
+        {
+          "id": "SN46300",
+          "name": "SULDALSVATN",
+          "lat": 59.5887,
+          "lon": 6.809,
+          "mm": 65.5,
+          "ratio": 1.19
+        },
+        {
+          "id": "SN40420",
+          "name": "BYKLE - KULTRAN",
+          "lat": 59.3505771,
+          "lon": 7.3439563,
+          "mm": 40.2,
+          "ratio": 1.16
+        },
+        {
+          "id": "SN56520",
+          "name": "HOVLANDSDAL",
+          "lat": 61.232,
+          "lon": 5.4342,
+          "mm": 85.5,
+          "ratio": 1.02
+        },
+        {
+          "id": "SN57480",
+          "name": "BOTNEN I F\u00d8RDE",
+          "lat": 61.5349,
+          "lon": 6.0586,
+          "mm": 68.0,
+          "ratio": 1.01
+        },
+        {
+          "id": "SN53101",
+          "name": "VANGSNES",
+          "lat": 61.1724,
+          "lon": 6.6452,
+          "mm": 44.4,
+          "ratio": 1.0
+        }
+      ]
+    },
+    {
+      "date": "2022-06-28",
+      "stations": 6,
+      "max_ratio": 1.79,
+      "sites": [
+        {
+          "id": "SN63820",
+          "name": "DRIVDALEN",
+          "lat": 62.4474975,
+          "lon": 9.5817569,
+          "mm": 48.1,
+          "ratio": 1.79
+        },
+        {
+          "id": "SN12180",
+          "name": "ILSENG",
+          "lat": 60.8028,
+          "lon": 11.2028,
+          "mm": 48.5,
+          "ratio": 1.63
+        },
+        {
+          "id": "SN8450",
+          "name": "ATNDALEN - R\u00d8NNINGEN",
+          "lat": 61.791,
+          "lon": 10.501,
+          "mm": 41.7,
+          "ratio": 1.54
+        },
+        {
+          "id": "SN67140",
+          "name": "SKJETLEIN",
+          "lat": 63.3403,
+          "lon": 10.2973,
+          "mm": 34.2,
+          "ratio": 1.17
+        },
+        {
+          "id": "SN16400",
+          "name": "DOVRE-LANNEM",
+          "lat": 62.0172,
+          "lon": 9.2143,
+          "mm": 29.7,
+          "ratio": 1.16
+        },
+        {
+          "id": "SN1400",
+          "name": "BREKKE SLUSE",
+          "lat": 59.1477,
+          "lon": 11.5583,
+          "mm": 33.5,
+          "ratio": 1.06
+        }
+      ]
+    },
+    {
+      "date": "2022-01-29",
+      "stations": 6,
+      "max_ratio": 1.66,
+      "sites": [
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 92.0,
+          "ratio": 1.66
+        },
+        {
+          "id": "SN50480",
+          "name": "BERGEN - SANDSLI",
+          "lat": 60.2913,
+          "lon": 5.2777,
+          "mm": 63.1,
+          "ratio": 1.34
+        },
+        {
+          "id": "SN46610",
+          "name": "SAUDA",
+          "lat": 59.6479,
+          "lon": 6.3499,
+          "mm": 90.1,
+          "ratio": 1.32
+        },
+        {
+          "id": "SN33890",
+          "name": "V\u00c5GSLI",
+          "lat": 59.7663671,
+          "lon": 7.3653533,
+          "mm": 36.2,
+          "ratio": 1.17
+        },
+        {
+          "id": "SN53101",
+          "name": "VANGSNES",
+          "lat": 61.1724,
+          "lon": 6.6452,
+          "mm": 48.8,
+          "ratio": 1.1
+        },
+        {
+          "id": "SN40420",
+          "name": "BYKLE - KULTRAN",
+          "lat": 59.3505771,
+          "lon": 7.3439563,
+          "mm": 35.8,
+          "ratio": 1.03
+        }
+      ]
+    },
+    {
+      "date": "2017-08-09",
+      "stations": 6,
+      "max_ratio": 1.51,
+      "sites": [
+        {
+          "id": "SN4110",
+          "name": "L\u00d8RENSKOG - HANEBORG",
+          "lat": 59.946,
+          "lon": 10.9762,
+          "mm": 50.8,
+          "ratio": 1.51
+        },
+        {
+          "id": "SN19510",
+          "name": "\u00d8VREVOLL",
+          "lat": 59.94046,
+          "lon": 10.6227,
+          "mm": 59.7,
+          "ratio": 1.5
+        },
+        {
+          "id": "SN18310",
+          "name": "OSLO - T\u00d8YEN",
+          "lat": 59.9147,
+          "lon": 10.7747,
+          "mm": 43.9,
+          "ratio": 1.39
+        },
+        {
+          "id": "SN17775",
+          "name": "FAGERSTRAND",
+          "lat": 59.7377,
+          "lon": 10.5886,
+          "mm": 44.4,
+          "ratio": 1.14
+        },
+        {
+          "id": "SN19710",
+          "name": "ASKER",
+          "lat": 59.8558,
+          "lon": 10.4358,
+          "mm": 49.9,
+          "ratio": 1.12
+        },
+        {
+          "id": "SN18500",
+          "name": "BJ\u00d8RNHOLT",
+          "lat": 60.0514243,
+          "lon": 10.6878682,
+          "mm": 51.7,
+          "ratio": 1.07
+        }
+      ]
+    },
+    {
+      "date": "2017-10-02",
+      "stations": 6,
+      "max_ratio": 1.51,
+      "sites": [
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 83.7,
+          "ratio": 1.51
+        },
+        {
+          "id": "SN44300",
+          "name": "S\u00c6RHEIM",
+          "lat": 58.7605,
+          "lon": 5.6508,
+          "mm": 57.0,
+          "ratio": 1.43
+        },
+        {
+          "id": "SN27770",
+          "name": "STOKKE - SOLLI",
+          "lat": 59.2752,
+          "lon": 10.2022,
+          "mm": 57.0,
+          "ratio": 1.22
+        },
+        {
+          "id": "SN42520",
+          "name": "RISNES I FJOTLAND",
+          "lat": 58.6577,
+          "lon": 6.9443,
+          "mm": 63.0,
+          "ratio": 1.13
+        },
+        {
+          "id": "SN47300",
+          "name": "UTSIRA FYR",
+          "lat": 59.3065,
+          "lon": 4.8723,
+          "mm": 32.5,
+          "ratio": 1.04
+        },
+        {
+          "id": "SN26790",
+          "name": "MJ\u00d8NDALEN - ORKIDEH\u00d8GDA",
+          "lat": 59.7498,
+          "lon": 10.0275,
+          "mm": 35.7,
+          "ratio": 1.01
+        }
+      ]
+    },
+    {
+      "date": "2023-12-16",
+      "stations": 6,
+      "max_ratio": 1.44,
+      "sites": [
+        {
+          "id": "SN53101",
+          "name": "VANGSNES",
+          "lat": 61.1724,
+          "lon": 6.6452,
+          "mm": 64.1,
+          "ratio": 1.44
+        },
+        {
+          "id": "SN56520",
+          "name": "HOVLANDSDAL",
+          "lat": 61.232,
+          "lon": 5.4342,
+          "mm": 104.5,
+          "ratio": 1.25
+        },
+        {
+          "id": "SN58560",
+          "name": "STRYN",
+          "lat": 61.9037,
+          "lon": 6.7183,
+          "mm": 54.1,
+          "ratio": 1.23
+        },
+        {
+          "id": "SN71550",
+          "name": "\u00d8RLAND III",
+          "lat": 63.7044,
+          "lon": 9.6104,
+          "mm": 30.3,
+          "ratio": 1.11
+        },
+        {
+          "id": "SN57660",
+          "name": "EIMHJELLEN",
+          "lat": 61.6407,
+          "lon": 5.8157,
+          "mm": 71.5,
+          "ratio": 1.05
+        },
+        {
+          "id": "SN60400",
+          "name": "NORDDAL",
+          "lat": 62.2473791,
+          "lon": 7.2385587,
+          "mm": 38.1,
+          "ratio": 1.03
+        }
+      ]
+    },
+    {
+      "date": "2017-06-10",
+      "stations": 6,
+      "max_ratio": 1.26,
+      "sites": [
+        {
+          "id": "SN27435",
+          "name": "N\u00d8TTER\u00d8Y - VESTSKOGEN",
+          "lat": 59.2417,
+          "lon": 10.4023,
+          "mm": 57.1,
+          "ratio": 1.26
+        },
+        {
+          "id": "SN26790",
+          "name": "MJ\u00d8NDALEN - ORKIDEH\u00d8GDA",
+          "lat": 59.7498,
+          "lon": 10.0275,
+          "mm": 41.7,
+          "ratio": 1.18
+        },
+        {
+          "id": "SN27403",
+          "name": "N\u00d8TTER\u00d8Y - KNARRBERG",
+          "lat": 59.2084,
+          "lon": 10.45442,
+          "mm": 51.9,
+          "ratio": 1.18
+        },
+        {
+          "id": "SN19710",
+          "name": "ASKER",
+          "lat": 59.8558,
+          "lon": 10.4358,
+          "mm": 50.7,
+          "ratio": 1.13
+        },
+        {
+          "id": "SN26990",
+          "name": "SANDE - GALLEBERG",
+          "lat": 59.6193334,
+          "lon": 10.2150378,
+          "mm": 43.0,
+          "ratio": 1.1
+        },
+        {
+          "id": "SN26934",
+          "name": "DRAMMEN - SOLUMSTRAND",
+          "lat": 59.7112,
+          "lon": 10.2688,
+          "mm": 44.2,
+          "ratio": 1.08
+        }
+      ]
+    },
+    {
+      "date": "2026-03-13",
+      "stations": 6,
+      "max_ratio": 1.24,
+      "sites": [
+        {
+          "id": "SN1230",
+          "name": "HALDEN",
+          "lat": 59.1223,
+          "lon": 11.388,
+          "mm": 38.5,
+          "ratio": 1.24
+        },
+        {
+          "id": "SN57660",
+          "name": "EIMHJELLEN",
+          "lat": 61.6407,
+          "lon": 5.8157,
+          "mm": 77.5,
+          "ratio": 1.13
+        },
+        {
+          "id": "SN42520",
+          "name": "RISNES I FJOTLAND",
+          "lat": 58.6577,
+          "lon": 6.9443,
+          "mm": 63.0,
+          "ratio": 1.13
+        },
+        {
+          "id": "SN46300",
+          "name": "SULDALSVATN",
+          "lat": 59.5887,
+          "lon": 6.809,
+          "mm": 59.5,
+          "ratio": 1.08
+        },
+        {
+          "id": "SN56520",
+          "name": "HOVLANDSDAL",
+          "lat": 61.232,
+          "lon": 5.4342,
+          "mm": 89.5,
+          "ratio": 1.07
+        },
+        {
+          "id": "SN5590",
+          "name": "KONGSVINGER",
+          "lat": 60.1904283,
+          "lon": 12.0069224,
+          "mm": 28.7,
+          "ratio": 1.05
+        }
+      ]
+    },
+    {
+      "date": "2024-09-10",
+      "stations": 5,
+      "max_ratio": 2.17,
+      "sites": [
+        {
+          "id": "SN6020",
+          "name": "FLISA II",
+          "lat": 60.6142156,
+          "lon": 12.0125152,
+          "mm": 56.7,
+          "ratio": 2.17
+        },
+        {
+          "id": "SN8450",
+          "name": "ATNDALEN - R\u00d8NNINGEN",
+          "lat": 61.791,
+          "lon": 10.501,
+          "mm": 50.1,
+          "ratio": 1.86
+        },
+        {
+          "id": "SN5590",
+          "name": "KONGSVINGER",
+          "lat": 60.1904283,
+          "lon": 12.0069224,
+          "mm": 46.2,
+          "ratio": 1.69
+        },
+        {
+          "id": "SN68270",
+          "name": "L\u00d8KSMYR",
+          "lat": 63.2315,
+          "lon": 10.4369,
+          "mm": 43.5,
+          "ratio": 1.24
+        },
+        {
+          "id": "SN63580",
+          "name": "\u00c5NG\u00c5RDSVATNET",
+          "lat": 62.6708,
+          "lon": 9.1967,
+          "mm": 32.4,
+          "ratio": 1.04
+        }
+      ]
+    }
+  ],
+  "local": [
+    {
+      "date": "2018-08-02",
+      "max_ratio": 2.49,
+      "sites": [
+        {
+          "id": "SN92350",
+          "name": "NORDSTRAUM I KV\u00c6NANGEN",
+          "lat": 69.8362,
+          "lon": 21.8958,
+          "mm": 48.7,
+          "ratio": 2.49
+        }
+      ]
+    },
+    {
+      "date": "2019-07-21",
+      "max_ratio": 2.2,
+      "sites": [
+        {
+          "id": "SN20540",
+          "name": "GRAN",
+          "lat": 60.3558,
+          "lon": 10.5592,
+          "mm": 67.2,
+          "ratio": 2.2
+        }
+      ]
+    },
+    {
+      "date": "2025-08-29",
+      "max_ratio": 2.11,
+      "sites": [
+        {
+          "id": "SN32060",
+          "name": "GVARV - NES",
+          "lat": 59.3822,
+          "lon": 9.2128,
+          "mm": 77.6,
+          "ratio": 2.11
+        }
+      ]
+    },
+    {
+      "date": "2023-08-17",
+      "max_ratio": 2.06,
+      "sites": [
+        {
+          "id": "SN96931",
+          "name": "POLMAK TOLLSTED",
+          "lat": 70.0871215,
+          "lon": 27.9638443,
+          "mm": 43.1,
+          "ratio": 2.06
+        },
+        {
+          "id": "SN99340",
+          "name": "\u00d8VRE NEIDEN",
+          "lat": 69.7013414,
+          "lon": 29.2320971,
+          "mm": 28.9,
+          "ratio": 1.36
+        }
+      ]
+    },
+    {
+      "date": "2021-09-12",
+      "max_ratio": 2.05,
+      "sites": [
+        {
+          "id": "SN5590",
+          "name": "KONGSVINGER",
+          "lat": 60.1904283,
+          "lon": 12.0069224,
+          "mm": 28.4,
+          "ratio": 1.04
+        },
+        {
+          "id": "SN6020",
+          "name": "FLISA II",
+          "lat": 60.6142156,
+          "lon": 12.0125152,
+          "mm": 53.5,
+          "ratio": 2.05
+        }
+      ]
+    },
+    {
+      "date": "2017-08-11",
+      "max_ratio": 1.99,
+      "sites": [
+        {
+          "id": "SN99340",
+          "name": "\u00d8VRE NEIDEN",
+          "lat": 69.7013414,
+          "lon": 29.2320971,
+          "mm": 42.1,
+          "ratio": 1.99
+        }
+      ]
+    },
+    {
+      "date": "2023-08-09",
+      "max_ratio": 1.96,
+      "sites": [
+        {
+          "id": "SN8450",
+          "name": "ATNDALEN - R\u00d8NNINGEN",
+          "lat": 61.791,
+          "lon": 10.501,
+          "mm": 53.0,
+          "ratio": 1.96
+        },
+        {
+          "id": "SN63580",
+          "name": "\u00c5NG\u00c5RDSVATNET",
+          "lat": 62.6708,
+          "lon": 9.1967,
+          "mm": 43.8,
+          "ratio": 1.4
+        }
+      ]
+    },
+    {
+      "date": "2023-08-15",
+      "max_ratio": 1.94,
+      "sites": [
+        {
+          "id": "SN40420",
+          "name": "BYKLE - KULTRAN",
+          "lat": 59.3505771,
+          "lon": 7.3439563,
+          "mm": 45.5,
+          "ratio": 1.31
+        },
+        {
+          "id": "SN33890",
+          "name": "V\u00c5GSLI",
+          "lat": 59.7663671,
+          "lon": 7.3653533,
+          "mm": 60.2,
+          "ratio": 1.94
+        }
+      ]
+    },
+    {
+      "date": "2017-09-30",
+      "max_ratio": 1.89,
+      "sites": [
+        {
+          "id": "SN44300",
+          "name": "S\u00c6RHEIM",
+          "lat": 58.7605,
+          "lon": 5.6508,
+          "mm": 47.9,
+          "ratio": 1.2
+        },
+        {
+          "id": "SN47300",
+          "name": "UTSIRA FYR",
+          "lat": 59.3065,
+          "lon": 4.8723,
+          "mm": 58.8,
+          "ratio": 1.89
+        }
+      ]
+    },
+    {
+      "date": "2024-06-10",
+      "max_ratio": 1.88,
+      "sites": [
+        {
+          "id": "SN63820",
+          "name": "DRIVDALEN",
+          "lat": 62.4474975,
+          "lon": 9.5817569,
+          "mm": 50.6,
+          "ratio": 1.88
+        },
+        {
+          "id": "SN67140",
+          "name": "SKJETLEIN",
+          "lat": 63.3403,
+          "lon": 10.2973,
+          "mm": 32.6,
+          "ratio": 1.11
+        }
+      ]
+    },
+    {
+      "date": "2024-06-19",
+      "max_ratio": 1.87,
+      "sites": [
+        {
+          "id": "SN92350",
+          "name": "NORDSTRAUM I KV\u00c6NANGEN",
+          "lat": 69.8362,
+          "lon": 21.8958,
+          "mm": 36.6,
+          "ratio": 1.87
+        }
+      ]
+    },
+    {
+      "date": "2024-08-04",
+      "max_ratio": 1.71,
+      "sites": [
+        {
+          "id": "SN19490",
+          "name": "GJETTUM PLU",
+          "lat": 59.9058,
+          "lon": 10.5122,
+          "mm": 72.2,
+          "ratio": 1.71
+        },
+        {
+          "id": "SN19510",
+          "name": "\u00d8VREVOLL",
+          "lat": 59.94046,
+          "lon": 10.6227,
+          "mm": 40.7,
+          "ratio": 1.02
+        }
+      ]
+    },
+    {
+      "date": "2025-12-15",
+      "max_ratio": 1.71,
+      "sites": [
+        {
+          "id": "SN44300",
+          "name": "S\u00c6RHEIM",
+          "lat": 58.7605,
+          "lon": 5.6508,
+          "mm": 68.0,
+          "ratio": 1.71
+        },
+        {
+          "id": "SN44610",
+          "name": "KVITS\u00d8Y - NORDB\u00d8",
+          "lat": 59.0705,
+          "lon": 5.4122,
+          "mm": 41.4,
+          "ratio": 1.1
+        }
+      ]
+    },
+    {
+      "date": "2025-08-15",
+      "max_ratio": 1.69,
+      "sites": [
+        {
+          "id": "SN47300",
+          "name": "UTSIRA FYR",
+          "lat": 59.3065,
+          "lon": 4.8723,
+          "mm": 52.8,
+          "ratio": 1.69
+        },
+        {
+          "id": "SN87640",
+          "name": "HARSTAD STADION",
+          "lat": 68.8029,
+          "lon": 16.5362,
+          "mm": 33.8,
+          "ratio": 1.25
+        }
+      ]
+    },
+    {
+      "date": "2018-08-10",
+      "max_ratio": 1.69,
+      "sites": [
+        {
+          "id": "SN16400",
+          "name": "DOVRE-LANNEM",
+          "lat": 62.0172,
+          "lon": 9.2143,
+          "mm": 25.6,
+          "ratio": 1.0
+        },
+        {
+          "id": "SN63820",
+          "name": "DRIVDALEN",
+          "lat": 62.4474975,
+          "lon": 9.5817569,
+          "mm": 45.3,
+          "ratio": 1.69
+        }
+      ]
+    },
+    {
+      "date": "2025-12-18",
+      "max_ratio": 1.67,
+      "sites": [
+        {
+          "id": "SN44300",
+          "name": "S\u00c6RHEIM",
+          "lat": 58.7605,
+          "lon": 5.6508,
+          "mm": 46.9,
+          "ratio": 1.18
+        },
+        {
+          "id": "SN44610",
+          "name": "KVITS\u00d8Y - NORDB\u00d8",
+          "lat": 59.0705,
+          "lon": 5.4122,
+          "mm": 62.8,
+          "ratio": 1.67
+        }
+      ]
+    },
+    {
+      "date": "2016-12-05",
+      "max_ratio": 1.66,
+      "sites": [
+        {
+          "id": "SN62900",
+          "name": "EIDE P\u00c5 NORDM\u00d8RE",
+          "lat": 62.8909,
+          "lon": 7.3896,
+          "mm": 116.6,
+          "ratio": 1.66
+        }
+      ]
+    },
+    {
+      "date": "2018-06-24",
+      "max_ratio": 1.66,
+      "sites": [
+        {
+          "id": "SN99340",
+          "name": "\u00d8VRE NEIDEN",
+          "lat": 69.7013414,
+          "lon": 29.2320971,
+          "mm": 35.1,
+          "ratio": 1.66
+        }
+      ]
+    },
+    {
+      "date": "2020-08-21",
+      "max_ratio": 1.64,
+      "sites": [
+        {
+          "id": "SN27435",
+          "name": "N\u00d8TTER\u00d8Y - VESTSKOGEN",
+          "lat": 59.2417,
+          "lon": 10.4023,
+          "mm": 73.9,
+          "ratio": 1.64
+        }
+      ]
+    },
+    {
+      "date": "2021-11-19",
+      "max_ratio": 1.62,
+      "sites": [
+        {
+          "id": "SN71550",
+          "name": "\u00d8RLAND III",
+          "lat": 63.7044,
+          "lon": 9.6104,
+          "mm": 44.3,
+          "ratio": 1.62
+        }
+      ]
+    },
+    {
+      "date": "2022-10-07",
+      "max_ratio": 1.61,
+      "sites": [
+        {
+          "id": "SN33890",
+          "name": "V\u00c5GSLI",
+          "lat": 59.7663671,
+          "lon": 7.3653533,
+          "mm": 50.1,
+          "ratio": 1.61
+        },
+        {
+          "id": "SN46300",
+          "name": "SULDALSVATN",
+          "lat": 59.5887,
+          "lon": 6.809,
+          "mm": 61.0,
+          "ratio": 1.11
+        }
+      ]
+    },
+    {
+      "date": "2017-07-24",
+      "max_ratio": 1.6,
+      "sites": [
+        {
+          "id": "SN8450",
+          "name": "ATNDALEN - R\u00d8NNINGEN",
+          "lat": 61.791,
+          "lon": 10.501,
+          "mm": 43.1,
+          "ratio": 1.6
+        }
+      ]
+    },
+    {
+      "date": "2022-09-16",
+      "max_ratio": 1.59,
+      "sites": [
+        {
+          "id": "SN67140",
+          "name": "SKJETLEIN",
+          "lat": 63.3403,
+          "lon": 10.2973,
+          "mm": 46.6,
+          "ratio": 1.59
+        }
+      ]
+    },
+    {
+      "date": "2018-11-29",
+      "max_ratio": 1.59,
+      "sites": [
+        {
+          "id": "SN39160",
+          "name": "KRISTIANSAND - HOLDALSNUTEN",
+          "lat": 58.1717,
+          "lon": 8.019,
+          "mm": 77.2,
+          "ratio": 1.59
+        },
+        {
+          "id": "SN39201",
+          "name": "KRISTIANSAND - BR\u00c5VANN",
+          "lat": 58.1095,
+          "lon": 7.9383,
+          "mm": 48.2,
+          "ratio": 1.26
+        }
+      ]
+    },
+    {
+      "date": "2017-12-06",
+      "max_ratio": 1.58,
+      "sites": [
+        {
+          "id": "SN46930",
+          "name": "VATS I VINDAFJORD",
+          "lat": 59.4925981,
+          "lon": 5.720879,
+          "mm": 87.8,
+          "ratio": 1.58
+        }
+      ]
+    }
+  ]
+}
