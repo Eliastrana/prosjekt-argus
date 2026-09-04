@@ -120,11 +120,21 @@ const VARIABLE_TABS: { key: VariableKey; short: string }[] = [
   { key: "precipitation_amount", short: "Nedbør" },
 ];
 
+// Labelled by where the data came from rather than by what kind of state it
+// is. "Analyse" was more precise - an operational analysis against a
+// reanalysis is the actual distinction - but in this project ERA5 arrives
+// through CDS and MARS means exactly one thing, so the archive name is the
+// one that matches how the runs are talked about. Worth revisiting only if an
+// ERA5-through-MARS run ever appears, which would break the shorthand.
 const SOURCE_TABS: { key: SourceKey; short: string; title: string }[] = [
-  { key: "era5", short: "ERA5", title: "Global halvdel initialisert fra ERA5-reanalysen" },
+  {
+    key: "era5",
+    short: "ERA5",
+    title: "Global halvdel initialisert fra ERA5-reanalysen, hentet gjennom CDS",
+  },
   {
     key: "od",
-    short: "Analyse",
+    short: "MARS",
     title: "Global halvdel initialisert fra ECMWFs operasjonelle analyse (MARS class od) - kilden Bris faktisk er trent på",
   },
 ];
