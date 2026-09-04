@@ -3,28 +3,28 @@
   "unit": "\u00b0C",
   "projection": "EPSG:3857",
   "note": "Each layer's raster is uniform in Web Mercator y, not in latitude, and is placed by the four corners in `coordinates` ([lon, lat]: TL, TR, BR, BL). Draw them in the order given: the LAM belongs on top, where it covers the hole the cutout leaves in the global field.",
-  "vmin": -38.158,
-  "vmax": 25.768,
+  "vmin": -38.411,
+  "vmax": 26.369,
   "colormap": "RdYlBu_r",
   "legend": [
     {
-      "value": -38.16,
+      "value": -38.41,
       "color": "#313695"
     },
     {
-      "value": -22.18,
+      "value": -22.22,
       "color": "#90c3dd"
     },
     {
-      "value": -6.19,
+      "value": -6.02,
       "color": "#fffebe"
     },
     {
-      "value": 9.79,
+      "value": 10.17,
       "color": "#f88c51"
     },
     {
-      "value": 25.77,
+      "value": 26.37,
       "color": "#a50026"
     }
   ],

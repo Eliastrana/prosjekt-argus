@@ -4,7 +4,7 @@
   "projection": "EPSG:3857",
   "note": "Each layer's raster is uniform in Web Mercator y, not in latitude, and is placed by the four corners in `coordinates` ([lon, lat]: TL, TR, BR, BL). Draw them in the order given: the LAM belongs on top, where it covers the hole the cutout leaves in the global field.",
   "vmin": 0.0,
-  "vmax": 5.739,
+  "vmax": 5.998,
   "colormap": "Blues",
   "legend": [
     {
@@ -12,19 +12,19 @@
       "color": "#f7fbff"
     },
     {
-      "value": 1.43,
+      "value": 1.5,
       "color": "#c6dbef"
     },
     {
-      "value": 2.87,
+      "value": 3.0,
       "color": "#6aaed6"
     },
     {
-      "value": 4.3,
+      "value": 4.5,
       "color": "#2070b4"
     },
     {
-      "value": 5.74,
+      "value": 6.0,
       "color": "#08306b"
     }
   ],

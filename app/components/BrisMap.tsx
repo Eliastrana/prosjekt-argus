@@ -117,12 +117,12 @@ export default function BrisMap() {
   const [manifests, setManifests] = useState<Partial<Record<VariableKey, Manifest>>>({});
   const [variable, setVariable] = useState<VariableKey>("air_temperature_2m");
   const [index, setIndex] = useState(0);
-  // Full by default, and this matters. The layers overlap where the LAM sits,
-  // and two rasters at 0.82 compose to 0.97 there - the LAM domain shows as a
-  // brighter trapezoid, which is an artefact of drawing it twice and nothing
-  // in the data. At 1.0 the top simply covers the one beneath and it goes
-  // away. Turning it down to read the basemap brings it back; that is the
-  // trade, and it is the reason the default is not lower.
+  // Lowering this used to bring back a brighter trapezoid over the LAM: the
+  // two rasters overlapped there, and two layers at 0.82 compose to 0.97.
+  // The exporter now punches the LAM footprint out of the global field - the
+  // model's cutout had already removed that data, so what was drawn there was
+  // interpolation artefact, not weather - and with nothing underneath to
+  // compose against, the slider is safe at any value.
   const [opacity, setOpacity] = useState(1);
   const [playing, setPlaying] = useState(true);
   const [error, setError] = useState<string | null>(null);
