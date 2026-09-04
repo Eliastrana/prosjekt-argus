@@ -384,11 +384,17 @@ export default function BrisMap() {
 
   // Which variant is on top is a layout property, not a source swap - both
   // stay loaded and this just flips which one paints.
+  //
+  // Depends on activeKey, NOT on `variable` alone. Listing only the variable
+  // meant switching the field repainted while switching the initialisation
+  // silently did not: the pill lit up, the layers never moved, and both
+  // toggles showed the ERA5 raster. Autoplay hid it, because the picture kept
+  // changing for an unrelated reason.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready) return;
     applyVisibilityRef.current?.();
-  }, [variable, ready, manifests]);
+  }, [activeKey, ready, manifests]);
 
   // Switching basemap wipes every source and layer the style did not declare,
   // so every loaded variant has to be put back once the new style is parsed -
