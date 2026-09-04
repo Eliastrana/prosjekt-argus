@@ -60,10 +60,19 @@ type Manifest = {
   layers: Layer[];
 };
 
-const srcId = (name: string) => `bris-${name}`;
+// Two exports off the same forecast, same geometry and timeline, different
+// variable and colour scale. Keyed by the manifest's own `variable` field so
+// a source id can carry both without colliding.
+type VariableKey = "air_temperature_2m" | "precipitation_amount";
+const VARIANTS: { key: VariableKey; path: string }[] = [
+  { key: "air_temperature_2m", path: "manifest.json" },
+  { key: "precipitation_amount", path: "manifest-precip.json" },
+];
 
-// Every layer shares one timeline, checked at export, so the first one speaks
-// for all of them.
+const srcId = (variable: VariableKey, name: string) => `bris-${variable}-${name}`;
+
+// Every layer within a manifest shares one timeline, checked at export, so
+// the first one speaks for all of them - and the two manifests share it too.
 const timeline = (m: Manifest) => m.layers[0].frames;
 
 function fitAll(m: Manifest): [[number, number], [number, number]] {
@@ -82,6 +91,11 @@ const LABELS: Record<string, string> = {
   precipitation_amount: "Nedbør",
 };
 
+const VARIABLE_TABS: { key: VariableKey; short: string }[] = [
+  { key: "air_temperature_2m", short: "Temperatur" },
+  { key: "precipitation_amount", short: "Nedbør" },
+];
+
 function formatValid(iso: string) {
   const d = new Date(iso);
   return d.toLocaleString("no-NO", {
@@ -97,9 +111,11 @@ function formatValid(iso: string) {
 export default function BrisMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const addFieldRef = useRef<(() => void) | null>(null);
+  const addVariantRef = useRef<((key: VariableKey, m: Manifest) => void) | null>(null);
+  const applyVisibilityRef = useRef<(() => void) | null>(null);
   const appliedStyleRef = useRef<string | null>(null);
-  const [manifest, setManifest] = useState<Manifest | null>(null);
+  const [manifests, setManifests] = useState<Partial<Record<VariableKey, Manifest>>>({});
+  const [variable, setVariable] = useState<VariableKey>("air_temperature_2m");
   const [index, setIndex] = useState(0);
   // Full by default, and this matters. The layers overlap where the LAM sits,
   // and two rasters at 0.82 compose to 0.97 there - the LAM domain shows as a
@@ -131,34 +147,57 @@ export default function BrisMap() {
     };
   }, []);
 
-  // --- manifest -------------------------------------------------------------
+  // --- manifests --------------------------------------------------------------
+  // The temperature manifest is required - its absence is the error state
+  // below. Precipitation is an optional second layer: if that export has not
+  // been run yet, the map still works with just the toggle unavailable.
   useEffect(() => {
     let cancelled = false;
-    fetch(`${BASE}/manifest.json`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`manifest.json ga ${r.status}`);
-        return r.json();
-      })
-      .then((m: Manifest) => {
-        if (cancelled) return;
-        setManifest(m);
-        // Warm the cache so dragging the slider does not blink through white.
-        m.layers.forEach((layer) =>
-          layer.frames.forEach((f) => {
-            const img = new Image();
-            img.src = `${BASE}/${f.image}`;
-          }),
-        );
-      })
-      .catch((e: Error) => !cancelled && setError(e.message));
+    VARIANTS.forEach(({ key, path }) => {
+      fetch(`${BASE}/${path}`)
+        .then((r) => {
+          if (!r.ok) throw new Error(`${path} ga ${r.status}`);
+          return r.json();
+        })
+        .then((m: Manifest) => {
+          if (cancelled) return;
+          setManifests((prev) => ({ ...prev, [key]: m }));
+          // Warm the cache so dragging the slider does not blink through white.
+          m.layers.forEach((layer) =>
+            layer.frames.forEach((f) => {
+              const img = new Image();
+              img.src = `${BASE}/${f.image}`;
+            }),
+          );
+        })
+        .catch((e: Error) => {
+          if (cancelled) return;
+          if (key === "air_temperature_2m") setError(e.message);
+        });
+    });
     return () => {
       cancelled = true;
     };
   }, []);
 
+  const manifest = manifests[variable] ?? manifests.air_temperature_2m ?? null;
+  const tempManifest = manifests.air_temperature_2m;
+
+  // Read inside effects that must not themselves depend on `variable` or
+  // `manifests` (the map-creation and style-switch effects only want to run
+  // on their own triggers). A closure captured at effect-creation time goes
+  // stale the moment either of these changes after the fact - which is
+  // exactly what silently hid the precipitation layer after a theme switch:
+  // the re-add on `style.load` kept using the `variable` from when the map
+  // was first built.
+  const variableRef = useRef(variable);
+  variableRef.current = variable;
+  const manifestsRef = useRef(manifests);
+  manifestsRef.current = manifests;
+
   // --- map ------------------------------------------------------------------
   useEffect(() => {
-    if (!containerRef.current || !manifest || mapRef.current) return;
+    if (!containerRef.current || !tempManifest || mapRef.current) return;
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
@@ -167,7 +206,7 @@ export default function BrisMap() {
       // Image sources keep their alpha here - the LAM's transparent corners
       // are honoured and the Lambert domain renders with its own shape.
       projection: { name: "globe" },
-      bounds: fitAll(manifest),
+      bounds: fitAll(tempManifest),
       fitBoundsOptions: { padding: 24 },
     });
     mapRef.current = map;
@@ -188,10 +227,14 @@ export default function BrisMap() {
     // the tiles draw, the raster never appears, and nothing reports an error.
     // The style being parsed is all that is needed to add a source. Guarded so
     // it is harmless if both events arrive.
-    const addField = () => {
-      // Manifest order is draw order: global first, LAM on top of it.
-      manifest.layers.forEach((layer) => {
-        const id = srcId(layer.name);
+    //
+    // Both variants' sources/layers are added, not just the active one: they
+    // share geometry and timeline, so keeping both loaded and toggling
+    // `visibility` is a paint-property flip rather than a source reload -
+    // switching reads instantly instead of blinking through a fetch.
+    const addVariant = (key: VariableKey, m: Manifest) => {
+      m.layers.forEach((layer) => {
+        const id = srcId(key, layer.name);
         if (map.getSource(id)) return;
         map.addSource(id, {
           type: "image",
@@ -201,22 +244,46 @@ export default function BrisMap() {
           // latitude would land here looking plausible and be wrong.
           coordinates: layer.coordinates,
         });
+        // Visibility is corrected right after by applyVisibility, reading the
+        // live ref rather than being decided here - see the comment above
+        // variableRef.
         map.addLayer({
           id: `${id}-layer`,
           type: "raster",
           source: id,
+          layout: { visibility: "none" },
           paint: { "raster-opacity": opacity, "raster-fade-duration": 0 },
         });
       });
-      setReady(true);
     };
 
-    addFieldRef.current = addField;
+    const applyVisibility = () => {
+      Object.entries(manifestsRef.current).forEach(([k, m]) => {
+        if (!m) return;
+        const visible = (k as VariableKey) === variableRef.current;
+        m.layers.forEach((layer) => {
+          const layerId = `${srcId(k as VariableKey, layer.name)}-layer`;
+          if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, "visibility", visible ? "visible" : "none");
+          }
+        });
+      });
+    };
+
+    addVariantRef.current = addVariant;
+    applyVisibilityRef.current = applyVisibility;
     appliedStyleRef.current = isDark ? MAP_STYLE.dark : MAP_STYLE.light;
-    if (map.isStyleLoaded()) addField();
+    const addLoaded = () => {
+      Object.entries(manifestsRef.current).forEach(([k, m]) => {
+        if (m) addVariant(k as VariableKey, m);
+      });
+      applyVisibility();
+      setReady(true);
+    };
+    if (map.isStyleLoaded()) addLoaded();
     else {
-      map.once("style.load", addField);
-      map.once("load", addField);
+      map.once("style.load", addLoaded);
+      map.once("load", addLoaded);
     }
 
     return () => {
@@ -224,31 +291,62 @@ export default function BrisMap() {
       map.remove();
       mapRef.current = null;
     };
-    // opacity is applied in its own effect; re-running this would rebuild the map
+    // manifests/opacity/variable are read at call time via refs and their own
+    // effects below; re-running this on every fetch would rebuild the map
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [manifest]);
+  }, [tempManifest]);
 
+  // A manifest that arrives AFTER the map already exists (precipitation
+  // usually does, since both fetches start together but this effect only
+  // becomes able to act once `ready`) still needs its sources/layers added.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !ready || !manifest) return;
-    manifest.layers.forEach((layer) => {
-      const source = map.getSource(srcId(layer.name)) as
-        | mapboxgl.ImageSource
-        | undefined;
-      source?.updateImage({ url: `${BASE}/${layer.frames[index].image}` });
+    if (!map || !ready) return;
+    Object.entries(manifests).forEach(([k, m]) => {
+      if (m) addVariantRef.current?.(k as VariableKey, m);
     });
-  }, [index, ready, manifest]);
+    applyVisibilityRef.current?.();
+  }, [manifests, ready]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !ready || !manifest) return;
-    manifest.layers.forEach((layer) =>
-      map.setPaintProperty(`${srcId(layer.name)}-layer`, "raster-opacity", opacity),
-    );
-  }, [opacity, ready, manifest]);
+    if (!map || !ready) return;
+    Object.entries(manifests).forEach(([k, m]) => {
+      if (!m) return;
+      m.layers.forEach((layer) => {
+        const source = map.getSource(srcId(k as VariableKey, layer.name)) as
+          | mapboxgl.ImageSource
+          | undefined;
+        const frame = layer.frames[index] ?? layer.frames[layer.frames.length - 1];
+        source?.updateImage({ url: `${BASE}/${frame.image}` });
+      });
+    });
+  }, [index, ready, manifests]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready) return;
+    Object.entries(manifests).forEach(([k, m]) => {
+      if (!m) return;
+      m.layers.forEach((layer) =>
+        map.setPaintProperty(`${srcId(k as VariableKey, layer.name)}-layer`, "raster-opacity", opacity),
+      );
+    });
+  }, [opacity, ready, manifests]);
+
+  // Which variant is on top is a layout property, not a source swap - both
+  // stay loaded and this just flips which one paints.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready) return;
+    applyVisibilityRef.current?.();
+  }, [variable, ready, manifests]);
 
   // Switching basemap wipes every source and layer the style did not declare,
-  // so the field has to be put back once the new style is parsed.
+  // so every loaded variant has to be put back once the new style is parsed -
+  // and its visibility re-derived, not reset to whatever it defaulted to on
+  // first add: a stale default here is exactly what silently hid the
+  // precipitation layer after a theme switch.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready) return;
@@ -256,7 +354,12 @@ export default function BrisMap() {
     if (appliedStyleRef.current === wanted) return;
     appliedStyleRef.current = wanted;
     map.setStyle(wanted);
-    map.once("style.load", () => addFieldRef.current?.());
+    map.once("style.load", () => {
+      Object.entries(manifestsRef.current).forEach(([k, m]) => {
+        if (m) addVariantRef.current?.(k as VariableKey, m);
+      });
+      applyVisibilityRef.current?.();
+    });
   }, [isDark, ready]);
 
   // --- autoplay -------------------------------------------------------------
@@ -293,6 +396,7 @@ export default function BrisMap() {
 
   const frame = timeline(manifest)[index];
   const label = LABELS[manifest.variable] ?? manifest.variable;
+  const precipReady = !!manifests.precipitation_amount;
 
   // The panel sits on the basemap, so it takes its contrast from the basemap
   // rather than from the site theme tokens. Glass needs a tint: a near-clear
@@ -306,6 +410,7 @@ export default function BrisMap() {
   const chip = isDark
     ? "border-white/25 bg-white/10 text-white hover:bg-white/20"
     : "border-black/15 bg-black/5 text-neutral-900 hover:bg-black/10";
+  const chipActive = "border-accent/60 bg-accent text-accent-foreground";
 
   return (
     <div className="fixed inset-0 ">
@@ -320,6 +425,24 @@ export default function BrisMap() {
             splitting them across corners made the eye travel for no reason. */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 pb-14 sm:p-5 sm:pb-5">
           <div className={`pointer-events-auto mx-auto w-full max-w-2xl rounded-2xl border px-4 py-3 shadow-2xl ring-1 ring-inset backdrop-blur-xl ${glass}`}>
+            {precipReady && (
+              <div className="mb-2.5 flex items-center gap-1.5">
+                {VARIABLE_TABS.map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setVariable(tab.key)}
+                    aria-pressed={variable === tab.key}
+                    className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition ${
+                      variable === tab.key ? chipActive : chip
+                    }`}
+                  >
+                    {tab.short}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -366,7 +489,7 @@ export default function BrisMap() {
               <div className="flex items-center gap-3 sm:ml-auto">
               <span className="flex shrink-0 items-center gap-1.5">
                 <span className="tabular-nums">
-                  {manifest.vmin.toFixed(0)}
+                  {manifest.vmin.toFixed(manifest.vmax < 10 ? 1 : 0)}
                 </span>
                 <span className="flex h-1.5 w-20 overflow-hidden rounded-full">
                   {manifest.legend.slice(0, -1).map((swatch, i) => (
@@ -382,7 +505,7 @@ export default function BrisMap() {
                   ))}
                 </span>
                 <span className="tabular-nums">
-                  {manifest.vmax.toFixed(0)} {manifest.unit}
+                  {manifest.vmax.toFixed(manifest.vmax < 10 ? 1 : 0)} {manifest.unit}
                 </span>
               </span>
 
