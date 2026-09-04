@@ -1,0 +1,217 @@
+{
+  "variable": "precipitation_amount",
+  "unit": "mm",
+  "projection": "EPSG:3857",
+  "note": "Each layer's raster is uniform in Web Mercator y, not in latitude, and is placed by the four corners in `coordinates` ([lon, lat]: TL, TR, BR, BL). Draw them in the order given: the LAM belongs on top, where it covers the hole the cutout leaves in the global field.",
+  "vmin": 0.0,
+  "vmax": 5.998,
+  "colormap": "Blues",
+  "legend": [
+    {
+      "value": 0.0,
+      "color": "#f7fbff"
+    },
+    {
+      "value": 1.5,
+      "color": "#c6dbef"
+    },
+    {
+      "value": 3.0,
+      "color": "#6aaed6"
+    },
+    {
+      "value": 4.5,
+      "color": "#2070b4"
+    },
+    {
+      "value": 6.0,
+      "color": "#08306b"
+    }
+  ],
+  "initialised": "2025-04-01T00:00:00Z",
+  "caveat": "Initialised from the ECMWF operational analysis (MARS class od), the same source Bris was trained on. Same date, same MEPS LAM and same model as the ERA5 run - the initialisation is the only difference.",
+  "layers": [
+    {
+      "name": "global",
+      "coordinates": [
+        [
+          -60.0,
+          85.0
+        ],
+        [
+          60.0,
+          85.0
+        ],
+        [
+          60.0,
+          24.999999999999996
+        ],
+        [
+          -60.0,
+          24.999999999999996
+        ]
+      ],
+      "width": 1200,
+      "height": 1536,
+      "frames": [
+        {
+          "step": 0,
+          "lead_hours": 0,
+          "valid": "2025-04-01T00:00:00Z",
+          "image": "global_precipitation_amount_00.png"
+        },
+        {
+          "step": 2,
+          "lead_hours": 12,
+          "valid": "2025-04-01T12:00:00Z",
+          "image": "global_precipitation_amount_01.png"
+        },
+        {
+          "step": 4,
+          "lead_hours": 24,
+          "valid": "2025-04-02T00:00:00Z",
+          "image": "global_precipitation_amount_02.png"
+        },
+        {
+          "step": 6,
+          "lead_hours": 36,
+          "valid": "2025-04-02T12:00:00Z",
+          "image": "global_precipitation_amount_03.png"
+        },
+        {
+          "step": 8,
+          "lead_hours": 48,
+          "valid": "2025-04-03T00:00:00Z",
+          "image": "global_precipitation_amount_04.png"
+        },
+        {
+          "step": 10,
+          "lead_hours": 60,
+          "valid": "2025-04-03T12:00:00Z",
+          "image": "global_precipitation_amount_05.png"
+        },
+        {
+          "step": 12,
+          "lead_hours": 72,
+          "valid": "2025-04-04T00:00:00Z",
+          "image": "global_precipitation_amount_06.png"
+        },
+        {
+          "step": 14,
+          "lead_hours": 84,
+          "valid": "2025-04-04T12:00:00Z",
+          "image": "global_precipitation_amount_07.png"
+        },
+        {
+          "step": 16,
+          "lead_hours": 96,
+          "valid": "2025-04-05T00:00:00Z",
+          "image": "global_precipitation_amount_08.png"
+        },
+        {
+          "step": 18,
+          "lead_hours": 108,
+          "valid": "2025-04-05T12:00:00Z",
+          "image": "global_precipitation_amount_09.png"
+        },
+        {
+          "step": 20,
+          "lead_hours": 120,
+          "valid": "2025-04-06T00:00:00Z",
+          "image": "global_precipitation_amount_10.png"
+        }
+      ]
+    },
+    {
+      "name": "nordic",
+      "coordinates": [
+        [
+          -13.150142049007059,
+          74.13089401049974
+        ],
+        [
+          49.418303307958986,
+          74.13089401049974
+        ],
+        [
+          49.418303307958986,
+          51.119235989348276
+        ],
+        [
+          -13.150142049007059,
+          51.119235989348276
+        ]
+      ],
+      "width": 983,
+      "height": 836,
+      "frames": [
+        {
+          "step": 0,
+          "lead_hours": 0,
+          "valid": "2025-04-01T00:00:00Z",
+          "image": "nordic_precipitation_amount_00.png"
+        },
+        {
+          "step": 2,
+          "lead_hours": 12,
+          "valid": "2025-04-01T12:00:00Z",
+          "image": "nordic_precipitation_amount_01.png"
+        },
+        {
+          "step": 4,
+          "lead_hours": 24,
+          "valid": "2025-04-02T00:00:00Z",
+          "image": "nordic_precipitation_amount_02.png"
+        },
+        {
+          "step": 6,
+          "lead_hours": 36,
+          "valid": "2025-04-02T12:00:00Z",
+          "image": "nordic_precipitation_amount_03.png"
+        },
+        {
+          "step": 8,
+          "lead_hours": 48,
+          "valid": "2025-04-03T00:00:00Z",
+          "image": "nordic_precipitation_amount_04.png"
+        },
+        {
+          "step": 10,
+          "lead_hours": 60,
+          "valid": "2025-04-03T12:00:00Z",
+          "image": "nordic_precipitation_amount_05.png"
+        },
+        {
+          "step": 12,
+          "lead_hours": 72,
+          "valid": "2025-04-04T00:00:00Z",
+          "image": "nordic_precipitation_amount_06.png"
+        },
+        {
+          "step": 14,
+          "lead_hours": 84,
+          "valid": "2025-04-04T12:00:00Z",
+          "image": "nordic_precipitation_amount_07.png"
+        },
+        {
+          "step": 16,
+          "lead_hours": 96,
+          "valid": "2025-04-05T00:00:00Z",
+          "image": "nordic_precipitation_amount_08.png"
+        },
+        {
+          "step": 18,
+          "lead_hours": 108,
+          "valid": "2025-04-05T12:00:00Z",
+          "image": "nordic_precipitation_amount_09.png"
+        },
+        {
+          "step": 20,
+          "lead_hours": 120,
+          "valid": "2025-04-06T00:00:00Z",
+          "image": "nordic_precipitation_amount_10.png"
+        }
+      ]
+    }
+  ]
+}

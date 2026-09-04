@@ -60,16 +60,40 @@ type Manifest = {
   layers: Layer[];
 };
 
-// Two exports off the same forecast, same geometry and timeline, different
-// variable and colour scale. Keyed by the manifest's own `variable` field so
-// a source id can carry both without colliding.
+// Four exports across two axes: which field, and what the global half was
+// initialised from. Every one shares the date, the MEPS LAM, the model, the
+// geometry, the timeline and - deliberately - the colour scale, so anything
+// that differs on screen is a difference in the forecast rather than in how
+// it was drawn.
 type VariableKey = "air_temperature_2m" | "precipitation_amount";
-const VARIANTS: { key: VariableKey; path: string }[] = [
-  { key: "air_temperature_2m", path: "manifest.json" },
-  { key: "precipitation_amount", path: "manifest-precip.json" },
+type SourceKey = "era5" | "od";
+type VariantKey = `${SourceKey}|${VariableKey}`;
+
+const variantKey = (s: SourceKey, v: VariableKey): VariantKey => `${s}|${v}`;
+
+type Variant = {
+  key: VariantKey;
+  source: SourceKey;
+  variable: VariableKey;
+  // Each run gets its own directory, because the exporter names images by
+  // layer and variable alone - `nordic_air_temperature_2m_00.png` collides
+  // with itself across runs.
+  base: string;
+  path: string;
+};
+
+const VARIANTS: Variant[] = [
+  { key: "era5|air_temperature_2m", source: "era5", variable: "air_temperature_2m", base: "/bris", path: "manifest.json" },
+  { key: "era5|precipitation_amount", source: "era5", variable: "precipitation_amount", base: "/bris", path: "manifest-precip.json" },
+  { key: "od|air_temperature_2m", source: "od", variable: "air_temperature_2m", base: "/bris/od", path: "manifest.json" },
+  { key: "od|precipitation_amount", source: "od", variable: "precipitation_amount", base: "/bris/od", path: "manifest-precip.json" },
 ];
 
-const srcId = (variable: VariableKey, name: string) => `bris-${variable}-${name}`;
+const baseOf = (key: VariantKey) =>
+  VARIANTS.find((v) => v.key === key)?.base ?? BASE;
+
+const srcId = (key: VariantKey, name: string) =>
+  `bris-${key.replace("|", "-")}-${name}`;
 
 // Every layer within a manifest shares one timeline, checked at export, so
 // the first one speaks for all of them - and the two manifests share it too.
@@ -96,6 +120,15 @@ const VARIABLE_TABS: { key: VariableKey; short: string }[] = [
   { key: "precipitation_amount", short: "Nedbør" },
 ];
 
+const SOURCE_TABS: { key: SourceKey; short: string; title: string }[] = [
+  { key: "era5", short: "ERA5", title: "Global halvdel initialisert fra ERA5-reanalysen" },
+  {
+    key: "od",
+    short: "Analyse",
+    title: "Global halvdel initialisert fra ECMWFs operasjonelle analyse (MARS class od) - kilden Bris faktisk er trent på",
+  },
+];
+
 function formatValid(iso: string) {
   const d = new Date(iso);
   return d.toLocaleString("no-NO", {
@@ -111,11 +144,12 @@ function formatValid(iso: string) {
 export default function BrisMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const addVariantRef = useRef<((key: VariableKey, m: Manifest) => void) | null>(null);
+  const addVariantRef = useRef<((key: VariantKey, m: Manifest) => void) | null>(null);
   const applyVisibilityRef = useRef<(() => void) | null>(null);
   const appliedStyleRef = useRef<string | null>(null);
-  const [manifests, setManifests] = useState<Partial<Record<VariableKey, Manifest>>>({});
+  const [manifests, setManifests] = useState<Partial<Record<VariantKey, Manifest>>>({});
   const [variable, setVariable] = useState<VariableKey>("air_temperature_2m");
+  const [source, setSource] = useState<SourceKey>("era5");
   const [index, setIndex] = useState(0);
   // Lowering this used to bring back a brighter trapezoid over the LAM: the
   // two rasters overlapped there, and two layers at 0.82 compose to 0.97.
@@ -153,8 +187,8 @@ export default function BrisMap() {
   // been run yet, the map still works with just the toggle unavailable.
   useEffect(() => {
     let cancelled = false;
-    VARIANTS.forEach(({ key, path }) => {
-      fetch(`${BASE}/${path}`)
+    VARIANTS.forEach(({ key, base, path }) => {
+      fetch(`${base}/${path}`)
         .then((r) => {
           if (!r.ok) throw new Error(`${path} ga ${r.status}`);
           return r.json();
@@ -166,13 +200,15 @@ export default function BrisMap() {
           m.layers.forEach((layer) =>
             layer.frames.forEach((f) => {
               const img = new Image();
-              img.src = `${BASE}/${f.image}`;
+              img.src = `${base}/${f.image}`;
             }),
           );
         })
         .catch((e: Error) => {
           if (cancelled) return;
-          if (key === "air_temperature_2m") setError(e.message);
+          // Only the ERA5 temperature export is required; the rest simply
+          // hide their toggle if they have not been produced yet.
+          if (key === "era5|air_temperature_2m") setError(e.message);
         });
     });
     return () => {
@@ -180,8 +216,10 @@ export default function BrisMap() {
     };
   }, []);
 
-  const manifest = manifests[variable] ?? manifests.air_temperature_2m ?? null;
-  const tempManifest = manifests.air_temperature_2m;
+  const activeKey = variantKey(source, variable);
+  const manifest =
+    manifests[activeKey] ?? manifests["era5|air_temperature_2m"] ?? null;
+  const tempManifest = manifests["era5|air_temperature_2m"];
 
   // Read inside effects that must not themselves depend on `variable` or
   // `manifests` (the map-creation and style-switch effects only want to run
@@ -190,8 +228,8 @@ export default function BrisMap() {
   // exactly what silently hid the precipitation layer after a theme switch:
   // the re-add on `style.load` kept using the `variable` from when the map
   // was first built.
-  const variableRef = useRef(variable);
-  variableRef.current = variable;
+  const activeKeyRef = useRef(activeKey);
+  activeKeyRef.current = activeKey;
   const manifestsRef = useRef(manifests);
   manifestsRef.current = manifests;
 
@@ -232,13 +270,13 @@ export default function BrisMap() {
     // share geometry and timeline, so keeping both loaded and toggling
     // `visibility` is a paint-property flip rather than a source reload -
     // switching reads instantly instead of blinking through a fetch.
-    const addVariant = (key: VariableKey, m: Manifest) => {
+    const addVariant = (key: VariantKey, m: Manifest) => {
       m.layers.forEach((layer) => {
         const id = srcId(key, layer.name);
         if (map.getSource(id)) return;
         map.addSource(id, {
           type: "image",
-          url: `${BASE}/${layer.frames[0].image}`,
+          url: `${baseOf(key)}/${layer.frames[0].image}`,
           // Each raster is uniform in Mercator y, which is exactly how an image
           // source is interpolated between its corners. A raster uniform in
           // latitude would land here looking plausible and be wrong.
@@ -260,9 +298,9 @@ export default function BrisMap() {
     const applyVisibility = () => {
       Object.entries(manifestsRef.current).forEach(([k, m]) => {
         if (!m) return;
-        const visible = (k as VariableKey) === variableRef.current;
+        const visible = (k as VariantKey) === activeKeyRef.current;
         m.layers.forEach((layer) => {
-          const layerId = `${srcId(k as VariableKey, layer.name)}-layer`;
+          const layerId = `${srcId(k as VariantKey, layer.name)}-layer`;
           if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, "visibility", visible ? "visible" : "none");
           }
@@ -275,7 +313,7 @@ export default function BrisMap() {
     appliedStyleRef.current = isDark ? MAP_STYLE.dark : MAP_STYLE.light;
     const addLoaded = () => {
       Object.entries(manifestsRef.current).forEach(([k, m]) => {
-        if (m) addVariant(k as VariableKey, m);
+        if (m) addVariant(k as VariantKey, m);
       });
       applyVisibility();
       setReady(true);
@@ -303,7 +341,7 @@ export default function BrisMap() {
     const map = mapRef.current;
     if (!map || !ready) return;
     Object.entries(manifests).forEach(([k, m]) => {
-      if (m) addVariantRef.current?.(k as VariableKey, m);
+      if (m) addVariantRef.current?.(k as VariantKey, m);
     });
     applyVisibilityRef.current?.();
   }, [manifests, ready]);
@@ -314,11 +352,11 @@ export default function BrisMap() {
     Object.entries(manifests).forEach(([k, m]) => {
       if (!m) return;
       m.layers.forEach((layer) => {
-        const source = map.getSource(srcId(k as VariableKey, layer.name)) as
+        const source = map.getSource(srcId(k as VariantKey, layer.name)) as
           | mapboxgl.ImageSource
           | undefined;
         const frame = layer.frames[index] ?? layer.frames[layer.frames.length - 1];
-        source?.updateImage({ url: `${BASE}/${frame.image}` });
+        source?.updateImage({ url: `${baseOf(k as VariantKey)}/${frame.image}` });
       });
     });
   }, [index, ready, manifests]);
@@ -329,7 +367,7 @@ export default function BrisMap() {
     Object.entries(manifests).forEach(([k, m]) => {
       if (!m) return;
       m.layers.forEach((layer) =>
-        map.setPaintProperty(`${srcId(k as VariableKey, layer.name)}-layer`, "raster-opacity", opacity),
+        map.setPaintProperty(`${srcId(k as VariantKey, layer.name)}-layer`, "raster-opacity", opacity),
       );
     });
   }, [opacity, ready, manifests]);
@@ -356,7 +394,7 @@ export default function BrisMap() {
     map.setStyle(wanted);
     map.once("style.load", () => {
       Object.entries(manifestsRef.current).forEach(([k, m]) => {
-        if (m) addVariantRef.current?.(k as VariableKey, m);
+        if (m) addVariantRef.current?.(k as VariantKey, m);
       });
       applyVisibilityRef.current?.();
     });
@@ -396,7 +434,13 @@ export default function BrisMap() {
 
   const frame = timeline(manifest)[index];
   const label = LABELS[manifest.variable] ?? manifest.variable;
-  const precipReady = !!manifests.precipitation_amount;
+  // A toggle only appears once the export behind it exists, so a half-finished
+  // set of runs degrades to whatever is actually there rather than offering a
+  // button that blanks the map.
+  const hasVariable = (v: VariableKey) => !!manifests[variantKey(source, v)];
+  const hasSource = (s2: SourceKey) => !!manifests[variantKey(s2, variable)];
+  const precipReady = hasVariable("precipitation_amount");
+  const odReady = VARIANTS.some((v) => v.source === "od" && manifests[v.key]);
 
   // The panel sits on the basemap, so it takes its contrast from the basemap
   // rather than from the site theme tokens. Glass needs a tint: a near-clear
@@ -425,21 +469,49 @@ export default function BrisMap() {
             splitting them across corners made the eye travel for no reason. */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 pb-14 sm:p-5 sm:pb-5">
           <div className={`pointer-events-auto mx-auto w-full max-w-2xl rounded-2xl border px-4 py-3 shadow-2xl ring-1 ring-inset backdrop-blur-xl ${glass}`}>
-            {precipReady && (
-              <div className="mb-2.5 flex items-center gap-1.5">
-                {VARIABLE_TABS.map((tab) => (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => setVariable(tab.key)}
-                    aria-pressed={variable === tab.key}
-                    className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition ${
-                      variable === tab.key ? chipActive : chip
-                    }`}
-                  >
-                    {tab.short}
-                  </button>
-                ))}
+            {(precipReady || odReady) && (
+              <div className="mb-2.5 flex flex-wrap items-center gap-x-3 gap-y-2">
+                {precipReady && (
+                  <div className="flex items-center gap-1.5">
+                    {VARIABLE_TABS.map((tab) => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setVariable(tab.key)}
+                        disabled={!hasVariable(tab.key)}
+                        aria-pressed={variable === tab.key}
+                        className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                          variable === tab.key ? chipActive : chip
+                        }`}
+                      >
+                        {tab.short}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {odReady && (
+                  <div className="flex items-center gap-1.5">
+                    <span className={`text-[10px] uppercase tracking-wide ${soft}`}>
+                      Init
+                    </span>
+                    {SOURCE_TABS.map((tab) => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setSource(tab.key)}
+                        disabled={!hasSource(tab.key)}
+                        title={tab.title}
+                        aria-pressed={source === tab.key}
+                        className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                          source === tab.key ? chipActive : chip
+                        }`}
+                      >
+                        {tab.short}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
