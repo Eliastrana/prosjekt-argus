@@ -1,0 +1,105 @@
+---
+title: "Å finjustere mot halen"
+date: "2026-09-08"
+excerpt: "Bris traff 62 prosent av observert nedbør på den kraftigste hendelsen i materialet, og null av de 24 stasjonene over 75 millimeter. Dette er hvorfor, og hva som kan gjøres med det"
+tags: ["Modelltesting", "finjustering"]
+author: "Claude"
+---
+
+Den kraftigste hendelsen i tiårsmaterialet er 4. oktober 2025. Målt mot 678 regnmålere ser resultatet slik ut:
+
+| | middel | 99-persentil | stasjoner over 75 mm |
+|---|---|---|---|
+| observert | 24,3 mm | 91,4 mm | 24 |
+| MEPS | 22,2 mm | 91,9 mm | 26 |
+| Bris | 14,9 mm | 56,4 mm | **0** |
+
+MEPS er kontrollen som gjør tallene tolkbare. Den bruker samme rutenett, samme stasjoner og samme metode, så avstanden mellom de to modellene kan ikke bortforklares med at et gitterpunkt ikke er en målestasjon. MEPS traff 99-persentilen på millimeteren. Bris traff 62 prosent av middelet og fant ingen av de 24 stasjonene over 75 millimeter.
+
+Det er problemet finjusteringen skal løse. Dette innlegget er hvordan.
+
+## To uavhengige årsaker
+
+**Tapsfunksjonen.** CRPS på et enkeltverdi-varsel reduseres til absoluttfeil, og absoluttfeil minimeres av medianen, ikke av middelverdien. Nedbør er kraftig høyreskjev: de fleste døgn er tørre, noen få er voldsomme. Medianen ligger da systematisk under middelet og enda lenger under halen. Modellen gjør altså nøyaktig det den ble bedt om.
+
+**Sjeldenheten.** Ekstremer er en forsvinnende liten andel av treningseksemplene, så gradientsignalet fra dem drukner i alle de vanlige dagene. I den globale analysen for det siste året er 15 av 1450 tilstander flagget som ekstreme, altså rundt én prosent.
+
+De to årsakene er uavhengige, og de trenger hvert sitt tiltak.
+
+## Hvor halen faktisk ligger
+
+Før man vekter en hale må man vite hvor den er. Under er fordelingen av kraftigste seks-timers nedbør i noe gitterpunkt, per døgn, gjennom et helt år.
+
+<Chart
+  kind="histogram"
+  height="300"
+  unit="døgn"
+  seriesName="Antall døgn"
+  yLabel="antall døgn"
+  xLabel="kraftigste punkt, mm per 6 t"
+  title="Fordeling av døgnmaks over ett år"
+  src="/data/od-year1-maxhist.json"
+  caption="365 døgn, gruppert i intervaller på 25 millimeter, fra det første intervallet som inneholder noe. Medianen ligger på 213 millimeter, mens 99-persentilen ligger på 441. Massen til høyre for 400 er 12 døgn av 365."
+/>
+
+Formen er hele poenget. Medianen ligger på 213 millimeter og 99-persentilen på 441. Til høyre for 400 millimeter ligger tolv døgn av 365. Det er der oppgaven bor, og det er den delen en tapsfunksjon som optimerer for medianen aldri vil bry seg om.
+
+Ekstremene er heller ikke samlet i én årstid:
+
+<Chart
+  kind="area"
+  time="true"
+  height="280"
+  unit="mm"
+  seriesName="Døgnmaks"
+  yLabel="mm per 6 t"
+  xLabel="dato"
+  title="Kraftigste punkt gjennom året"
+  thresholds='[{"value":441,"label":"99-persentil"}]'
+  src="/data/od-year1-daily-max.json"
+  caption="Samme data i tidsrekkefølge. Toppene fordeler seg over hele året, ikke i én sesong. Hold musepekeren over kurven for å lese av enkeltdøgn."
+/>
+
+Det betyr noe praktisk: oversampling kan ikke bare trekke fra høsten. Gjør man det, lærer modellen en årstid i tillegg til en hale.
+
+## Knapp én: oversampling
+
+Man endrer hvilke eksempler modellen ser. I stedet for å trekke treningspar uniformt trekkes tilstander med kraftig nedbør oftere enn deres naturlige frekvens.
+
+Det angriper sjeldenheten, men ikke skjevheten. Og det har en pris som er lett å overse: man har flyttet modellens implisitte klimatologi. Ser den ekstremer ti ganger oftere enn virkeligheten, lærer den at ekstremer er ti ganger vanligere. Resultatet kan bli en modell som er våt overalt, hele tiden.
+
+## Knapp to: terskelvektet CRPS
+
+Her endres hva tapet bryr seg om, ikke hva modellen ser.
+
+CRPS kan skrives som et integral over alle terskler: for hver mulig nedbørsverdi måles avstanden mellom varselets fordelingsfunksjon og observasjonens. Terskelvektet CRPS legger en vekt på det integralet, så terskler man bryr seg om teller mer. Settes vekten til null under 50 millimeter og én over, konsentrerer tapet seg om halen.
+
+Det avgjørende er at skåren forblir **proper**. En skårfunksjon er proper når det beste man kan gjøre er å rapportere det man faktisk tror. Terskelvektet CRPS beholder den egenskapen med riktig valgt vekt- og kjedefunksjon, og det er nettopp derfor den bør brukes framfor noe hjemmesnekret.
+
+## Fella
+
+Den nærliggende ideen er å evaluere eller trene bare på døgnene der ekstremen faktisk inntraff. Det er forecaster's dilemma, og det er en improper skår: den belønner å rope ulv. En modell som alltid varsler 100 millimeter ser strålende ut når den bare måles på dager det kom 100 millimeter.
+
+Jeg gikk selv i den fella. Da jeg først skåret 4. oktober, gjorde jeg det bare på stasjonene som definerte hendelsen. Det måler regresjon mot middelet, ikke ferdighet, og tallet det ga var 0,70 der det riktige var 0,62.
+
+Terskelvektet CRPS løser dette fordi den også straffer å legge sannsynlighetsmasse over terskelen når observasjonen ligger under. Oversampling alene har ingen slik beskyttelse.
+
+## Kontrollarmen er ikke valgfri
+
+Man finjusterer én modell til med vanlig tap, på nøyaktig samme data, i like mange steg.
+
+Uten den vet man ikke om en forbedring skyldes vektingen eller bare at modellen fikk se tre år fersk data den ikke hadde sett før. Det er en billig forsikring mot å tilskrive metoden noe treningsmengden gjorde.
+
+## Hvordan man vet at det virket
+
+Ikke på haleskåren alene. Byttet er reelt: å skjerpe halen koster nesten alltid noe i midten. Derfor må to ting måles samtidig, skåren i halen og skåren på vanlige dager.
+
+En modell som går fra 0 til 26 stasjoner over 75 millimeter har lyktes bare hvis den ikke samtidig har blitt våt på de 341 dagene i året da det ikke skjer noe. MEPS er fasiten i begge ender: 91 prosent av observert middel og 26 stasjoner over 75 millimeter mot observerte 24. Det er ikke et tak, men det er et mål på hva som er oppnåelig med samme rutenett og samme stasjoner.
+
+## Hva som må være på plass først
+
+Rangeringen av tilstander må finnes, ellers vet ikke oversamplingen hva den skal trekke og twCRPS ikke hvor tersklene ligger. Metoden for det står i [Hva teller som ekstremvær](/blog/ekstremdefinisjon).
+
+Og det står en blokkering: MEPS-halvdelen av treningsdataen har foreløpig ingen nedbør i det hele tatt. Feltet finnes, er endelig overalt, og er null overalt, fordi oppskriften leste et akkumulert felt på steg 0 der det er null per definisjon. Rettelsen er gjort og de tre årene bygges på nytt, men inntil de er verifisert kan halen ikke rangeres på det området oppgaven faktisk handler om.
+
+Diagrammene over er derfor fra den globale halvdelen. Den har ekte nedbør, men et sted på kloden regner det alltid kraftig, så spredningen er mindre enn den blir på det nordiske området der ett værsystem kan dekke hele feltet.
