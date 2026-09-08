@@ -426,7 +426,7 @@
   display: grid;
   grid-template-rows: 1fr auto;
   align-items: center;
-  padding: clamp(1.5rem, 5vw, 4rem);
+
   padding-bottom: clamp(3rem, 8vh, 5rem);
 }
 /* The click targets fill the slide and sit behind it, so a click anywhere
@@ -509,23 +509,41 @@
   background: rgb(var(--accent));
   transform: scale(1.5);
 }
+/* Arrows and counter travel together at the right edge, so the counter reads
+   as the label on the control rather than as a separate piece of furniture. */
+.deck-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: auto;
+}
+.deck-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgb(var(--muted));
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease;
+}
+.deck-arrow:hover:not(:disabled) {
+  color: rgb(var(--foreground));
+  background: rgb(var(--muted) / 0.12);
+}
+/* Dimmed rather than hidden at the ends: an arrow that disappears makes the
+   row jump and the counter shift sideways mid-presentation. */
+.deck-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
 .deck-count {
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
   color: rgb(var(--muted));
-  margin-left: auto;
-}
-.deck-progress {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1.1rem;
-  height: 1px;
-  background: rgb(var(--muted) / 0.2);
-}
-.deck-progress > span {
-  display: block;
-  height: 100%;
-  background: rgb(var(--accent));
-  transition: width 240ms ease;
+  margin-left: 0.5rem;
 }

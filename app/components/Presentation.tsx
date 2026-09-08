@@ -17,6 +17,26 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export type Slide = { title: string; content: string };
 
+/** One stroked path. Drawn here rather than pulled from an icon set: it is
+ *  eight characters of geometry, and it inherits currentColor for free. */
+function Chevron({ dir }: { dir: "left" | "right" }) {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d={dir === "left" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
+    </svg>
+  );
+}
+
 export function Presentation({
   src = "/data/presentasjon.json",
   slides: given,
@@ -151,17 +171,28 @@ export function Presentation({
             />
           ))}
         </div>
-        <div className="deck-count" aria-hidden="true">
-          {i + 1} / {n}
-        </div>
-        <div
-          className="deck-progress"
-          role="progressbar"
-          aria-valuenow={i + 1}
-          aria-valuemin={1}
-          aria-valuemax={n}
-        >
-          <span style={{ width: `${((i + 1) / n) * 100}%` }} />
+        <div className="deck-nav">
+          <button
+            type="button"
+            className="deck-arrow"
+            onClick={() => go(i - 1)}
+            disabled={i === 0}
+            aria-label="Forrige lysbilde"
+          >
+            <Chevron dir="left" />
+          </button>
+          <button
+            type="button"
+            className="deck-arrow"
+            onClick={() => go(i + 1)}
+            disabled={i === n - 1}
+            aria-label="Neste lysbilde"
+          >
+            <Chevron dir="right" />
+          </button>
+          <div className="deck-count" aria-hidden="true">
+            {i + 1} / {n}
+          </div>
         </div>
       </footer>
     </div>
