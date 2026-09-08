@@ -386,9 +386,7 @@
 .chart-figure {
   margin: 2rem 0;
   padding: 1rem 1rem 0.75rem;
-  border: 1px solid rgb(var(--muted) / 0.22);
   border-radius: 12px;
-  background: rgb(var(--card));
 }
 .chart-title {
   font-size: 0.9rem;
