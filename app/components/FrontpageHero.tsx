@@ -53,7 +53,7 @@ export default function FrontpageHero() {
   };
 
   return (
-    <section className="relative isolate flex min-h-screen items-center overflow-hidden md:items-end">
+    <section className="relative isolate flex min-h-screen items-end overflow-hidden ">
       <video
         ref={videoRef}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
@@ -102,7 +102,7 @@ export default function FrontpageHero() {
 
       <div
         className={[
-          "relative z-10 w-full px-6 py-24 transition-all duration-700 ease-out md:px-10 md:pb-14 md:pt-28",
+          "relative z-10 w-full px-6 sm:py-24 transition-all duration-700 ease-out md:px-10 md:pb-14 md:pt-28",
           showIntro ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100",
         ].join(" ")}
       >

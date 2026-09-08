@@ -77,7 +77,6 @@ export default function Navbar() {
               </Link>
             );
           })}
-          <span className="mx-1 h-5 w-px bg-foreground/10" aria-hidden="true" />
           <Link
             href="/bris"
             aria-label="Prognosekart"
@@ -107,6 +106,9 @@ export default function Navbar() {
               <path d="M3.5 9h17M3.5 15h17" />
             </svg>
           </Link>
+
+          <span className="mx-1 h-5 w-px bg-foreground/10" aria-hidden="true" />
+
           <ThemeToggle />
         </div>
       </nav>
