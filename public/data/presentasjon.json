@@ -1,50 +1,58 @@
 [
   {
-    "title": "Ekstremvær i datadrevet varsling",
-    "content": "Datadrevne værmodeller er raske og treffsikre på vanlig vær. Spørsmålet i denne oppgaven er hva som skjer i halen, altså på de døgnene som faktisk betyr noe. Svaret så langt er at de underestimerer, systematisk og av grunner som kan tallfestes."
+    "title": "Det har blåst lenge",
+    "content": "for 4.5 milliarder år siden begynte været, siden det har det blåst og regnet."
   },
   {
-    "title": "Modellen",
-    "content": "Bris er MET Norges datadrevne modell. Den løser ingen fysikk, men har lært et mønster fra mange år med værdata og gjetter neste tilstand ut fra den forrige. Fem døgn med vær tar litt over tre minutter på to grafikkort. En vanlig værmodell trenger en superdatamaskin på det samme."
+    "title": "Barometeret oppfinnes i 1643",
+    "content": "Den moderne, industrielle værmålingen er født."
   },
   {
-    "title": "Kontrollen",
-    "content": "MEPS er MET Norges fysikkbaserte modell for Norden, med 2,5 kilometers oppløsning. Den er ikke bare en referanse, den er det som gjør tallene tolkbare. Samme rutenett, samme stasjoner, samme metode. Uten den kan enhver svakhet bortforklares med at et gitterpunkt ikke er en målestasjon."
+    "title": "Det første daglige værvarselet publiseres i 1861",
+    "content": "Dette sees på som starten av moderne meteorologi."
   },
   {
-    "title": "Resultatet som definerer oppgaven",
-    "content": "4. oktober 2025, den kraftigste hendelsen i tiårsmaterialet, målt mot 678 regnmålere. Observert middel 24,3 mm. MEPS 22,2. Bris 14,9. Over 75 millimeter: 24 stasjoner observert, 26 hos MEPS, null hos Bris."
+    "title": "Verdens første vellykkede numeriske værvarsel kom i 1950",
+    "content": "Beregningen ble utført av et forskerteam på datamaskinen ENIAC i USA, og var et 24 timers varsel, som tok 24 timer å beregne."
   },
   {
-    "title": "Hvorfor halen mangler",
-    "content": "To uavhengige årsaker. Tapsfunksjonen CRPS reduseres på et enkeltverdi-varsel til absoluttfeil, som minimeres av medianen. På en høyreskjev fordeling ligger medianen under middelet og langt under halen. Og ekstremer er rundt én prosent av treningseksemplene, så signalet fra dem drukner."
+    "title": "Norge får sin første datamaskin med navn FACIT i 1961",
+    "content": "Og startet med fast databeregnede varsler like etter."
   },
   {
-    "title": "To knapper",
-    "content": "Oversampling endrer hvilke eksempler modellen ser og angriper sjeldenheten, men flytter modellens klimatologi og kan gjøre den våt overalt. Terskelvektet CRPS endrer hva tapet bryr seg om og angriper skjevheten, og forblir proper, som er det som hindrer modellen i å bare rope ulv."
+    "title": "Statistikkmodeller blir delvis brukt på 1990- og 2000-tallet",
+    "content": "Her blir det brukt statistikkmodeller for å justere de numeriske modellene, men det er ikke en fullstendig integrering av statistikk i varslingsprosessen."
   },
   {
-    "title": "Fella",
-    "content": "Å evaluere bare på døgnene der ekstremen faktisk inntraff er forecaster's dilemma. Det belønner overvarsling, fordi en modell som alltid sier 100 millimeter ser strålende ut når den bare måles på dager det kom 100. Jeg gikk i den selv, og tallet ble 0,70 der det riktige var 0,62."
+    "title": "AI-gjennombruddet kom i 2022-2023",
+    "content": "Dette er når store språkmodeller og generativ AI begynte å få stor oppmerksomhet, og det ble klart at AI kunne brukes til å forbedre værvarsling."
   },
   {
-    "title": "Dataene",
-    "content": "Finjustering trenger tre år fra to arkiver. MEPS over OPeNDAP for det nordiske området, og IFS operasjonell analyse fra ECMWFs MARS for resten av kloden. Til sammen 1 359 281 punkter per tilstand, rundt 1,2 terabyte, satt sammen til ett felt."
+    "title": "MET lager Bris i 2024",
+    "content": "METs KI-baserte værmodell Bris bruker nevrale nettverk og historiske data til å levere lynraske, høyoppløselige sannsynlighetsvarsler for Yr."
   },
   {
-    "title": "Feilene kostet mest, og lærte mest",
-    "content": "En full lokal disk etter fem timer. En enkelt dag med for få trykknivåer som nullet hele januar. En ECMWF-strøm som ble lagt ned midt i perioden og fikk en ti timers jobb til å dø. Og et nedbørsfelt som var til stede, endelig overalt, og null overalt i tre hele år."
+    "title": "Ulempen med en KI-basert modell er at den ikke faktisk regner ut været",
+    "content": "Den tar inn data og produserer et resultat, men den har ingen forståelse av fysikken bak været. Den kan ikke simulere hvordan været vil utvikle seg over tid, og den kan ikke gi forklaringer på hvorfor været oppfører seg som det gjør."
   },
   {
-    "title": "Null er et endelig tall",
-    "content": "Den siste feilen er den viktigste. Alle sjekkene mine spurte om verdiene var tall, og null består den prøven. Et felt av nuller har middel, maksimum og persentil, og alle er null. Lærdommen er å måle at feltet inneholder vær, ikke bare at det inneholder tall."
+    "title": "De er også svake på å håndtere sjeldne hendelser",
+    "content": "KI-modeller er trent på historiske data, og sjeldne hendelser er per definisjon ikke godt representert i historiske data. Dette gjør at KI-modeller kan ha problemer med å forutsi sjeldne hendelser, som ekstremvær."
   },
   {
-    "title": "Der det står nå",
-    "content": "Nedbøren er på plass i MEPS-halvdelen, verifisert både på verdiene og på strålingens døgngang. Rangeringen av ekstreme tilstander kjører som en egen jobb og nekter å rangere et tomt felt. Det som gjenstår er selve finjusteringen, med en kontrollarm som trenes likt uten vekting."
+    "title": "En værmodell som sier at det er fint vær hver dag kommer som oftest til å ha rett",
+    "content": "Men da blir folk missfornøyde når det styrtregner den ene dagen"
   },
   {
-    "title": "Hvordan man vet om det virket",
-    "content": "Ikke på haleskåren alene. Å skjerpe halen koster nesten alltid noe i midten, så begge ender må måles samtidig. MEPS er fasiten i begge: 91 prosent av observert middel, og 26 stasjoner over 75 millimeter mot observerte 24."
+    "title": "Det er det denne masteroppgaven handler om!",
+    "content": "Hvordan kan man tilpasse en KI-basert værmodell til å håndtere sjeldne hendelser bedre, og hvordan påvirker dette modellens generelle ytelse?"
+  },
+  {
+    "title": "En modell som blir trent på flere ekstreme hendelser vil tro at disse ekstreme hendelsene skjer oftere",
+    "content": "Da sier den plutselig at det regner annenhver dag, og folk blir misfornøyde. Dette er et klassisk problem i maskinlæring som kalles \"class imbalance\"."
+  },
+  {
+    "title": "Målet er å finne en balanse mellom å håndtere sjeldne hendelser og å opprettholde god generell ytelse",
+    "content": "Følg med videre for å se hvordan jeg det går!"
   }
 ]

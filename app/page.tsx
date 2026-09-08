@@ -3,6 +3,7 @@ import FrontpageHero from "./components/FrontpageHero";
 import NewestPost from "./components/NewestPost";
 import RelevantPapers from "./components/RelevantPapers";
 import BrisShowcase from "./components/BrisShowcase";
+import Presentation from "@/app/components/Presentation";
 
 export default function HomePage() {
   return (
@@ -13,6 +14,11 @@ export default function HomePage() {
           <BrisShowcase />
 
         <NewestPost />
+
+          <main className="h-[calc(100dvh-20rem)] w-full overflow-hidden bg-background text-foreground">
+              <Presentation />
+          </main>
+
         <RelevantPapers />
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
