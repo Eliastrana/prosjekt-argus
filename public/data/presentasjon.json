@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Ekstremvær i datadrevet varsling",
+    "content": "Datadrevne værmodeller er raske og treffsikre på vanlig vær. Spørsmålet i denne oppgaven er hva som skjer i halen, altså på de døgnene som faktisk betyr noe. Svaret så langt er at de underestimerer, systematisk og av grunner som kan tallfestes."
+  },
+  {
+    "title": "Modellen",
+    "content": "Bris er MET Norges datadrevne modell. Den løser ingen fysikk, men har lært et mønster fra mange år med værdata og gjetter neste tilstand ut fra den forrige. Fem døgn med vær tar litt over tre minutter på to grafikkort. En vanlig værmodell trenger en superdatamaskin på det samme."
+  },
+  {
+    "title": "Kontrollen",
+    "content": "MEPS er MET Norges fysikkbaserte modell for Norden, med 2,5 kilometers oppløsning. Den er ikke bare en referanse, den er det som gjør tallene tolkbare. Samme rutenett, samme stasjoner, samme metode. Uten den kan enhver svakhet bortforklares med at et gitterpunkt ikke er en målestasjon."
+  },
+  {
+    "title": "Resultatet som definerer oppgaven",
+    "content": "4. oktober 2025, den kraftigste hendelsen i tiårsmaterialet, målt mot 678 regnmålere. Observert middel 24,3 mm. MEPS 22,2. Bris 14,9. Over 75 millimeter: 24 stasjoner observert, 26 hos MEPS, null hos Bris."
+  },
+  {
+    "title": "Hvorfor halen mangler",
+    "content": "To uavhengige årsaker. Tapsfunksjonen CRPS reduseres på et enkeltverdi-varsel til absoluttfeil, som minimeres av medianen. På en høyreskjev fordeling ligger medianen under middelet og langt under halen. Og ekstremer er rundt én prosent av treningseksemplene, så signalet fra dem drukner."
+  },
+  {
+    "title": "To knapper",
+    "content": "Oversampling endrer hvilke eksempler modellen ser og angriper sjeldenheten, men flytter modellens klimatologi og kan gjøre den våt overalt. Terskelvektet CRPS endrer hva tapet bryr seg om og angriper skjevheten, og forblir proper, som er det som hindrer modellen i å bare rope ulv."
+  },
+  {
+    "title": "Fella",
+    "content": "Å evaluere bare på døgnene der ekstremen faktisk inntraff er forecaster's dilemma. Det belønner overvarsling, fordi en modell som alltid sier 100 millimeter ser strålende ut når den bare måles på dager det kom 100. Jeg gikk i den selv, og tallet ble 0,70 der det riktige var 0,62."
+  },
+  {
+    "title": "Dataene",
+    "content": "Finjustering trenger tre år fra to arkiver. MEPS over OPeNDAP for det nordiske området, og IFS operasjonell analyse fra ECMWFs MARS for resten av kloden. Til sammen 1 359 281 punkter per tilstand, rundt 1,2 terabyte, satt sammen til ett felt."
+  },
+  {
+    "title": "Feilene kostet mest, og lærte mest",
+    "content": "En full lokal disk etter fem timer. En enkelt dag med for få trykknivåer som nullet hele januar. En ECMWF-strøm som ble lagt ned midt i perioden og fikk en ti timers jobb til å dø. Og et nedbørsfelt som var til stede, endelig overalt, og null overalt i tre hele år."
+  },
+  {
+    "title": "Null er et endelig tall",
+    "content": "Den siste feilen er den viktigste. Alle sjekkene mine spurte om verdiene var tall, og null består den prøven. Et felt av nuller har middel, maksimum og persentil, og alle er null. Lærdommen er å måle at feltet inneholder vær, ikke bare at det inneholder tall."
+  },
+  {
+    "title": "Der det står nå",
+    "content": "Nedbøren er på plass i MEPS-halvdelen, verifisert både på verdiene og på strålingens døgngang. Rangeringen av ekstreme tilstander kjører som en egen jobb og nekter å rangere et tomt felt. Det som gjenstår er selve finjusteringen, med en kontrollarm som trenes likt uten vekting."
+  },
+  {
+    "title": "Hvordan man vet om det virket",
+    "content": "Ikke på haleskåren alene. Å skjerpe halen koster nesten alltid noe i midten, så begge ender må måles samtidig. MEPS er fasiten i begge: 91 prosent av observert middel, og 26 stasjoner over 75 millimeter mot observerte 24."
+  }
+]
