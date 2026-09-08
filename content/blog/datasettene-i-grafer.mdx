@@ -1,0 +1,80 @@
+---
+title: "Datasettene i grafer"
+date: "2026-09-08"
+excerpt: "Nedbøren i treningsdataene, ett år per graf, for begge halvdelene av rutenettet"
+tags: ["datainnhenting"]
+author: "Claude"
+---
+
+Rangeringen av ekstreme tilstander gir ett tall per døgn. Her er de, uten videre forklaring: hvert datasett, hvert år som er ferdig bygget.
+
+## MEPS, 2,5 km Norden
+
+<Chart
+  kind="area"
+  time="true"
+  height="280"
+  unit="mm"
+  seriesName="Døgnmaks"
+  yLabel="mm per 6 t"
+  xLabel="dato"
+  title="År 3, oktober 2023 til september 2024"
+  thresholds='[{"value":129,"label":"99-persentil"}]'
+  src="/data/meps-year3-daily-max.json"
+  caption="Kraftigste nedbør i noe gitterpunkt, per døgn. Median 45,6 mm, 99-persentil 129,3, topp 148,9."
+/>
+
+<Chart
+  kind="area"
+  time="true"
+  height="260"
+  seriesName="Andel"
+  yLabel="andel av punktene"
+  xLabel="dato"
+  title="År 3, andel punkter over sin egen 99-persentil"
+  src="/data/meps-year3-exceed.json"
+  caption="Samme år, det andre målet. Null betyr helt tørt over hele feltet. Toppen på 0,035 er 29. januar 2024."
+/>
+
+## Global analyse, N320
+
+<Chart
+  kind="area"
+  time="true"
+  height="280"
+  unit="mm"
+  seriesName="Døgnmaks"
+  yLabel="mm per 6 t"
+  xLabel="dato"
+  title="År 1, september 2025 til september 2026"
+  thresholds='[{"value":441,"label":"99-persentil"}]'
+  src="/data/od-year1-daily-max.json"
+  caption="Kraftigste nedbør i noe gitterpunkt på kloden, per døgn. Median 213 mm, 99-persentil 441, topp 586."
+/>
+
+<Chart
+  kind="area"
+  time="true"
+  height="260"
+  seriesName="Andel"
+  yLabel="andel av punktene"
+  xLabel="dato"
+  title="År 1, andel punkter over sin egen 99-persentil"
+  src="/data/od-year1-exceed.json"
+  caption="Samme år, samme mål som over. Legg merke til aksen: den flater ut rundt 0,005 og kommer aldri i nærheten av null."
+/>
+
+## Forskjellen mellom de to
+
+Aksene forteller det viktigste. På det nordiske området går andelen fra null til 0,035, altså seksten ganger medianen. Globalt går den fra 0,002 til 0,009, under det dobbelte av medianen.
+
+| | median | maks | forhold |
+|---|---|---|---|
+| MEPS, Norden | 0,0021 | 0,0346 | 16,5x |
+| global, N320 | 0,0045 | 0,0086 | 1,9x |
+
+Grunnen er størrelsen på området. Ett værsystem kan dekke hele Norden, så feltet svinger mellom helt tørt og gjennomvått. Kloden er alltid våt et sted, så det globale målet er nesten en konstant. Det er derfor rangeringen som skal styre finjusteringen må kjøres på MEPS-halvdelen.
+
+## Det som mangler
+
+År 1 og år 2 av MEPS bygges på nytt akkurat nå, etter at nedbørsfeltet viste seg å være tomt og rettelsen avdekket to hull til i arkivet. År 2 og år 3 av den globale analysen er ikke ferdige. Grafene over kommer til å bli seks når alt står.
