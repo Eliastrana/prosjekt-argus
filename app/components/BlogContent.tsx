@@ -4,6 +4,7 @@ import type {
   ReactNode,
 } from "react";
 import Image from "next/image";
+import { Chart } from "@/app/components/Chart";
 
 type ContentBlockProps = {
   children: ReactNode;
@@ -62,6 +63,7 @@ function BlogImage({
 }
 
 export const blogMdxComponents = {
+  Chart,
   CardGrid,
   InfoCard,
   Callout,

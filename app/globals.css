@@ -379,3 +379,42 @@
     border: 1px solid rgb(255 255 255 / 0.08);
   }
 }
+
+/* ---- blog charts ------------------------------------------------------- */
+/* Drawn by app/components/Chart.tsx. The chart resolves its own colours from
+   the theme variables above; these rules cover only the frame around it. */
+.chart-figure {
+  margin: 2rem 0;
+  padding: 1rem 1rem 0.75rem;
+  border: 1px solid rgb(var(--muted) / 0.22);
+  border-radius: 12px;
+  background: rgb(var(--card));
+}
+.chart-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgb(var(--foreground));
+  margin-bottom: 0.65rem;
+}
+/* A wide chart scrolls inside its own box rather than pushing the article
+   sideways on a phone. */
+.chart-canvas {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.chart-axis-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: rgb(var(--muted));
+  margin-top: 0.35rem;
+}
+.chart-caption {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: rgb(var(--muted));
+  margin-top: 0.6rem;
+}
+.chart-grid line {
+  shape-rendering: crispEdges;
+}

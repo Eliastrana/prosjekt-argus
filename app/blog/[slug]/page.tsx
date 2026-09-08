@@ -113,7 +113,7 @@ export default async function BlogPostPage({
           <MDXRemote
             source={content}
             components={blogMdxComponents}
-            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+            options={{ mdxOptions: { format: "mdx", remarkPlugins: [remarkGfm] } }}
           />
         </article>
 
