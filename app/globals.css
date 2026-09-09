@@ -547,3 +547,36 @@
   color: rgb(var(--muted));
   margin-left: 0.5rem;
 }
+
+/* Legend for a chart with several lines. Each entry is a switch, so it is a
+   button; dimming rather than removing the hidden one keeps the row stable. */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  margin-top: 0.7rem;
+}
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.1rem 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.78rem;
+  color: rgb(var(--foreground));
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+.chart-legend-item.is-off {
+  opacity: 0.35;
+}
+.chart-legend-swatch {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+  flex: none;
+}
+.chart-legend-item.is-off .chart-legend-swatch {
+  background: rgb(var(--muted)) !important;
+}

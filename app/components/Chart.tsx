@@ -23,6 +23,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 
 export type Point = { x: number | string; y: number; label?: string };
+export type Series = { name: string; data: Point[] };
+
+/* Colours for multiple lines. The accent stays first so a single-series chart
+   looks exactly as it did; the rest are chosen to stay apart in both themes
+   and for the common forms of colour blindness, which rules out the usual
+   red-and-green pairing. */
+const SERIES_COLOURS = ["#10b981", "#60a5fa", "#f59e0b", "#a78bfa", "#f472b6"];
 
 type Kind = "line" | "area" | "bar" | "histogram";
 
@@ -32,8 +39,10 @@ export type ChartProps = {
   data?: Point[];
   /** JSON array as a string attribute. */
   points?: string;
-  /** URL of a JSON file holding either an array of points or {data, compare}. */
+  /** URL of a JSON file: an array of points, {data, compare}, or {series}. */
   src?: string;
+  /** Several named lines on one axis, each switchable from the legend. */
+  series?: Series[];
   compare?: Point[];
   comparePoints?: string;
   compareName?: string;
@@ -172,8 +181,9 @@ function useWidth(ref: React.RefObject<HTMLDivElement | null>) {
 
 export function Chart(props: ChartProps) {
   const [fetched, setFetched] = useState<{
-    data: Point[];
+    data?: Point[];
     compare?: Point[];
+    series?: Series[];
   } | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
 
@@ -197,6 +207,7 @@ export function Chart(props: ChartProps) {
     };
   }, [props.src]);
 
+  const series = fetched?.series ?? props.series;
   const data =
     fetched?.data ?? props.data ?? parseJson<Point[]>(props.points, []);
   const compare =
@@ -216,6 +227,7 @@ export function Chart(props: ChartProps) {
   return (
     <ChartInner
       {...props}
+      series={series}
       data={data}
       compare={compare}
       thresholds={parseJson<{ value: number; label: string }[]>(
@@ -230,6 +242,7 @@ export function Chart(props: ChartProps) {
 }
 
 type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax"> & {
+  series?: Series[];
   data: Point[];
   compare: Point[];
   thresholds: { value: number; label: string }[];
@@ -240,6 +253,7 @@ type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax"> & 
 
 function ChartInner({
   kind = "line",
+  series,
   data = [],
   compare,
   compareName = "Sammenligning",
@@ -263,23 +277,33 @@ function ChartInner({
     y: number;
     point: Point;
     compare?: Point;
+    name?: string;
   } | null>(null);
+
+  // Which named lines are drawn. Hiding one leaves the axes alone on purpose:
+  // if the scale moved every time a year was switched off, the remaining
+  // lines would change shape and the comparison the toggle exists for would
+  // be lost.
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
 
   const parsed = useMemo(() => {
     const toX = (p: Point) =>
       time ? new Date(p.x as string).getTime() : Number(p.x);
+    const mark = (ps: Point[]) => ps.map((p) => ({ ...p, _x: toX(p) }));
     return {
-      main: data.map((p) => ({ ...p, _x: toX(p) })),
-      cmp: (compare ?? []).map((p) => ({ ...p, _x: toX(p) })),
+      main: mark(data),
+      cmp: mark(compare ?? []),
+      series: (series ?? []).map((s) => ({ name: s.name, data: mark(s.data) })),
     };
-  }, [data, compare, time]);
+  }, [data, compare, series, time]);
 
   const margin = { top: 16, right: 16, bottom: 40, left: 56 };
   const innerW = Math.max(0, width - margin.left - margin.right);
   const innerH = Math.max(0, height - margin.top - margin.bottom);
 
   const scales = useMemo(() => {
-    const all = [...parsed.main, ...parsed.cmp];
+    const all = [...parsed.main, ...parsed.cmp,
+                 ...parsed.series.flatMap((s) => s.data)];
     if (!all.length || innerW <= 0) return null;
     const xExtent = d3.extent(all, (d) => d._x) as [number, number];
     const yTop =
@@ -403,6 +427,22 @@ function ChartInner({
         .attr("fill", palette.accent)
         .attr("opacity", 0.85)
         .attr("rx", kind === "histogram" ? 1 : 3);
+    } else if (parsed.series.length) {
+      const lx = scales.x as d3.ScaleLinear<number, number>;
+      const line = d3
+        .line<{ _x: number; y: number }>()
+        .x((d) => lx(d._x as never))
+        .y((d) => scales.y(d.y))
+        .curve(d3.curveMonotoneX);
+      parsed.series.forEach((s, k) => {
+        if (hidden.has(s.name)) return;
+        g.append("path")
+          .datum(s.data)
+          .attr("d", line)
+          .attr("fill", "none")
+          .attr("stroke", SERIES_COLOURS[k % SERIES_COLOURS.length])
+          .attr("stroke-width", 1.7);
+      });
     } else {
       const lx = scales.x as d3.ScaleLinear<number, number>;
       if (kind === "area") {
@@ -465,6 +505,7 @@ function ChartInner({
   }, [
     scales,
     parsed,
+    hidden,
     palette,
     innerW,
     innerH,
@@ -480,28 +521,45 @@ function ChartInner({
   // stays readable to a screen reader and to text selection.
   const onMove = useCallback(
     (e: React.MouseEvent<SVGSVGElement>) => {
-      if (!scales || !parsed.main.length) return;
+      // A multi-series chart carries nothing in `main`, so guarding on that
+      // alone switched the readout off for exactly the charts that need it
+      // most: the ones with several lines to tell apart.
+      if (!scales || (!parsed.main.length && !parsed.series.length)) return;
       const rect = e.currentTarget.getBoundingClientRect();
       const mx = e.clientX - rect.left - margin.left;
       if (mx < 0 || mx > innerW) return setHover(null);
-      let best = parsed.main[0];
+      // With several lines the nearest point may belong to any of the visible
+      // ones, so search them all and report which line it came from.
+      const pools: { name?: string; pts: typeof parsed.main }[] =
+        parsed.series.length
+          ? parsed.series
+              .filter((s) => !hidden.has(s.name))
+              .map((s) => ({ name: s.name, pts: s.data }))
+          : [{ pts: parsed.main }];
+      let best = pools[0]?.pts[0];
+      let bestName = pools[0]?.name;
       let bestD = Infinity;
-      for (const p of parsed.main) {
-        const d = Math.abs(xPos(p) - mx);
-        if (d < bestD) {
-          bestD = d;
-          best = p;
+      for (const pool of pools) {
+        for (const p of pool.pts) {
+          const d = Math.abs(xPos(p) - mx);
+          if (d < bestD) {
+            bestD = d;
+            best = p;
+            bestName = pool.name;
+          }
         }
       }
+      if (!best) return setHover(null);
       const cmp = parsed.cmp.find((c) => c._x === best._x);
       setHover({
         x: xPos(best) + margin.left,
         y: scales.y(best.y) + margin.top,
         point: best,
         compare: cmp,
+        name: bestName,
       });
     },
-    [scales, parsed, innerW, xPos, margin.left, margin.top],
+    [scales, parsed, hidden, innerW, xPos, margin.left, margin.top],
   );
 
   const fmtX = (p: Point) =>
@@ -565,7 +623,7 @@ function ChartInner({
                 {fmtX(hover.point)}
               </div>
               <div>
-                <strong>{seriesName}:</strong>{" "}
+                <strong>{hover.name ?? seriesName}:</strong>{" "}
                 {hover.point.y.toLocaleString("no-NO", {
                   maximumFractionDigits: 2,
                 })}
@@ -584,6 +642,40 @@ function ChartInner({
           </>
         ) : null}
       </div>
+      {parsed.series.length > 1 ? (
+        <div className="chart-legend">
+          {parsed.series.map((s, k) => {
+            const off = hidden.has(s.name);
+            return (
+              <button
+                key={s.name}
+                type="button"
+                className={`chart-legend-item${off ? " is-off" : ""}`}
+                aria-pressed={!off}
+                onClick={() =>
+                  setHidden((prev) => {
+                    const next = new Set(prev);
+                    // Never hide the last visible line: an empty chart with a
+                    // full axis looks like missing data rather than a filter.
+                    if (next.has(s.name)) next.delete(s.name);
+                    else if (next.size < parsed.series.length - 1)
+                      next.add(s.name);
+                    return next;
+                  })
+                }
+              >
+                <span
+                  className="chart-legend-swatch"
+                  style={{
+                    background: SERIES_COLOURS[k % SERIES_COLOURS.length],
+                  }}
+                />
+                {s.name}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
       {(xLabel || yLabel) && (
         <div className="chart-axis-labels">
           {yLabel ? <span>{yLabel}</span> : <span />}

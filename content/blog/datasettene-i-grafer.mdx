@@ -6,67 +6,57 @@ tags: ["datainnhenting"]
 author: "Claude"
 ---
 
-Rangeringen av ekstreme tilstander gir ett tall per døgn. Her er de, uten videre forklaring: hvert datasett, hvert år som er ferdig bygget.
+Rangeringen av ekstreme tilstander gir ett tall per døgn. Her er alle tre årene, for begge halvdelene av rutenettet. Klikk et år i forklaringen for å slå det av eller på.
 
 ## MEPS, 2,5 km Norden
 
 <Chart
-  kind="area"
   time="true"
-  height="280"
+  height="300"
   unit="mm"
-  seriesName="Døgnmaks"
   yLabel="mm per 6 t"
   xLabel="dato"
-  title="År 3, oktober 2023 til september 2024"
-  thresholds='[{"value":129,"label":"99-persentil"}]'
-  src="/data/meps-year3-daily-max.json"
-  caption="Kraftigste nedbør i noe gitterpunkt, per døgn. Median 45,6 mm, 99-persentil 129,3, topp 148,9."
+  title="Kraftigste punkt per døgn"
+  src="/data/meps-3ar-max.json"
+  caption="Tre år, oktober 2023 til september 2026. Årene ligger etter hverandre i tid, så de danner én sammenhengende historie når alle er på."
 />
 
 <Chart
-  kind="area"
   time="true"
-  height="260"
-  seriesName="Andel"
+  height="280"
   yLabel="andel av punktene"
   xLabel="dato"
-  title="År 3, andel punkter over sin egen 99-persentil"
-  src="/data/meps-year3-exceed.json"
-  caption="Samme år, det andre målet. Null betyr helt tørt over hele feltet. Toppen på 0,035 er 29. januar 2024."
+  title="Andel punkter over sin egen 99-persentil"
+  src="/data/meps-3ar-exceed.json"
+  caption="Samme tre år, det andre målet. Null betyr helt tørt over hele feltet, noe som skjer flere ganger i året."
 />
 
 ## Global analyse, N320
 
 <Chart
-  kind="area"
   time="true"
-  height="280"
+  height="300"
   unit="mm"
-  seriesName="Døgnmaks"
   yLabel="mm per 6 t"
   xLabel="dato"
-  title="År 1, september 2025 til september 2026"
-  thresholds='[{"value":441,"label":"99-persentil"}]'
-  src="/data/od-year1-daily-max.json"
-  caption="Kraftigste nedbør i noe gitterpunkt på kloden, per døgn. Median 213 mm, 99-persentil 441, topp 586."
+  title="Kraftigste punkt per døgn"
+  src="/data/od-3ar-max.json"
+  caption="Samme periode, den globale halvdelen. Verdiene er høyere fordi feltet dekker hele kloden, så det våteste punktet ligger nesten alltid i tropene."
 />
 
 <Chart
-  kind="area"
   time="true"
-  height="260"
-  seriesName="Andel"
+  height="280"
   yLabel="andel av punktene"
   xLabel="dato"
-  title="År 1, andel punkter over sin egen 99-persentil"
-  src="/data/od-year1-exceed.json"
-  caption="Samme år, samme mål som over. Legg merke til aksen: den flater ut rundt 0,005 og kommer aldri i nærheten av null."
+  title="Andel punkter over sin egen 99-persentil"
+  src="/data/od-3ar-exceed.json"
+  caption="Legg merke til aksen. Den flater ut rundt 0,005 og kommer aldri i nærheten av null."
 />
 
 ## Forskjellen mellom de to
 
-Aksene forteller det viktigste. På det nordiske området går andelen fra null til 0,035, altså seksten ganger medianen. Globalt går den fra 0,002 til 0,009, under det dobbelte av medianen.
+Aksene forteller det viktigste. På det nordiske området går andelen fra null til 0,035, altså seksten ganger medianen. Globalt går den fra 0,002 til 0,009, under det dobbelte.
 
 | | median | maks | forhold |
 |---|---|---|---|
@@ -75,6 +65,12 @@ Aksene forteller det viktigste. På det nordiske området går andelen fra null 
 
 Grunnen er størrelsen på området. Ett værsystem kan dekke hele Norden, så feltet svinger mellom helt tørt og gjennomvått. Kloden er alltid våt et sted, så det globale målet er nesten en konstant. Det er derfor rangeringen som skal styre finjusteringen må kjøres på MEPS-halvdelen.
 
-## Det som mangler
+## Grunnlaget
 
-År 1 og år 2 av MEPS bygges på nytt akkurat nå, etter at nedbørsfeltet viste seg å være tomt og rettelsen avdekket to hull til i arkivet. År 2 og år 3 av den globale analysen er ikke ferdige. Grafene over kommer til å bli seks når alt står.
+Seks datasett, 1,3 terabyte, 4 285 brukbare tilstander per halvdel. Alle er verifisert på at nedbørsfeltet faktisk inneholder vær og ikke bare tall.
+
+| | MEPS | global |
+|---|---|---|
+| år 1 | 263 GB | 151 GB |
+| år 2 | 264 GB | 152 GB |
+| år 3 | 249 GB | 143 GB |
