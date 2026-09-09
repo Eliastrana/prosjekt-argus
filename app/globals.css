@@ -580,3 +580,35 @@
 .chart-legend-item.is-off .chart-legend-swatch {
   background: rgb(var(--muted)) !important;
 }
+
+/* Pills for the closed-set column in the extremes table. Colour carries the
+   distinction; the text carries the meaning, so neither depends on the other. */
+.pill {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.pill--trening {
+  background: rgb(var(--muted) / 0.18);
+  color: rgb(var(--muted));
+}
+.pill--validering {
+  background: rgb(245 158 11 / 0.18);
+  color: rgb(217 119 6);
+}
+.pill--usett {
+  background: rgb(var(--accent) / 0.18);
+  color: rgb(var(--accent));
+}
+.pill--nøytral {
+  background: rgb(var(--muted) / 0.12);
+  color: rgb(var(--muted));
+}
+[data-theme="dark"] .pill--validering,
+:root:not([data-theme="light"]) .pill--validering {
+  color: rgb(251 191 36);
+}

@@ -62,8 +62,26 @@ function BlogImage({
   );
 }
 
+/**
+ * A short label rendered as a pill, for a table column whose values are a
+ * small closed set.
+ *
+ * The class comes from the text rather than from a prop, because a table of
+ * 44 rows reads better as `<Pill>usett</Pill>` than as a repeated attribute,
+ * and the set of values is fixed and known. An unrecognised word still gets a
+ * pill, in the neutral colour.
+ */
+export function Pill({ children }: { children?: React.ReactNode }) {
+  const text = String(children ?? "").trim();
+  const kind = ["trening", "validering", "usett"].includes(text)
+    ? text
+    : "nøytral";
+  return <span className={`pill pill--${kind}`}>{text}</span>;
+}
+
 export const blogMdxComponents = {
   Chart,
+  Pill,
   CardGrid,
   InfoCard,
   Callout,
