@@ -310,14 +310,24 @@
   padding: 0.15rem 0.38rem;
 }
 
+/* Code blocks sit on the theme's card colour with the same faint border as
+   inline code and tables, so they follow light and dark mode instead of
+   carrying a fixed colour of their own. A wide block scrolls inside itself. */
 .article-code-block {
-  background: rgb(15 23 42);
-  border-radius: 1rem;
-  color: rgb(226 232 240);
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--foreground) / 0.08);
+  border-radius: 12px;
+  color: rgb(var(--foreground) / 0.88);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
   margin-bottom: 2rem;
   margin-top: 2rem;
   overflow-x: auto;
-  padding: 1.25rem;
+  padding: 1rem 1.25rem;
+  scrollbar-color: rgb(var(--foreground) / 0.18) transparent;
+  scrollbar-width: thin;
+  tab-size: 2;
 }
 
 .article-code-block .article-code {
@@ -373,10 +383,6 @@
 
 @media (prefers-color-scheme: dark) {
   .article-info-card {
-  }
-
-  .article-code-block {
-    border: 1px solid rgb(255 255 255 / 0.08);
   }
 }
 
