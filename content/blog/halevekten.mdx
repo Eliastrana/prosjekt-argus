@@ -50,33 +50,79 @@ Selve kjøringen gikk ikke på et skjermkort. De to kortene som er store nok, va
 
 ## De to leddene oppå hverandre
 
-Hver prikk under er én tilstand, og prikkene er ikke bundet sammen, fordi tilstandene ligger uker og måneder fra hverandre. Den vanlige skåren er tegnet sammen med haleleddet ganget med den målte vekten, og med plassholderen.
+Dette avsnittet svarer på ett spørsmål: **på én bestemt tilstand, hvor mye teller haleleddet, sammenliknet med den vanlige skåren?**
+
+For hver tilstand er tapet en sum av to tall:
+
+```
+tap = vanlig skår + vekt × haleledd
+```
+
+Det er de to tallene i den summen diagrammene under viser. Hver dato langs den vannrette aksen er én tilstand, og over hver dato er det tegnet tre prikker:
+
+- **Grønn, vanlig skår.** Det første tallet i summen. Det er omtrent det samme hver gang, rundt 1,9.
+- **Blå, haleledd × 13 716.** Det andre tallet i summen, med den vekten jeg målte.
+- **Oransje, haleledd × 100.** Det samme andre tallet, men med plassholderen som sto i konfigurasjonen før.
+
+Slik leses diagrammet: se på prikkene over én og samme dato, og sammenlikn høyden på den blå med den grønne.
+
+- **Blå like høyt som grønn.** Haleleddet teller like mye som den vanlige skåren på den tilstanden.
+- **Blå over grønn.** Det er haleleddet som bestemmer mest av hva modellen lærer av den tilstanden.
+- **Blå nede ved null.** Haleleddet bidrar ingenting, og tilstanden trenes akkurat som i kontrollarmen.
+
+Tre tilstander gjør det konkret:
+
+| tilstand | vanlig skår | haleledd × 13 716 | tap | haleleddets andel |
+|---|---|---|---|---|
+| 2. juni 2024, ekstrem | 1,91 | 8,06 | 9,96 | 81 % |
+| 18. november 2024, vanlig, men med regnskyll | 1,88 | 1,90 | 3,78 | 50 % |
+| 26. november 2023, vanlig, uten kraftig regn | 1,88 | 0,00 | 1,88 | 0 % |
+
+På et kraftig uvær er det altså haleleddet som dominerer. På en dag uten kraftig regn finnes det nesten ikke, og tapet er det samme som i kontrollarmen.
+
+Med plassholderen ville 2. juni fått 0,06 fra haleleddet i stedet for 8,06. Tapet den dagen ville blitt 1,97, nesten det samme som på en dag uten kraftig regn. Uværet ville ikke skilt seg ut for modellen i det hele tatt. Det er derfor den oransje prikken ligger langs bunnen i begge diagrammene.
+
+Vekten 13 716 er valgt slik at den blå og den grønne i snitt ligger like høyt i det første diagrammet. Enkelte uvær ligger over, andre under.
 
 <Chart
   kind="dots"
   time="true"
   height="320"
   yMax="8.5"
-  xLabel="dato"
+  xLabel="dato for tilstanden"
   yLabel="bidrag til tapet"
   title="Ekstreme tilstander"
   src="/data/haleledd-ekstreme.json"
-  caption="Den vanlige skåren ligger nesten flatt rundt 1,9. Det vektede haleleddet følger været: 8,1 den 2. juni 2024, og nær null på et par tilstander som var ekstreme etter rangeringen uten å ha særlig mange punkter over 20 mm. Haleleddet ganget med 100 ligger som en rad prikker langs bunnen. Klikk i forklaringen for å slå seriene av og på."
+  caption="Tre prikker per tilstand. Grønn er den vanlige skåren, blå er haleleddet med vekten 13 716, oransje er haleleddet med plassholderen 100. Prikkene er ikke bundet sammen, fordi tilstandene ligger uker og måneder fra hverandre. Klikk i forklaringen for å slå seriene av og på."
 />
+
+Det er verdt å legge merke til her:
+
+- **Den grønne ligger nesten flatt.** Den vanlige skåren er omtrent like stor enten det regner eller ikke, så den kan ikke alene gjøre modellen bedre på uvær.
+- **Den blå hopper med været.** Den er over 4 på fire uvær: 31. januar, 2. juni, 30. juni og 29. juli 2024. Høyest er 2. juni med 8,1.
+- **Noen blå ligger nesten på null.** 22. november 2023 og 13. januar 2025 er eksempler. De er ekstreme etter rangeringen, fordi uvanlig mye av området var vått, men det regnet lite over 20 mm noe sted.
+- **Den oransje ligger langs bunnen hele veien.** Med plassholderen er haleleddet borte.
 
 <Chart
   kind="dots"
   time="true"
   height="320"
   yMax="8.5"
-  xLabel="dato"
+  xLabel="dato for tilstanden"
   yLabel="bidrag til tapet"
   title="Vanlige tilstander"
   src="/data/haleledd-vanlige.json"
-  caption="Samme skala som over. På de fleste vanlige tilstandene holder det vektede haleleddet seg nede, og på 9 av 23 er det under én prosent av tapet. Toppene er vanlige dager med ekte regnskyll i Norden."
+  caption="Samme skala og samme farger som over, for 23 tilfeldig trukne vanlige tilstander fra samme periode."
 />
 
-Toppene i det nederste diagrammet er verdt en forklaring. Rangeringen kaller en tilstand ekstrem når uvanlig mye av området er vått, ikke når ett sted får mye. En dag kan derfor være «vanlig» og likevel ha et kraftig lokalt skyll. Haleleddet reagerer på det, og det er riktig at det gjør det.
+Her er bildet et annet:
+
+- **Den blå ligger lavt på de fleste.** På 13 av 23 vanlige tilstander er den under 0,1, altså under fem prosent av tapet.
+- **Noen få blå stikker opp.** 18. november 2024, 23. februar 2024, 19. januar 2025 og 28. oktober 2023 ligger mellom 1 og 2.
+
+De toppene er ikke feil. Rangeringen kaller en tilstand ekstrem når uvanlig mye av området er vått, ikke når ett sted får mye. En dag kan derfor være «vanlig» og likevel ha et kraftig lokalt regnskyll, og haleleddet reagerer på det, som det skal.
+
+Sammenlikn de to diagrammene: på ekstreme tilstander ligger den blå ofte like høyt som eller over den grønne. På vanlige tilstander ligger den stort sett ved bunnen. Det er nettopp den forskjellen som gjør at halearmen kan lære noe om uvær og likevel trene nesten som før på vanlige dager.
 
 ## Tallet
 
