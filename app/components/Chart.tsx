@@ -31,7 +31,11 @@ export type Series = { name: string; data: Point[] };
    red-and-green pairing. */
 const SERIES_COLOURS = ["#10b981", "#60a5fa", "#f59e0b", "#a78bfa", "#f472b6"];
 
-type Kind = "line" | "area" | "bar" | "histogram";
+/* "dots" draws each point on its own, with nothing joining them. Use it when
+   neighbouring points are separate cases rather than one continuous series,
+   for example individual weather states months apart: a line drawn between
+   them, smoothed or not, would show values in between that were never there. */
+type Kind = "line" | "area" | "bar" | "histogram" | "dots";
 
 export type ChartProps = {
   kind?: Kind;
@@ -436,13 +440,48 @@ function ChartInner({
         .curve(d3.curveMonotoneX);
       parsed.series.forEach((s, k) => {
         if (hidden.has(s.name)) return;
+        const colour = SERIES_COLOURS[k % SERIES_COLOURS.length];
+        if (kind === "dots") {
+          g.append("g")
+            .selectAll("circle")
+            .data(s.data)
+            .join("circle")
+            .attr("cx", (d) => lx(d._x as never))
+            .attr("cy", (d) => scales.y(d.y))
+            .attr("r", 3.4)
+            .attr("fill", colour)
+            .attr("opacity", 0.9);
+          return;
+        }
         g.append("path")
           .datum(s.data)
           .attr("d", line)
           .attr("fill", "none")
-          .attr("stroke", SERIES_COLOURS[k % SERIES_COLOURS.length])
+          .attr("stroke", colour)
           .attr("stroke-width", 1.7);
       });
+    } else if (kind === "dots") {
+      const lx = scales.x as d3.ScaleLinear<number, number>;
+      g.append("g")
+        .selectAll("circle")
+        .data(parsed.main)
+        .join("circle")
+        .attr("cx", (d) => lx(d._x))
+        .attr("cy", (d) => scales.y(d.y))
+        .attr("r", 3.4)
+        .attr("fill", palette.accent)
+        .attr("opacity", 0.9);
+      if (parsed.cmp.length) {
+        g.append("g")
+          .selectAll("circle")
+          .data(parsed.cmp)
+          .join("circle")
+          .attr("cx", (d) => lx(d._x))
+          .attr("cy", (d) => scales.y(d.y))
+          .attr("r", 3)
+          .attr("fill", palette.muted)
+          .attr("opacity", 0.8);
+      }
     } else {
       const lx = scales.x as d3.ScaleLinear<number, number>;
       if (kind === "area") {
