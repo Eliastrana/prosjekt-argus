@@ -12,8 +12,6 @@ export default function HomePage() {
       <FrontpageHero />
 
       <section className="mx-auto max-w-5xl px-6 py-16">
-          <ComputeUsage />
-
           <BrisShowcase />
 
         <NewestPost />
@@ -22,7 +20,9 @@ export default function HomePage() {
               <Presentation />
           </main>
 
-        <RelevantPapers />
+          <ComputeUsage />
+
+          <RelevantPapers />
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
           {/*<Link*/}
