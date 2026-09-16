@@ -18,13 +18,17 @@ const PRICES = {
   gpuHyperscalerPerHour: 10.0, // USD per GPU-hour, AWS/Azure/Oracle H200
 };
 
+// The prices are quoted in dollars, so they are converted once, at a stated
+// rate, rather than restated as kroner that would hide where they came from.
+const USD_NOK = { rate: 9.33, asOf: "15. september 2026" };
+
 const nb = (value: number, digits = 0) =>
   value.toLocaleString("nb-NO", {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   });
 
-const usd = (value: number) => `$${nb(Math.round(value))}`;
+const nok = (usdValue: number) => `${nb(Math.round(usdValue * USD_NOK.rate))} kr`;
 
 export default function ComputeUsage() {
   const cpuCost = USAGE.cpuHours * PRICES.cpuPerHour;
@@ -37,21 +41,21 @@ export default function ComputeUsage() {
       label: "CPU-timer",
       value: nb(USAGE.cpuHours),
       detail: `${USAGE.jobs} jobber på eX3`,
-      cost: usd(cpuCost),
-      costNote: `$${nb(PRICES.cpuPerHour, 4)} per vCPU-time`,
+      cost: nok(cpuCost),
+      costNote: `${nb(PRICES.cpuPerHour * USD_NOK.rate, 2)} kr per vCPU-time`,
     },
     {
       label: "GPU-timer",
       value: nb(USAGE.gpuHours, 1),
       detail: "for det meste NVIDIA H200",
-      cost: usd(gpuCost),
-      costNote: `$${nb(PRICES.gpuPerHour, 2)} per GPU-time`,
+      cost: nok(gpuCost),
+      costNote: `${nb(PRICES.gpuPerHour * USD_NOK.rate, 2)} kr per GPU-time`,
     },
     {
       label: "Til markedspris",
-      value: usd(total),
+      value: nok(total),
       detail: "CPU og GPU samlet",
-      cost: `ca. ${usd(hyperscalerTotal)}`,
+      cost: `ca. ${nok(hyperscalerTotal)}`,
       costNote: "hos AWS, Azure eller Oracle",
     },
   ];
@@ -90,8 +94,9 @@ export default function ComputeUsage() {
       <p className="mt-3 text-xs leading-relaxed text-muted">
         Tildelt tid teller også jobber som feilet eller ble avbrutt, og
         CPU-timene inkluderer kjernene som fulgte GPU-jobbene. Prisene er
-        on-demand-priser i USD for tilsvarende ressurser, ikke hva prosjektet
-        betaler. Kilder:{" "}
+        on-demand-priser for tilsvarende ressurser, ikke hva prosjektet
+        betaler, oppgitt i dollar og omregnet med {nb(USD_NOK.rate, 2)} kr per
+        dollar ({USD_NOK.asOf}). Kilder:{" "}
         <a
           href="https://getdeploying.com/gpus/nvidia-h200"
           className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
@@ -104,6 +109,13 @@ export default function ComputeUsage() {
           className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
         >
           AWS c7a
+        </a>
+        ,{" "}
+        <a
+          href="https://wise.com/us/currency-converter/usd-to-nok-rate/history"
+          className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
+        >
+          valutakurs
         </a>
         .
       </p>
