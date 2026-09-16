@@ -76,7 +76,7 @@ export default function ComputeUsage() {
             key={tile.label}
             className="rounded-[1.75rem] border border-foreground/10 bg-card p-6"
           >
-            <p className="text-xs font-medium uppercase tracking-wide text-muted">
+            <p className="text-sm font-medium text-muted">
               {tile.label}
             </p>
             <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums">
