@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import type { Metadata } from "next";
 import { blogMdxComponents } from "@/app/components/BlogContent";
 import { AuthorByline } from "@/app/components/AuthorByline";
+import { BlogExplanation } from "@/app/components/BlogExplanation";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -81,17 +82,17 @@ export default async function BlogPostPage({
             {frontmatter.title}
           </h1>
 
-          {frontmatter.excerpt ? (
-            <p className="mt-6 text-lg leading-8 text-muted">
-              {frontmatter.excerpt}
-            </p>
-          ) : null}
+          <h2 className="mt-6 text-lg leading-7 text-muted sm:text-xl">
+            {frontmatter.excerpt}
+          </h2>
 
           <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
             <time dateTime={frontmatter.date}>{formatDate(frontmatter.date)}</time>
             <span aria-hidden="true" className="size-1 rounded-full bg-foreground/25" />
             <span>{readingTime} min lesetid</span>
           </div>
+
+
 
           <AuthorByline author={frontmatter.author} />
 
@@ -108,6 +109,9 @@ export default async function BlogPostPage({
             </div>
           )}
         </header>
+
+        <BlogExplanation key={slug} slug={slug} excerpt={frontmatter.excerpt} />
+
 
         <article className="blog-prose mt-10 sm:mt-14">
           <MDXRemote

@@ -20,6 +20,22 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Blog explanations
+
+Article headers offer four explanation levels. Selecting a level does not make
+an API call; pressing **Forklar** requests a short Norwegian summary through
+`POST /api/blog/explain`, using the server's copy of the article.
+
+Set `OPENAI_API_KEY` in `.env` locally and in the server environment when deploying.
+The key stays on the server. The endpoint uses `gpt-4.1-mini` through the OpenAI
+Responses API, with a 25-second timeout and bounded output.
+
+Summaries are cached by article content and level (up to 256 entries per process).
+Concurrent identical requests share one generation. Each process allows at most
+20 new generations per minute and four at once. These limits and the cache reset
+on restart; multi-instance deployments should use shared rate limiting or platform
+controls for a deployment-wide spending cap.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
