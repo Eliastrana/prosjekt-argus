@@ -329,9 +329,13 @@ function ChartInner({
               .domain([new Date(xExtent[0]), new Date(xExtent[1])])
               .range([0, innerW])
           : d3.scaleLinear().domain(xExtent).range([0, innerW]).nice();
+    // Down to zero as before, and below it only when the data goes there: a
+    // chart of changes (better or worse than a reference) needs the negative
+    // half, and every chart of amounts keeps the axis it had.
+    const yLow = Math.min(0, d3.min(all, (d) => d.y) ?? 0);
     const y = d3
       .scaleLinear()
-      .domain([0, yTop * 1.06])
+      .domain([yLow * 1.06, yTop * 1.06])
       .range([innerH, 0])
       .nice();
     return { x, y };
