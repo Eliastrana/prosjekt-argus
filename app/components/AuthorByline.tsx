@@ -1,6 +1,11 @@
 import Image from "next/image";
 
-type Profile = { name: string; image: string; role: string };
+type Profile = {
+  name: string;
+  image: string;
+  role: string;
+  invertInDark?: boolean;
+};
 
 /** One source of truth for who wrote what. `author` in a post's frontmatter
  *  keys into this; anything unrecognised falls back to an initial. */
@@ -17,8 +22,9 @@ export const AUTHORS: Record<string, Profile> = {
   },
   Codex: {
     name: "Codex",
-    image: "",
+    image: "/authors/codex.webp",
     role: "Skrevet av AI",
+    invertInDark: true,
   },
 };
 
@@ -52,8 +58,8 @@ export function AuthorByline({
           height={px}
           className={[
             sm ? "size-7 rounded-xl" : "size-12 rounded-2xl",
-
             "shrink-0 object-cover",
+            profile.invertInDark ? "dark:invert" : "",
           ].join(" ")}
         />
       ) : (
