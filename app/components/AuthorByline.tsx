@@ -15,6 +15,11 @@ export const AUTHORS: Record<string, Profile> = {
     image: "/authors/claude.webp",
     role: "Skrevet av AI",
   },
+  Codex: {
+    name: "Codex",
+    image: "",
+    role: "Skrevet av AI",
+  },
 };
 
 export function getAuthor(author?: string): Profile | null {
