@@ -37,6 +37,16 @@ Resultatet skulle regnes som positivt bare hvis hele 95-prosentintervallet lå u
 | **Forskjell** | **+0,0178** |
 | 95 % intervall | +0,004 til +0,033 |
 
+<Chart
+  kind="bar"
+  height="260"
+  unit="%"
+  yLabel="dårligere enn kontrollarmen"
+  title="CRPS over 20 mm, døgnet 30 timer fram"
+  src="/data/svaret-hovedmal.json"
+  caption="Hvor mye dårligere hver modell er enn kontrollarmen på hovedmålet. Kontrollarmen er referansen og står derfor på null. Høyere søyle er dårligere varsel."
+/>
+
 Hele intervallet ligger over null. Halearmen er ikke bedre enn kontrollarmen. Den er dårligere, rundt 7 prosent, og forskjellen er større enn det tilfeldig variasjon kan forklare.
 
 Det er et negativt resultat, og det står.
@@ -54,6 +64,16 @@ Det er et negativt resultat, og det står.
 | Andel falske varsler over 50 mm | 48 % | 59 % | 62 % | 56 % |
 
 **Kontrollarmens forbedring forsvant.** Vanlig finjustering rettet opp at urørt Bris er for tørr, og det gjorde varslene bedre. Halearmen er omtrent tilbake der urørt Bris startet, og klart dårligere enn kontrollarmen både over alt regn og over 20 millimeter. To døgn fram er bildet det samme for CRPS over alt regn, mens forskjellen over 20 millimeter ikke lenger er målbar.
+
+<Chart
+  kind="bar"
+  height="260"
+  unit="%"
+  yLabel="andel funnet"
+  title="Døgn over 50 mm som ble funnet, 30 timer fram"
+  src="/data/svaret-50mm-funnet.json"
+  caption="Andelen av de 609 stasjonsdøgnene over 50 mm der modellen varslet over 50 mm. For Bris-modellene betyr det at minst to av fire medlemmer gikk over terskelen. Tallet teller bare treff, ikke falske varsler, og beskriver derfor uten å bevise."
+/>
 
 **Halearmen finner flere av de aller kraftigste døgnene.** Den varslet 31 prosent av døgnene over 50 millimeter, mot kontrollarmens 24. Det er nærmest noen Bris-modell kommer MEPS. Men den varsler også flere slike døgn som ikke kommer, og det riktige målet for 50 millimeter, CRPS over terskelen, viser ingen forskjell. Andelen treff talt bare på døgn der det faktisk regnet kraftig, belønner den som varsler mye. Planen sier derfor at slike tall bare beskriver, de beviser ingenting.
 
@@ -79,11 +99,32 @@ Jeg målte det med forholdet mellom spredningen og feilen, justert for at det ba
 | Kontrollarm | **2,70 mm** | 4,02 mm | **0,75** |
 | Halearm | 2,30 mm | 4,08 mm | 0,63 |
 
+<Chart
+  kind="bar"
+  height="260"
+  yLabel="spredning delt på feil"
+  title="Hvor ærlig er ensemblet? Døgnet 30 timer fram"
+  src="/data/svaret-spredning.json"
+  thresholds='[{"value":1,"label":"ærlig ensemble"}]'
+  caption="Forholdet mellom hvor mye de fire medlemmene er uenige og hvor mye snittet deres bommer, justert for ensemblestørrelsen. Ved 1 sprer medlemmene seg like mye som varselet faktisk bommer. Alle tre ligger under, men halearmen ligger klart lavere enn kontrollarmen."
+/>
+
 Forklaringen holder. De tre modellene bommer nesten nøyaktig like mye, mellom 4,02 og 4,08 millimeter. Forskjellen ligger i spredningen: halearmens medlemmer er 15 prosent mindre uenige enn kontrollarmens. Forskjellen i forholdet er −0,12, med et intervall fra −0,15 til −0,09, og to døgn fram er den nesten like stor.
 
 Når feilen er den samme og spredningen mindre, blir CRPS dårligere. Det er den mest direkte forklaringen på hovedresultatet. Haleleddet dro spredningen tilbake mot der urørt Bris lå, og mistet det meste av det kontrollarmen hadde vunnet.
 
 Det gjelder også der det betyr mest. Der modellene varsler 20 millimeter eller mer, er forholdet 0,80 for kontrollarmen, 0,68 for halearmen og 0,63 for urørt Bris. Her er dagene sortert etter hva modellen varslet, ikke hva som ble målt, så sjekken belønner ikke den som varsler mye.
+
+<Chart
+  kind="line"
+  height="300"
+  xLabel="varslet nedbør, mm per døgn"
+  yLabel="spredning delt på feil"
+  title="Ærlighet etter hvor mye modellen varslet"
+  src="/data/svaret-spredning-mengde.json"
+  thresholds='[{"value":1,"label":"ærlig ensemble"}]'
+  caption="Det samme forholdet, delt opp etter hvor mye nedbør ensemblesnittet varslet: under 1, 1–5, 5–10, 10–20 og over 20 mm. Halearmen ligger mellom urørt Bris og kontrollarmen på alle mengder, også der modellen varsler kraftig nedbør. Klikk i forklaringen for å slå linjene av og på."
+/>
 
 To forbehold hører med.
 
