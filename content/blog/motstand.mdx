@@ -1,0 +1,65 @@
+---
+title: "Det er i motbakker det går oppover 🫩 (?)"
+date: "2026-09-25"
+excerpt: "Hele grunnideen om at tail-end finetuning kan gjøre BRIS bedre på ekstremvær virker ikke å holde vann."
+tags: ["Mental knekk", "Grindset", "Løfte seg opp igjen"]
+author: "Elias"
+---
+
+# Innsatsen
+Etter litt over en måned med innsats, hvor jeg begynte med null tilgang og ingen oppsett, har jeg:
+- Satt opp tilgang til eX3, med et miljø som bygger og kjører.
+- Fått tilgang til MARS, og fått lastet ned data fra MEPS og MARS
+- Validert innholdet i den nedlastede dataen, og at det er i riktig format
+- Kartlagt hvilke deler av datasettet som har blitt brukt i trening og validering, og hva som er usett
+- Gjennomgått dataen og kartlagt ekstreme hendelser, slik at de kan brukes i finetuning
+- Satt opp en smoke-test (Se om den klarer å kjøre en prediksjon på et lite datasett, og at den returnerer et resultat)
+- Satt opp en finetuning pipeline, som kan kjøre finetuning på et lite datasett, og returnere en modell som kan brukes til prediksjon
+- Satt opp en evalueringspipeline, som kan kjøre prediksjon på et lite datasett, og returnere en evaluering av resultat
+- Laget en full size finetunet variant som fungerer som en kontrollarm for den tail-end finetunete varianten
+- Laget en full size tail-end finetunet variant som fungerer som en halearm for å teste om tail-end finetuning kan gjøre BRIS bedre på ekstremvær
+- Kjørt hver av disse på ex3 i 30 timer hver, med mye strategi og lureri for å få plass på ex3
+- Lastet ned FROST data for å sammenlikne med ekte målinger
+- Kjøre inference på de ulike finetunede modellene, for å endelig får et svar:
+
+## Kan tail-end finetuning gjøre BRIS bedre på ekstremvær?
+
+# Nei!
+
+![](/dispair.png)
+
+…eller, i hvert fall ikke sånn jeg gjorde det.
+
+Etter et helt år med varsler fra tre modeller, rettet mot 714 norske regnmålere, var svaret klart. Halearmen, den som fikk ekstra straff for å bomme på kraftig nedbør, ble ikke bedre enn kontrollarmen. Den ble **verre**, rundt 7 prosent på akkurat det målet den var laget for å forbedre.
+
+Og det er ikke flaks. Reglene for hva som skulle telle ble låst *før* jeg så et eneste resultat, og forskjellen er større enn det tilfeldig variasjon kan forklare. Det er et ekte nei.
+
+Det svir litt. En måned med oppsett, kø, krasj og nattlige sjekker av `squeue`, og så er svaret det motsatte av det jeg håpet på.
+
+# Hva gikk galt?
+
+- **Ensemblet ble for sikkert på seg selv.** Bris lager fire varianter av hvert varsel. For halearmen ble de fire variantene alt for like hverandre, omtrent 15 prosent mindre spredning enn kontrollarmen, mens de bommet like mye. Når modellen er skråsikker og likevel tar feil, straffes den hardt.
+- **Terskelen var feil tilpasset.** Haleleddet trente på regn over 20 mm på *seks timer*, mens jeg målte resultatet på 20 mm i *døgnet*. Modellen ble altså trent på mye sjeldnere hendelser enn dem den ble vurdert på.
+- **Vekten var kanskje for høy.** Haleleddet ble vektet slik at det veide like mye som resten av tapet på ekstreme dager. Det kan ha dratt modellen for hardt i én retning.
+
+# Men alt var ikke bortkastet!
+
+Faktisk langt ifra:
+
+- **Vanlig finjustering fungerte!** Kontrollarmen ble 5 prosent bedre enn den originale Bris-modellen, fordi den rettet opp at Bris varsler for lite nedbør. Det med ett grafikkort og 30 timer. Bris *kan* påvirkes med relativt lite datakraft.
+- **Halearmen fant flere av de aller verste dagene.** Den varslet 31 prosent av døgnene over 50 mm, mot 24 prosent for kontrollarmen. Riktignok med flere falske alarmer, men den dyttet modellen i riktig retning.
+- **Hele maskineriet står.** Data, trening, varsling, evaluering og regler er på plass. Neste forsøk koster ikke en måned. Det koster noen dager.
+
+# Hva nå?
+
+Et nei med en forklaring er et godt utgangspunkt. Planen videre:
+
+1. **Gjøre forsøkene billigere.** Jeg sjekker nå om 3 000 treningssteg faktisk er nødvendig, eller om 1 000 holder, og om det holder å trene bare deler av modellen. Målet er å gå fra rundt 50 GPU-timer per forsøk til rundt 10.
+2. **Prøve nye varianter av haleleddet** som angriper det som faktisk gikk galt: lavere vekt, en terskel som passer døgnnedbør, og en mykere terskel som ikke gjør ensemblet så skråsikkert.
+3. **Velge den beste på valideringsdata, og teste bare den.** Og i vinter kommer det helt nye data som ingen modell har sett, som blir en perfekt siste test.
+
+Så ja, det er en motbakke. Men jeg vet i hvert fall nå hvor bakken er bratt, og hvorfor.
+
+> “Always listen to experts. They'll tell you what can't be done, and why. Then do it.”
+>
+> — Robert A. Heinlein, *Time Enough for Love*
