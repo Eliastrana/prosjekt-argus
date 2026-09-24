@@ -65,7 +65,33 @@ CRPS vurderer hele ensemblet, ikke bare snittet. Den belønner at medlemmene spr
 
 Det var akkurat det jeg så i valideringsperioden: halearmen hadde lavere feil per medlem, men dårligere CRPS. Haleleddet ser ut til å dra modellen mot sterkere nedbør der det regner mest, men med en vekt på 13 716 koster det mer i spredning og generell dyktighet enn det tjener.
 
-Dette er en tolkning i etterkant, ikke noe evalueringen testet. Neste steg er å sjekke det direkte, ved å sammenligne spredningen i ensemblet med hvor mye det faktisk bommer.
+Det var en tolkning i etterkant, så jeg sjekket den.
+
+## Sjekken: er ensemblet ærlig?
+
+Et ærlig ensemble sprer medlemmene sine omtrent like mye som varselet faktisk bommer. Hvis de fire medlemmene er nesten like, men snittet deres ofte bommer kraftig, er ensemblet for sikkert på seg selv.
+
+Jeg målte det med forholdet mellom spredningen og feilen, justert for at det bare er fire medlemmer. Et ærlig ensemble gir 1. Under 1 betyr for sikkert, over 1 for usikkert. Sjekken er gjort på nøyaktig de samme stasjonsdøgnene som evalueringen, men den ble bestemt etter at svaret var kjent. Den kan forklare resultatet, ikke endre det.
+
+| Døgnet 30 timer fram | Spredning mellom medlemmene | Feil i snittet | Forhold |
+|---|---|---|---|
+| Urørt Bris | 2,04 mm | 4,03 mm | 0,57 |
+| Kontrollarm | **2,70 mm** | 4,02 mm | **0,75** |
+| Halearm | 2,30 mm | 4,08 mm | 0,63 |
+
+Forklaringen holder. De tre modellene bommer nesten nøyaktig like mye, mellom 4,02 og 4,08 millimeter. Forskjellen ligger i spredningen: halearmens medlemmer er 15 prosent mindre uenige enn kontrollarmens. Forskjellen i forholdet er −0,12, med et intervall fra −0,15 til −0,09, og to døgn fram er den nesten like stor.
+
+Når feilen er den samme og spredningen mindre, blir CRPS dårligere. Det er den mest direkte forklaringen på hovedresultatet. Haleleddet dro spredningen tilbake mot der urørt Bris lå, og mistet det meste av det kontrollarmen hadde vunnet.
+
+Det gjelder også der det betyr mest. Der modellene varsler 20 millimeter eller mer, er forholdet 0,80 for kontrollarmen, 0,68 for halearmen og 0,63 for urørt Bris. Her er dagene sortert etter hva modellen varslet, ikke hva som ble målt, så sjekken belønner ikke den som varsler mye.
+
+To forbehold hører med.
+
+**Alle tre ser for sikre ut, men det er delvis målingen.** En regnmåler er et punkt, mens modellen varsler et snitt over en rute på 2,5 ganger 2,5 kilometer. En lokal byge kan treffe måleren og ikke ruta, og det teller som feil ingen modell kan spre seg for. Derfor er forholdene lavest der modellene varsler tørt. Tallene overdriver altså problemet, men sammenligningen mellom modellene er rettferdig, fordi de er målt på nøyaktig de samme dagene.
+
+**Mer spredning er ikke automatisk bedre fysikk.** Valideringen viste at en del av kontrollarmens spredning kom fra småskala støy. Mot målerne lønte det seg, men det er ikke det samme som en modell som forstår usikkerheten sin bedre.
+
+Hvorfor haleleddet krymper spredningen, vet jeg ikke sikkert. En mulig forklaring er at leddet gjør om alt regn under 20 millimeter til 20 før det måler. Da ser det ingen forskjell mellom medlemmene under terskelen, mens den store vekten drar dem mot de samme verdiene over den. Det må testes for seg.
 
 ## En hendelse underveis
 
@@ -79,8 +105,8 @@ Svaret på spørsmålet oppgaven stiller er nei: med denne oppskriften og denne 
 
 Et negativt resultat er fortsatt et resultat. Oppsettet er laget for at det skal være til å stole på: en kontrollarm som bare skiller seg på tapet, et helt år ingen modell har sett, 714 faktiske målere, og regler som var låst før svaret var kjent.
 
-Det gir også noe å gå videre med. Tre ting peker seg ut, alle utenfor det som er testet her:
+Det gir også noe å gå videre med. Tre ting peker seg ut, og ingen av dem er testet med egne treninger ennå:
 
 - **Vekten.** 13 716 ble valgt for at haleleddet og det vanlige leddet skulle veie like mye på ekstreme dager. En lavere vekt kan gi noe av gevinsten på de kraftigste døgnene uten å koste så mye spredning.
-- **Spredningen.** Hvis ensemblet faktisk er for sikkert, er det det første som må løses.
+- **Spredningen.** Sjekken viser at haleleddet gjorde ensemblet for sikkert. Et haleledd som ikke krymper spredningen, eller en justering av spredningen i etterkant, er det første som bør prøves.
 - **Oppskriften.** Begge armene manglet METs spektralledd og trente bare seks timer fram. Begge deler påvirker hvor godt modellen holder seg over lengre ledetider.
