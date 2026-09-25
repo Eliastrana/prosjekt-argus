@@ -328,7 +328,18 @@ function ChartInner({
               .scaleTime()
               .domain([new Date(xExtent[0]), new Date(xExtent[1])])
               .range([0, innerW])
-          : d3.scaleLinear().domain(xExtent).range([0, innerW]).nice();
+          : d3
+              .scaleLinear()
+              // Loose dots get a little room at each end, so the first and
+              // last points are not drawn on top of the axes.
+              .domain(
+                kind === "dots"
+                  ? [xExtent[0] - (xExtent[1] - xExtent[0]) * 0.05,
+                     xExtent[1] + (xExtent[1] - xExtent[0]) * 0.05]
+                  : xExtent,
+              )
+              .range([0, innerW])
+              .nice();
     // Down to zero as before, and below it only when the data goes there: a
     // chart of changes (better or worse than a reference) needs the negative
     // half, and every chart of amounts keeps the axis it had.
