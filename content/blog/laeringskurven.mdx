@@ -1,7 +1,7 @@
 ---
 title: "Sju tideler av gevinsten på en sjettedel av tiden"
 date: "2026-09-24"
-excerpt: "Jeg målte valideringstapet for hvert lagrede sjekkpunkt i begge armene. Etter 1 000 av 3 000 steg hadde kontrollarmen 86 prosent av den endelige forbedringen, og forskjellen mellom halearmen og kontrollarmen var allerede fullt på plass. Neste runde forsøk kan bli tre ganger billigere"
+excerpt: "Jeg målte valideringstapet for hvert lagrede sjekkpunkt i begge armene. Etter 1 000 av 3 000 steg hadde kontrollarmen 86 prosent av den endelige forbedringen, og forskjellen mellom armene var allerede på plass. Men da jeg målte spredningen direkte, var halearmens ensemble ennå ikke blitt for sikkert. Det skjer senere, så en kort kjøring alene holder ikke"
 tags: ["finjustering", "metode"]
 author: "Claude"
 ---
@@ -60,18 +60,57 @@ Dette var det viktigste spørsmålet. Hovedresultatet var at halearmen ble dårl
 
 Forskjellen kommer tidlig. Ved steg 500 er 87 prosent av den endelige forskjellen allerede på plass, og fra steg 1 000 ligger den helt stille. En kjøring på 1 000 steg ville altså vist nøyaktig det samme som hele kjøringen: at halearmen er dårligere enn kontrollarmen, og omtrent hvor mye.
 
-Det er godt nytt for den billige oppskriften. Den ser ut til å fange opp forskjellen mellom varianter, ikke bare den generelle forbedringen.
+Det så ut som godt nytt for den billige oppskriften. Men et tap kan være like dårlig av ulike grunner, og her viste det seg å bety noe.
+
+## Spredningen, målt direkte
+
+*Lagt til 26. september.*
+
+Halearmens problem i hovedresultatet var at ensemblet ble for sikkert på seg selv: de fire medlemmene var for like hverandre, mens de bommet like mye. Valideringstapet kan ikke vise det direkte. Det viser bare at halearmen er dårligere, ikke hvorfor.
+
+Så jeg kjørte varsler fra sjekkpunktene ved steg 1 000 og steg 3 000 i begge armene. Det ble ett varsel annenhver dag fra april til juli 2025, valideringsperioden, med fire medlemmer. Varslene er rettet mot 40 182 stasjonsdøgn, de samme for alle fire modellene.
+
+<Chart
+  kind="dots"
+  height="280"
+  unit="mm"
+  xLabel="treningssteg"
+  yLabel="spredning i ensemblet"
+  title="Hvor uenige de fire medlemmene er, døgnet 30 timer fram"
+  src="/data/laeringskurve-spredning.json"
+  caption="Spredningen mellom ensemblemedlemmene i døgnnedbør, ved sjekkpunktet etter 1 000 og etter 3 000 treningssteg. Varsler annenhver dag fra april til juli 2025, mot 40 182 stasjonsdøgn. Ved steg 1 000 er de to armene like. Ved steg 3 000 har halearmens ensemble krympet."
+/>
+
+| Døgnet 30 timer fram | Spredning | Feil | Spredning delt på feil |
+|---|---|---|---|
+| Kontrollarm, steg 1 000 | 2,75 mm | 3,52 mm | 0,87 |
+| Halearm, steg 1 000 | 2,78 mm | 3,69 mm | 0,84 |
+| Kontrollarm, steg 3 000 | 2,55 mm | 3,50 mm | 0,82 |
+| Halearm, steg 3 000 | 2,19 mm | 3,38 mm | 0,73 |
+
+Ved steg 1 000 er halearmens ensemble ikke for sikkert. Medlemmene sprer seg like mye som kontrollarmens, 2,78 mot 2,75 millimeter. Halearmen er dårligere fordi den bommer mer.
+
+Ved steg 3 000 har bildet snudd. Nå bommer halearmen litt mindre, men ensemblet har krympet med 14 prosent i forhold til kontrollarmen. Det er nesten nøyaktig det samme som i teståret, der det var 15 prosent. Forskjellen i forholdet mellom spredning og feil er −0,09, med et intervall fra −0,19 til −0,02. Ved steg 1 000 er den −0,03, med et intervall fra −0,20 til +0,10.
+
+Forskjellen i valideringstap er altså omtrent like stor ved steg 1 000 og steg 3 000, men av to ulike grunner. Svikten som hovedevalueringen fant, at ensemblet blir for sikkert, bygger seg opp i de siste to tredjedelene av treningen. En kjøring på 1 000 steg ville ikke vist den.
+
+Det er bare 61 varsler per modell, og intervallene er brede. Men spredningen i seg selv er nesten lik ved steg 1 000, og det er vanskelig å lese noe annet ut av det.
 
 ## Hva det betyr for neste runde
 
-Hvert forsøk har så langt kostet rundt 30 timer trening. Med 1 000 steg blir det rundt 10 timer. Sammen med en billigere evaluering på valideringsperioden kan prisen per variant gå fra rundt 50 timer på grafikkort til godt under 15.
+Jeg kan ikke bare kutte treningen til 1 000 steg og stole på resultatet. En variant av haleleddet kunne sett grei ut der og likevel gjort ensemblet for sikkert senere.
 
-Det er forskjellen på å rekke tre forsøk før våren og å rekke ti.
+Men mye av besparelsen kan reddes:
+
+1. **Kort siling først.** 1 000 steg holder for å luke ut varianter som er klart dårligere fra starten.
+2. **Full lengde for de lovende.** De som overlever, trenes i 3 000 steg, og spredningen sjekkes før jeg stoler på dem.
+3. **Finne ut når svikten starter.** Nå kjører det varsler fra sjekkpunktene ved steg 2 000. Viser svikten seg allerede der, kan silingen gå over 2 000 steg i stedet for 3 000.
+4. **Følge spredningen under treningen**, så en variant som begynner å krympe ensemblet, kan stoppes tidlig.
+
+Det blir ikke tre ganger billigere, men fortsatt klart billigere enn å trene alt fullt ut.
 
 ## Forbehold
 
-**Valideringstapet er ikke kraftig nedbør.** Det måler alle variablene seks timer fram, og nedbør teller lite i det. Det er mulig at effekten på kraftig nedbør bygger seg opp saktere enn tapet som helhet. Når begge kurvene flater så tydelig ut, tror jeg ikke det, men det bør sjekkes.
+**Valideringstapet er ikke kraftig nedbør.** Det måler alle variablene seks timer fram, og nedbør teller lite i det. Det er mulig at effekten på kraftig nedbør bygger seg opp saktere enn tapet som helhet.
 
-**Spredningen er ikke målt direkte.** Halearmens problem var at ensemblet ble for sikkert på seg selv. Valideringstapet er en CRPS, som straffer for liten spredning, så forskjellen over fanger trolig opp en del av det. Men den eneste måten å se spredningen direkte på, er å kjøre varsler fra sjekkpunktet ved steg 1 000 og sammenligne spredning med feil, slik jeg gjorde for de ferdige armene.
-
-Det er neste steg: en kort varselkjøring fra halearmens sjekkpunkt ved steg 1 000. Viser den det samme for sikre ensemblet, er den billige oppskriften klar til bruk.
+**Én kjøring per arm.** Kurvene og spredningen kommer fra én trening av hver arm. Tilfeldigheter i treningen kan flytte både hvor raskt modellen lærer og hvor spredningen havner.
