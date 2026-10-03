@@ -441,8 +441,11 @@ function ChartInner({
         .attr("class", "bar")
         .attr("x", (d) => b(d._x) ?? 0)
         .attr("width", b.bandwidth())
-        .attr("y", (d) => scales.y(d.y))
-        .attr("height", (d) => innerH - scales.y(d.y))
+        // From zero, not from the bottom of the axis: a negative value hangs
+        // down from the zero line. Charts of amounts start their axis at zero,
+        // so for them this is the same bar as before.
+        .attr("y", (d) => Math.min(scales.y(d.y), scales.y(0)))
+        .attr("height", (d) => Math.abs(scales.y(d.y) - scales.y(0)))
         .attr("fill", palette.accent)
         .attr("opacity", 0.85)
         .attr("rx", kind === "histogram" ? 1 : 3);
