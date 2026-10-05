@@ -62,6 +62,9 @@ export type ChartProps = {
   height?: number | string;
   /** Clamp the y axis; by default it fits the data including the tail. */
   yMax?: number | string;
+  /** Start the y axis here instead of at zero, to show small changes in a
+   *  large number (a loss of 2.29 against 2.24). Say so in the caption. */
+  yMin?: number | string;
   /** Unit shown on the axis and in the readout. */
   unit?: string;
 };
@@ -241,11 +244,12 @@ export function Chart(props: ChartProps) {
       time={bool(props.time)}
       height={num(props.height, 320)}
       yMax={props.yMax === undefined ? undefined : num(props.yMax, 0)}
+      yMin={props.yMin === undefined ? undefined : num(props.yMin, 0)}
     />
   );
 }
 
-type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax"> & {
+type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax" | "yMin"> & {
   series?: Series[];
   data: Point[];
   compare: Point[];
@@ -253,6 +257,7 @@ type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax"> & 
   time: boolean;
   height: number;
   yMax?: number;
+  yMin?: number;
 };
 
 function ChartInner({
@@ -270,6 +275,7 @@ function ChartInner({
   time = false,
   height = 320,
   yMax,
+  yMin,
   unit = "",
 }: InnerProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -344,13 +350,19 @@ function ChartInner({
     // chart of changes (better or worse than a reference) needs the negative
     // half, and every chart of amounts keeps the axis it had.
     const yLow = Math.min(0, d3.min(all, (d) => d.y) ?? 0);
+    // A chosen floor gets headroom in proportion to the range shown, not to
+    // the value: 6 percent of 2.29 would swamp a range of 0.05.
+    const domain: [number, number] =
+      yMin === undefined
+        ? [yLow * 1.06, yTop * 1.06]
+        : [yMin, yTop + (yTop - yMin) * 0.06];
     const y = d3
       .scaleLinear()
-      .domain([yLow * 1.06, yTop * 1.06])
+      .domain(domain)
       .range([innerH, 0])
       .nice();
     return { x, y };
-  }, [parsed, innerW, innerH, kind, yMax, thresholds, time]);
+  }, [parsed, innerW, innerH, kind, yMax, yMin, thresholds, time]);
 
   const xPos = useCallback(
     (d: { _x: number }) => {
