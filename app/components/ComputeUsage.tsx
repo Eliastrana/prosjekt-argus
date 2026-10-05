@@ -3,11 +3,16 @@
 // Allocated usage on eX3, from the cluster's accounting. Allocated, not used:
 // a job holding 128 cores for seven hours counts 896 core-hours whether it
 // computed anything or not, and failed and cancelled jobs count too.
+//
+// From sacct -X -D: CPUTimeRAW summed for CPU-hours, elapsed time times the
+// GPUs in AllocTRES for GPU-hours. -D keeps the runs Slurm requeued after g003
+// crashed on 3 and 4 October, since those hours were allocated and spent.
+// Running jobs count up to the moment of the snapshot.
 const USAGE = {
-  asOf: "16. september 2026",
-  jobs: 257,
-  cpuHours: 11709.04,
-  gpuHours: 43.76,
+  asOf: "5. oktober 2026",
+  jobs: 354,
+  cpuHours: 28791.3,
+  gpuHours: 253.33,
 };
 
 // List prices for the same resources bought on demand. Chosen to match the
