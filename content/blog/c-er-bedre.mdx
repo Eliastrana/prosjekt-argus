@@ -1,12 +1,14 @@
 ---
-title: "C er bedre 🎉"
+title: "Pavo er bedre 🦚"
 date: "2026-10-09"
-excerpt: "Etter et helt testår er det endelig et resultat som holder: variant C varsler kraftig regn bedre enn kontrollarmen."
+excerpt: "Etter et helt testår er det endelig et resultat som holder: Pavo, variant C, varsler kraftig regn bedre enn kontrollarmen."
 tags: ["finjustering", "resultat"]
 author: "Elias"
 ---
 
-Variant C, Bris finjustert med ekstra vekt på nedbør, bommer helt på langt færre døgn med kraftig regn enn kontrollarmen. Den gir også flere falske alarmer, men når alt regnes med og varslene er kalibrert, er den 7 prosent bedre over et helt testår.
+Variant C har fått et navn: Pavo, latin for påfugl. Da kjempen Argus døde, satte Hera de hundre øynene hans i påfuglens hale, og det er akkurat det denne finjusteringen gjør med Bris.
+
+Pavo bommer helt på langt færre døgn med kraftig regn enn kontrollarmen.
 
 <Chart
   kind="bar"
@@ -17,13 +19,24 @@ Variant C, Bris finjustert med ekstra vekt på nedbør, bommer helt på langt f�
   caption="Av 9 124 døgn der en målestasjon fikk over 20 mm regn, august 2025 til september 2026: hvor mange ganger ingen av modellens fire medlemmer varslet over 20 mm. Lavere er bedre."
 />
 
+Men den roper også ulv oftere:
+
 <Chart
   kind="bar"
   height="280"
   yLabel="antall døgn"
   title="Treff, bom og falske alarmer"
   src="/data/c-er-bedre-treff.json"
-  caption="Her regnes det som et varsel om kraftig regn når minst to av fire medlemmer sier over 20 mm. Treff: varslet, og det kom. Bom: kom, men ikke varslet. Falsk alarm: varslet, men kom ikke. C treffer 1 546 flere ganger og bommer like mye sjeldnere, men gir 2 849 flere falske alarmer."
+  caption="Her regnes det som et varsel om kraftig regn når minst to av fire medlemmer sier over 20 mm. Treff: varslet, og det kom. Bom: kom, men ikke varslet. Falsk alarm: varslet, men kom ikke. Pavo treffer 1 546 flere ganger, men gir 2 849 flere falske alarmer."
 />
 
-C fanger altså mye mer av det kraftige regnet, men roper ulv oftere. De falske alarmene er så systematiske at kalibrering kan rette dem opp, og det er derfor C ender opp som den beste.
+De falske alarmene er systematiske: når Pavo sier 75 prosent, kommer regnet bare i 46 prosent av tilfellene. Kalibrering oversetter hver sannsynlighet til hvor ofte det faktisk skjer, og da snur bildet:
+
+<Chart
+  kind="bar"
+  height="280"
+  yLabel="feil i sannsynlighetsvarselet, lavere er bedre"
+  title="Før og etter kalibrering"
+  src="/data/c-er-bedre-kalibrert.json"
+  caption="Brier-skår for sannsynligheten for over 20 mm i døgnet, hele teståret. Før kalibrering er Pavo dårligst, fordi den overdriver. Etter kalibrering er Pavo best, 7 prosent bedre enn kontrollarmen, fordi den skiller kraftige regndøgn bedre fra andre døgn."
+/>

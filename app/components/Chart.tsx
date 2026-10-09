@@ -22,7 +22,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 
-export type Point = { x: number | string; y: number; label?: string };
+/* `group` colours bars: every bar with the same group gets the same colour and
+   one entry in a legend, so two models can be told apart across a chart whose
+   bars alternate between them. Bars without one keep the accent colour. */
+export type Point = { x: number | string; y: number; label?: string; group?: string };
 export type Series = { name: string; data: Point[] };
 
 /* Colours for multiple lines. The accent stays first so a single-series chart
@@ -307,6 +310,11 @@ function ChartInner({
     };
   }, [data, compare, series, time]);
 
+  const groups = useMemo(
+    () => [...new Set(data.map((p) => p.group).filter((g): g is string => !!g))],
+    [data],
+  );
+
   const margin = { top: 16, right: 16, bottom: 40, left: 56 };
   const innerW = Math.max(0, width - margin.left - margin.right);
   const innerH = Math.max(0, height - margin.top - margin.bottom);
@@ -458,7 +466,11 @@ function ChartInner({
         // so for them this is the same bar as before.
         .attr("y", (d) => Math.min(scales.y(d.y), scales.y(0)))
         .attr("height", (d) => Math.abs(scales.y(d.y) - scales.y(0)))
-        .attr("fill", palette.accent)
+        .attr("fill", (d) =>
+          d.group
+            ? SERIES_COLOURS[groups.indexOf(d.group) % SERIES_COLOURS.length]
+            : palette.accent,
+        )
         .attr("opacity", 0.85)
         .attr("rx", kind === "histogram" ? 1 : 3);
     } else if (parsed.series.length) {
@@ -574,6 +586,7 @@ function ChartInner({
   }, [
     scales,
     parsed,
+    groups,
     hidden,
     palette,
     innerW,
@@ -711,6 +724,23 @@ function ChartInner({
           </>
         ) : null}
       </div>
+      {groups.length > 1 ? (
+        <div className="chart-legend">
+          {groups.map((name, k) => (
+            <span key={name} className="chart-legend-item">
+              <span
+                className="chart-legend-swatch"
+                style={{
+                  background: SERIES_COLOURS[k % SERIES_COLOURS.length],
+                  width: 10,
+                  height: 10,
+                }}
+              />
+              {name}
+            </span>
+          ))}
+        </div>
+      ) : null}
       {parsed.series.length > 1 ? (
         <div className="chart-legend">
           {parsed.series.map((s, k) => {
