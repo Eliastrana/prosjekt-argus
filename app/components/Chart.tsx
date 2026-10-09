@@ -520,6 +520,9 @@ function ChartInner({
           .attr("stroke-opacity", 0.35)
           .attr("stroke-dasharray", "3 4");
       }
+      // Bars grow from zero, or from the bottom of the axis when yMin starts
+      // it above zero; otherwise they would hang out below the chart.
+      const base = scales.y(Math.max(0, scales.y.domain()[0]));
       g.selectAll("rect.bar")
         .data(parsed.main)
         .join("rect")
@@ -529,8 +532,8 @@ function ChartInner({
         // From zero, not from the bottom of the axis: a negative value hangs
         // down from the zero line. Charts of amounts start their axis at zero,
         // so for them this is the same bar as before.
-        .attr("y", (d) => Math.min(scales.y(d.y), scales.y(0)))
-        .attr("height", (d) => Math.abs(scales.y(d.y) - scales.y(0)))
+        .attr("y", (d) => Math.min(scales.y(d.y), base))
+        .attr("height", (d) => Math.abs(scales.y(d.y) - base))
         .attr("fill", (d) =>
           d.group
             ? SERIES_COLOURS[groups.indexOf(d.group) % SERIES_COLOURS.length]
