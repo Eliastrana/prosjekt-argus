@@ -369,19 +369,66 @@ function ChartInner({
       .domain(domain)
       .range([innerH, 0])
       .nice();
-    return { x, y };
-  }, [parsed, innerW, innerH, kind, yMax, yMin, thresholds, time]);
+    // CLUSTERS. Grouped bars that share a label ("Treff" for each model) sit
+    // together, with one label under the cluster and a gap between clusters,
+    // so a row of nine bars reads as three things compared three ways.
+    // Only when labels repeat: bars that each have their own label are one
+    // per cluster, and clustering them would just push each to its slot.
+    const clustered =
+      kind === "bar" &&
+      groups.length > 1 &&
+      parsed.main.every((d) => d.label && d.group) &&
+      new Set(parsed.main.map((d) => d.label)).size < parsed.main.length;
+    const cluster = clustered
+      ? (() => {
+          const outer = d3
+            .scaleBand<string>()
+            .domain([...new Set(parsed.main.map((d) => d.label as string))])
+            .range([0, innerW])
+            .paddingInner(0.28)
+            .paddingOuter(0.1);
+          const inner = d3
+            .scaleBand<string>()
+            .domain(groups)
+            .range([0, outer.bandwidth()])
+            .padding(0.06);
+          return { outer, inner };
+        })()
+      : null;
+    return { x, y, cluster };
+  }, [parsed, groups, innerW, innerH, kind, yMax, yMin, thresholds, time]);
+
+  /* Left edge and width of a bar, in or out of a cluster. */
+  const barBox = useCallback(
+    (d: Point & { _x: number }) => {
+      if (!scales) return { x: 0, w: 0 };
+      if (scales.cluster) {
+        const { outer, inner } = scales.cluster;
+        return {
+          x: (outer(d.label as string) ?? 0) + (inner(d.group as string) ?? 0),
+          w: inner.bandwidth(),
+        };
+      }
+      const b = scales.x as d3.ScaleBand<number>;
+      return { x: b(d._x) ?? 0, w: b.bandwidth() };
+    },
+    [scales],
+  );
 
   const xPos = useCallback(
     (d: { _x: number }) => {
       if (!scales) return 0;
+      if (scales.cluster) {
+        const box = barBox(d as Point & { _x: number });
+        return box.x + box.w / 2;
+      }
       if ("bandwidth" in scales.x) {
         const b = scales.x as d3.ScaleBand<number>;
         return (b(d._x) ?? 0) + b.bandwidth() / 2;
       }
       return (scales.x as d3.ScaleLinear<number, number>)(d._x as never);
     },
-    [scales],
+    [scales, barBox],
   );
 
   useEffect(() => {
@@ -407,8 +454,9 @@ function ChartInner({
       .attr("stroke-width", 1);
 
     // ---- axes -------------------------------------------------------------
-    const xAxis =
-      "bandwidth" in scales.x
+    const xAxis = scales.cluster
+      ? d3.axisBottom(scales.cluster.outer).tickSizeOuter(0)
+      : "bandwidth" in scales.x
         ? d3
             .axisBottom(scales.x as d3.ScaleBand<number>)
             .tickFormat((d) => {
@@ -454,13 +502,30 @@ function ChartInner({
 
     // ---- the series -------------------------------------------------------
     if (kind === "bar" || kind === "histogram") {
-      const b = scales.x as d3.ScaleBand<number>;
+      // A faint line halfway between clusters, so each one reads as its own
+      // section rather than as the next bars along.
+      if (scales.cluster) {
+        const { outer } = scales.cluster;
+        const step = outer.step();
+        const gap = step - outer.bandwidth();
+        g.append("g")
+          .selectAll("line")
+          .data(outer.domain().slice(1))
+          .join("line")
+          .attr("x1", (c) => (outer(c) ?? 0) - gap / 2)
+          .attr("x2", (c) => (outer(c) ?? 0) - gap / 2)
+          .attr("y1", 0)
+          .attr("y2", innerH)
+          .attr("stroke", palette.muted)
+          .attr("stroke-opacity", 0.35)
+          .attr("stroke-dasharray", "3 4");
+      }
       g.selectAll("rect.bar")
         .data(parsed.main)
         .join("rect")
         .attr("class", "bar")
-        .attr("x", (d) => b(d._x) ?? 0)
-        .attr("width", b.bandwidth())
+        .attr("x", (d) => barBox(d).x)
+        .attr("width", (d) => barBox(d).w)
         // From zero, not from the bottom of the axis: a negative value hangs
         // down from the zero line. Charts of amounts start their axis at zero,
         // so for them this is the same bar as before.
@@ -585,6 +650,7 @@ function ChartInner({
     });
   }, [
     scales,
+    barBox,
     parsed,
     groups,
     hidden,
@@ -638,7 +704,7 @@ function ChartInner({
         y: scales.y(best.y) + margin.top,
         point: best,
         compare: cmp,
-        name: bestName,
+        name: bestName ?? best.group,
       });
     },
     [scales, parsed, hidden, innerW, xPos, margin.left, margin.top],
