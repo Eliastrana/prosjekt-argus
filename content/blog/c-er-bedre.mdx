@@ -8,7 +8,7 @@ author: "Elias"
 
 Variant C kalles Pavo, og er Bris finjustert i 2 000 steg med et ekstra ensembletap på all nedbør over Norden (vekt 39,09, ingen terskel), ellers helt likt kontrollarmen.
 
-Pavo bommer helt på langt færre døgn med kraftig regn enn kontrollarmen.
+Grafene sammenligner tre modeller: vanlig Bris slik MET publiserte den, kontrollarmen (Bris finjustert på de samme dataene uten det ekstra leddet) og Pavo. Pavo bommer helt på langt færre døgn med kraftig regn enn begge.
 
 <Chart
   kind="bar"
@@ -27,7 +27,7 @@ Men den roper også ulv oftere:
   yLabel="antall døgn"
   title="Treff, bom og falske alarmer"
   src="/data/c-er-bedre-treff.json"
-  caption="Her regnes det som et varsel om kraftig regn når minst to av fire medlemmer sier over 20 mm. Treff: varslet, og det kom. Bom: kom, men ikke varslet. Falsk alarm: varslet, men kom ikke. Pavo treffer 1 546 flere ganger, men gir 2 849 flere falske alarmer."
+  caption="Her regnes det som et varsel om kraftig regn når minst to av fire medlemmer sier over 20 mm. Treff: varslet, og det kom. Bom: kom, men ikke varslet. Falsk alarm: varslet, men kom ikke. Pavo treffer 1 546 flere ganger enn kontrollarmen og 2 115 flere enn vanlig Bris, men gir også langt flere falske alarmer."
 />
 
 De falske alarmene er systematiske: når Pavo sier 75 prosent, kommer regnet bare i 46 prosent av tilfellene. Kalibrering oversetter hver sannsynlighet til hvor ofte det faktisk skjer, og da snur bildet:
@@ -38,5 +38,5 @@ De falske alarmene er systematiske: når Pavo sier 75 prosent, kommer regnet bar
   yLabel="feil i sannsynlighetsvarselet, lavere er bedre"
   title="Før og etter kalibrering"
   src="/data/c-er-bedre-kalibrert.json"
-  caption="Brier-skår for sannsynligheten for over 20 mm i døgnet, hele teståret. Før kalibrering er Pavo dårligst, fordi den overdriver. Etter kalibrering er Pavo best, 7 prosent bedre enn kontrollarmen, fordi den skiller kraftige regndøgn bedre fra andre døgn."
+  caption="Brier-skår for sannsynligheten for over 20 mm i døgnet, hele teståret. Før kalibrering er Pavo dårligst, fordi den overdriver. Etter kalibrering er Pavo best, 7 prosent bedre enn kontrollarmen og 8 prosent bedre enn vanlig Bris, fordi den skiller kraftige regndøgn bedre fra andre døgn."
 />
