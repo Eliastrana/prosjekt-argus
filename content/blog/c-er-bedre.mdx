@@ -6,15 +6,13 @@ tags: ["finjustering", "resultat"]
 author: "Elias"
 ---
 
-Variant C, Bris finjustert med ekstra vekt på nedbør, varsler kraftig regn 7 prosent bedre enn kontrollarmen etter kalibrering, over et helt testår. Planen ble låst før varslene fantes, og hele intervallet ligger under null.
+Variant C, Bris finjustert med ekstra vekt på nedbør, bommer helt på langt færre døgn med kraftig regn enn kontrollarmen. Den gir også flere falske alarmer, men når alt regnes med og varslene er kalibrert, er den 7 prosent bedre over et helt testår.
 
 <Chart
   kind="bar"
   height="260"
-  unit="%"
-  yLabel="mot kontrollarmen, lavere er bedre"
-  title="Hvor mye bedre C er, kalibrert, hele teståret"
+  yLabel="antall døgn"
+  title="Døgn med kraftig regn modellen bommet helt på"
   src="/data/c-er-bedre.json"
-  thresholds='[{"value":0,"label":"som kontrollarmen"}]'
-  caption="Endring i kalibrert Brier-skår, C mot kontrollarmen, 259 178 stasjonsdøgn fra august 2025 til september 2026. Under null er bedre."
+  caption="Av 9 124 døgn der en målestasjon fikk over 20 mm regn, august 2025 til september 2026: hvor mange ganger ingen av modellens fire medlemmer varslet over 20 mm. Lavere er bedre."
 />
