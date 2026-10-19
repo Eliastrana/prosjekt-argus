@@ -32,7 +32,7 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       aria-label="Bytt mellom lys og mørk modus"
       title="Bytt mellom lys og mørk modus"
-      className="grid size-10 shrink-0 place-items-center rounded-full text-foreground transition hover:bg-tint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95"
+      className="grid size-9 shrink-0 place-items-center rounded-full text-foreground sm:size-10 transition hover:bg-tint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95"
     >
       <span className="theme-icon theme-icon--light" aria-hidden="true">
         ☀︎

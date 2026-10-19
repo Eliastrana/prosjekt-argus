@@ -11,6 +11,7 @@ const navItems = [
   { href: "/papers", label: "Artikler" },
   // { href: "/steps", label: "Fremgang" },
   { href: "/blog", label: "Blog" },
+  { href: "/modeller", label: "Modeller" },
 ];
 
 export default function Navbar() {
@@ -57,7 +58,7 @@ export default function Navbar() {
       ].join(" ")}
     >
       <nav className="relative mx-auto flex max-w-5xl items-center justify-center px-6 py-4">
-        <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-foreground/8 bg-card/95 px-2 py-2 shadow-[0_10px_35px_rgba(15,23,42,0.08)] backdrop-blur-md">
+        <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-foreground/8 bg-card/95 px-1.5 py-1.5 sm:gap-1 sm:px-2 sm:py-2 shadow-[0_10px_35px_rgba(15,23,42,0.08)] backdrop-blur-md">
           {navItems.map((item) => {
             const active = isActive(item.href);
 
@@ -67,7 +68,7 @@ export default function Navbar() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={[
-                  "rounded-full px-4 py-2 text-sm font-semibold transition",
+                  "rounded-full px-2.5 py-2 text-[13px] font-semibold transition sm:px-4 sm:text-sm",
                   active
                     ? "bg-tint text-foreground"
                     : "text-muted hover:bg-tint hover:text-foreground",
@@ -85,7 +86,7 @@ export default function Navbar() {
             className={[
               // Matches ThemeToggle's shape so the two icon controls sit as a
               // pair after the divider.
-              "grid size-10 shrink-0 place-items-center rounded-full transition",
+              "grid size-9 shrink-0 place-items-center rounded-full transition sm:size-10",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95",
               isActive("/bris")
                 ? "bg-tint text-foreground"
