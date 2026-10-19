@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ModelLineage, { type LineageInfo } from "@/app/components/ModelLineage";
 
 export const metadata: Metadata = {
   title: "Modellene",
@@ -244,6 +245,25 @@ const SECTIONS: Section[] = [
   },
 ];
 
+/* Every training run in the order it ran, from sacct on ex3. The step-2000
+   versions of the control and tail arms are not here: they are checkpoints
+   of those runs, not runs of their own. */
+type Run = { when: string; tags: string[]; hours?: string; note?: string; status: Status };
+
+const RUNS: Run[] = [
+  { when: "14.–15. sep", tags: ["control"], hours: "29 t", note: "gir også kontrollarmen ved steg 2 000", status: "ferdig" },
+  { when: "16.–18. sep", tags: ["tail"], hours: "29 t", note: "gir også halearmen ved steg 2 000", status: "ferdig" },
+  { when: "1.–2. okt", tags: ["tailA2000", "tailB2000"], hours: "18,5 t", note: "side om side på hvert sitt H200-kort", status: "ferdig" },
+  { when: "2.–3. okt", tags: ["tailC2000"], hours: "18,5 t", status: "ferdig" },
+  { when: "4.–5. okt", tags: ["tailE2000"], hours: "18,5 t", note: "startet på nytt etter at g003 krasjet", status: "ferdig" },
+  { when: "5.–6. okt", tags: ["control2000s2"], hours: "18,5 t", status: "ferdig" },
+  { when: "6.–7. okt", tags: ["tailD2000"], hours: "18,5 t", status: "ferdig" },
+  { when: "14.–15. okt", tags: ["tailC2000s2"], hours: "18,5 t", status: "ferdig" },
+  { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "18,5 t", status: "trener" },
+  { when: "20.–21. okt", tags: ["tail30th2000"], hours: "18,5 t", status: "i kø" },
+  { when: "21.–22. okt", tags: ["tailC3000"], hours: "~28 t", status: "i kø" },
+];
+
 const COMMON: { term: string; value: string }[] = [
   { term: "Utgangspunkt", value: "Bris fra MET, varm start med bare vektene" },
   { term: "Rammeverk", value: "anemoi-training 0.5.1" },
@@ -280,6 +300,11 @@ function ResultCell({ m }: { m: Model }) {
 }
 
 export default function ModelsPage() {
+  const byTag: Record<string, Model> = Object.fromEntries(
+    SECTIONS.flatMap((section) => section.models).map((m) => [m.tag, m]),
+  );
+  const info: Record<string, LineageInfo> = byTag;
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
@@ -293,7 +318,57 @@ export default function ModelsPage() {
           </p>
         </header>
 
-        <section className="mt-12 flex flex-col gap-12">
+        <section className="mt-12 flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-lg font-semibold tracking-tight">Hvordan modellene henger sammen</h2>
+            <p className="text-sm text-muted">
+              Hver modell er en endring av den den kommer fra. Teksten under navnet sier hva som ble
+              endret, og tallet er resultatet over 20 mm på teståret.
+            </p>
+          </div>
+          <ModelLineage info={info} />
+        </section>
+
+        <section className="mt-14 flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-lg font-semibold tracking-tight">Treningene i rekkefølge</h2>
+            <p className="text-sm text-muted">
+              Alle treningskjøringene etter dato, på H200-kortene på eX3.
+            </p>
+          </div>
+          <ol className="relative ml-2 flex flex-col border-l border-foreground/10">
+            {RUNS.map((run) => {
+              const pending = run.status !== "ferdig";
+              return (
+                <li key={run.tags.join("+")} className="relative grid gap-1 py-3 pl-6 sm:grid-cols-[8.5rem_1fr] sm:gap-4">
+                  <span
+                    className={[
+                      "absolute -left-[5px] top-[18px] size-2.5 rounded-full",
+                      pending ? "border border-dashed border-foreground/40 bg-background" : "bg-accent",
+                    ].join(" ")}
+                  />
+                  <span className="text-sm tabular-nums text-muted">{run.when}</span>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="font-medium">
+                        {run.tags.map((t) => byTag[t]?.name ?? t).join(" og ")}
+                      </span>
+                      {run.hours ? <span className="text-xs text-muted">{run.hours}</span> : null}
+                      {pending ? (
+                        <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_STYLE[run.status]}`}>
+                          {run.status}
+                        </span>
+                      ) : null}
+                    </div>
+                    {run.note ? <span className="text-xs text-muted">{run.note}</span> : null}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+
+        <section className="mt-14 flex flex-col gap-12">
           {SECTIONS.map((section) => (
             <div key={section.title} className="flex flex-col gap-3">
               <div className="flex flex-col gap-1">
