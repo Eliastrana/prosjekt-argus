@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ModelLineage, { type LineageInfo } from "@/app/components/ModelLineage";
 
 export const metadata: Metadata = {
@@ -287,6 +288,133 @@ const STATUS_STYLE: Record<Status, string> = {
   "i kø": "bg-foreground/5 text-muted",
 };
 
+/* The calibration every result on this page goes through, explained once.
+   Numbers are Pavo's and the control arm's at 20 mm on the test year
+   (hits_and_calibration.py, month-out). */
+const CALIBRATION_EXAMPLE = [
+  { said: "0 %", members: "0 av 4", control: "1 %", pavo: "0,6 %" },
+  { said: "25 %", members: "1 av 4", control: "22 %", pavo: "14 %" },
+  { said: "50 %", members: "2 av 4", control: "44 %", pavo: "30 %" },
+  { said: "75 %", members: "3 av 4", control: "58 %", pavo: "46 %" },
+  { said: "100 %", members: "4 av 4", control: "78 %", pavo: "71 %" },
+];
+
+function Formula({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="overflow-x-auto rounded-xl bg-background px-4 py-3 font-mono text-[13px] leading-relaxed text-foreground">
+      {children}
+    </div>
+  );
+}
+
+function CalibrationExplainer() {
+  return (
+    <section className="mt-14 flex flex-col gap-6">
+      <div className="flex max-w-3xl flex-col gap-1">
+        <h2 className="text-lg font-semibold tracking-tight">Kalibreringen, kort forklart</h2>
+        <p className="text-sm text-muted">
+          Alle prosentene over er målt etter kalibrering. Her er hva det betyr.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        {[
+          {
+            title: "Hva den gjør",
+            text: "Bris sier en sannsynlighet: hvor mange av de fire ensemblemedlemmene som varsler over 20 mm. Kalibrering bytter ut den sannsynligheten med hvor ofte det faktisk regnet så mye de gangene modellen sa nettopp det.",
+          },
+          {
+            title: "Hvorfor den trengs",
+            text: "Modellene er overmodige. Når Pavo sier 75 prosent, kommer regnet bare i 46 prosent av tilfellene. Uten kalibrering straffes en modell for å overdrive, selv om den skiller kraftige regndøgn godt fra andre.",
+          },
+          {
+            title: "Hva den ikke kan",
+            text: "Den endrer bare tallene, ikke rekkefølgen. Døgnene modellen var mest sikker på, er fortsatt de den er mest sikker på. Kalibrering gjør en modell ærlig, ikke flinkere.",
+          },
+        ].map((c) => (
+          <div key={c.title} className="flex flex-col gap-2 rounded-2xl border border-foreground/8 bg-card p-5">
+            <h3 className="text-sm font-semibold">{c.title}</h3>
+            <p className="text-sm text-muted">{c.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-[1fr_1.1fr]">
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold">Oversettelsestabellen, med ekte tall</h3>
+          <p className="text-sm text-muted">
+            Over 20 mm i døgnet, hele teståret. Hver rad er det modellen sa, og hva det betydde i
+            virkeligheten. De to siste kolonnene er kalibreringen for hver modell.
+          </p>
+          <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-foreground/10 text-xs text-muted">
+                  <th className="px-4 py-2.5 font-medium">Medlemmer</th>
+                  <th className="px-4 py-2.5 text-right font-medium">Modellen sa</th>
+                  <th className="px-4 py-2.5 text-right font-medium">Kontrollarm, faktisk</th>
+                  <th className="px-4 py-2.5 text-right font-medium">Pavo, faktisk</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CALIBRATION_EXAMPLE.map((r) => (
+                  <tr key={r.said} className="border-b border-foreground/5 last:border-0">
+                    <td className="px-4 py-2.5 text-muted">{r.members}</td>
+                    <td className="px-4 py-2.5 text-right tabular-nums">{r.said}</td>
+                    <td className="px-4 py-2.5 text-right tabular-nums">{r.control}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold tabular-nums text-accent">{r.pavo}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold">Matematikken</h3>
+          <p className="text-sm text-muted">
+            <span className="text-foreground">1. Tell opp.</span> For hvert svar <i>p</i> modellen kan
+            gi, ta alle døgnene der den sa <i>p</i>, og se hvor stor andel av dem som fikk over 20 mm:
+          </p>
+          <Formula>
+            kalibrert(p) = antall døgn over 20 mm da modellen sa p / antall døgn modellen sa p
+            <br />
+            <span className="text-muted">eksempel: Pavo sa 75 % på 3 429 døgn, 1 576 fikk over 20 mm → 46 %</span>
+          </Formula>
+          <p className="text-sm text-muted">
+            <span className="text-foreground">2. Tabellen må gå oppover.</span> Flere medlemmer kan aldri
+            bety lavere sannsynlighet. Går to nabotrinn feil vei, slås de sammen til ett felles tall.
+            Det kalles isotonisk regresjon.
+          </p>
+          <p className="text-sm text-muted">
+            <span className="text-foreground">3. Ingen jukser.</span> Tabellen for hver måned lages av
+            alle de andre månedene, så ingen måned kalibreres med seg selv.
+          </p>
+          <p className="text-sm text-muted">
+            <span className="text-foreground">4. Mål treffsikkerheten.</span> Brier-skåren er snittet av
+            kvadrert avvik mellom sannsynligheten og fasiten (1 hvis det kom over 20 mm, 0 hvis ikke).
+            Lavere er bedre. Den kan deles i tre:
+          </p>
+          <Formula>
+            Brier = (1/N) · Σ (p − fasit)²
+            <br />
+            Brier = usikkerhet − oppløsning + pålitelighetsfeil
+          </Formula>
+          <p className="text-sm text-muted">
+            Kalibrering fjerner pålitelighetsfeilen, altså overdrivelsen. Usikkerheten er den samme
+            for alle modeller. Da står bare oppløsningen igjen: hvor godt modellen skiller kraftige
+            regndøgn fra andre. Det er den prosentene på denne siden egentlig måler.{" "}
+            <Link href="/blog/kalibrering" className="text-foreground underline underline-offset-2 hover:text-accent">
+              Les hele forklaringen
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ResultCell({ m }: { m: Model }) {
   if (!m.result) return <span className="text-muted">–</span>;
   if (m.result === "referanse")
@@ -330,6 +458,8 @@ export default function ModelsPage() {
           </div>
           <ModelLineage info={info} />
         </section>
+
+        <CalibrationExplainer />
 
         <section className="mt-14 flex flex-col gap-3">
           <div className="flex flex-col gap-1">
