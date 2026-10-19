@@ -1,3 +1,5 @@
+"use client";
+
 /* Which model is derived from which, drawn as a tree from left to right.
    Edges are config inheritance (bris/train/*.yaml: each arm names the config
    it changes), plus the shorter versions, which are not separate runs at all
@@ -6,10 +8,17 @@
    Layout is a plain tidy tree: leaves get one row each in the order given,
    a parent sits halfway between its first and last child. With fourteen nodes
    nothing cleverer is needed, and a fixed layout keeps the picture the same
-   for everyone. */
+   for everyone.
+
+   The field pans and zooms with d3-zoom: drag to move, scroll or pinch to
+   zoom, buttons for the same and to fit it back into view. */
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import * as d3 from "d3";
 
 export type LineageInfo = {
   name: string;
+  steps: string;
   result?: string;
   better?: boolean;
   status: string;
@@ -33,17 +42,17 @@ const TREE: TreeNode = {
   children: [
     {
       tag: "control", label: "Kontrollarm",
-      change: "finjustert, 3 000 steg",
+      change: "finjustert",
       kind: "reference",
       children: [
-        { tag: "control2000", label: "Kontrollarm, 2 000", change: "stoppet ved steg 2 000", kind: "reference", checkpoint: true },
-        { tag: "control2000s2", label: "F", change: "nytt seed, 2 000 steg", kind: "reference" },
+        { tag: "control2000", label: "Kontrollarm, steg 2 000", change: "stoppet tidligere", kind: "reference", checkpoint: true },
+        { tag: "control2000s2", label: "F", change: "nytt seed", kind: "reference" },
         {
-          tag: "tail", label: "Halearm",
+          tag: "tail", label: "Opprinnelig halearm",
           change: "+ haleledd, hard 20 mm",
           kind: "hard",
           children: [
-            { tag: "tail2000", label: "Halearm, 2 000", change: "stoppet ved steg 2 000", kind: "hard", checkpoint: true },
+            { tag: "tail2000", label: "Opprinnelig, steg 2 000", change: "stoppet tidligere", kind: "hard", checkpoint: true },
             {
               tag: "tailA2000", label: "A",
               change: "vekt 1/10",
@@ -62,7 +71,7 @@ const TREE: TreeNode = {
               children: [
                 { tag: "tailE2000", label: "E", change: "1/3 av Pavos vekt", kind: "low" },
                 { tag: "tailC2000s2", label: "Pavo, ny trekning", change: "nytt seed", kind: "low" },
-                { tag: "tailC3000", label: "Pavo, 3 000 steg", change: "3 000 steg", kind: "low" },
+                { tag: "tailC3000", label: "Pavo, 3 000 steg", change: "hele planen", kind: "low" },
               ],
             },
           ],
@@ -72,9 +81,9 @@ const TREE: TreeNode = {
   ],
 };
 
-const NODE_W = 168;
-const NODE_H = 64;
-const COL = 204;
+const NODE_W = 188;
+const NODE_H = 66;
+const COL = 222;
 const ROW = 78;
 const PAD = 8;
 
@@ -96,21 +105,91 @@ function layout(root: TreeNode): Placed[] {
   return out;
 }
 
+/* "−6,1 %" reads as a change in a score most people have never met; say
+   which way it went instead. */
+function verdict(result: string): string {
+  if (result.startsWith("−")) return `${result.slice(1)} bedre`;
+  if (result.startsWith("+")) return `${result.slice(1)} dårligere`;
+  return result;
+}
+
 const KIND_DOT: Record<Kind, string> = {
   reference: "bg-muted",
   hard: "bg-[#f59e0b]",
   low: "bg-accent",
 };
 
+
+function ZoomButton({ label, onClick, children }: { label: string; onClick: () => void; children: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      onClick={onClick}
+      className="grid size-8 place-items-center rounded-lg border border-foreground/10 bg-background/90 text-sm text-foreground backdrop-blur transition hover:bg-tint"
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function ModelLineage({ info }: { info: Record<string, LineageInfo> }) {
   const placed = layout(TREE);
   const width = Math.max(...placed.map((p) => p.x)) + NODE_W + PAD;
   const height = Math.max(...placed.map((p) => p.y)) + NODE_H + PAD;
 
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const zoomRef = useRef<d3.ZoomBehavior<HTMLDivElement, unknown> | null>(null);
+  const [t, setT] = useState<d3.ZoomTransform>(d3.zoomIdentity);
+
+  // The whole tree, centred and as large as fits, but never enlarged.
+  const fitted = useCallback(() => {
+    const w = fieldRef.current?.clientWidth ?? width;
+    const h = fieldRef.current?.clientHeight ?? height;
+    const k = Math.min(1, (w - 16) / width, (h - 16) / height);
+    return d3.zoomIdentity.translate((w - width * k) / 2, (h - height * k) / 2).scale(k);
+  }, [width, height]);
+
+  useEffect(() => {
+    const el = fieldRef.current;
+    if (!el) return;
+    const zoom = d3
+      .zoom<HTMLDivElement, unknown>()
+      .scaleExtent([0.3, 2.5])
+      .on("zoom", (e: d3.D3ZoomEvent<HTMLDivElement, unknown>) => setT(e.transform));
+    zoomRef.current = zoom;
+    const sel = d3.select(el);
+    sel.call(zoom).on("dblclick.zoom", null);
+    sel.call(zoom.transform, fitted());
+    return () => {
+      sel.on(".zoom", null);
+    };
+  }, [fitted]);
+
+  const zoomBy = useCallback((factor: number) => {
+    const el = fieldRef.current;
+    const zoom = zoomRef.current;
+    if (el && zoom) d3.select(el).transition().duration(200).call(zoom.scaleBy, factor);
+  }, []);
+
+  const showAll = useCallback(() => {
+    const el = fieldRef.current;
+    const zoom = zoomRef.current;
+    if (el && zoom) d3.select(el).transition().duration(300).call(zoom.transform, fitted());
+  }, [fitted]);
+
   return (
     <div className="flex flex-col gap-3">
-      <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
-        <div className="relative mx-auto" style={{ width, height }}>
+      <div
+        ref={fieldRef}
+        className="relative cursor-grab touch-none overflow-hidden rounded-2xl border border-foreground/8 bg-card active:cursor-grabbing"
+        style={{ height: "min(720px, 72vh)" }}
+      >
+        <div
+          className="absolute left-0 top-0 origin-top-left"
+          style={{ width, height, transform: `translate(${t.x}px, ${t.y}px) scale(${t.k})` }}
+        >
           <svg
             width={width}
             height={height}
@@ -166,11 +245,15 @@ export default function ModelLineage({ info }: { info: Record<string, LineageInf
                   <div className="truncate text-muted">publisert av MET</div>
                 )}
                 <div className="truncate">
+                  <span className="text-muted">
+                    {m?.steps && m.steps !== "–" ? `${m.steps} steg` : "0 steg"}
+                    {" · "}
+                  </span>
                   {pending ? (
                     <span className="text-muted">{m?.status}</span>
                   ) : m?.result && m.result !== "referanse" ? (
                     <span className={m.better ? "font-semibold text-accent" : "text-muted"}>
-                      {m.result}
+                      {verdict(m.result)}
                     </span>
                   ) : (
                     <span className="text-muted">{m?.result ?? ""}</span>
@@ -179,6 +262,14 @@ export default function ModelLineage({ info }: { info: Record<string, LineageInf
               </div>
             );
           })}
+        </div>
+        <div className="absolute right-3 top-3 flex flex-col gap-1">
+          <ZoomButton label="Zoom inn" onClick={() => zoomBy(1.3)}>+</ZoomButton>
+          <ZoomButton label="Zoom ut" onClick={() => zoomBy(1 / 1.3)}>−</ZoomButton>
+          <ZoomButton label="Vis hele" onClick={showAll}>⤢</ZoomButton>
+        </div>
+        <div className="pointer-events-none absolute bottom-3 left-3 rounded-md bg-background/80 px-2 py-1 text-[11px] text-muted backdrop-blur">
+          dra for å flytte, scroll eller knip for å zoome
         </div>
       </div>
       <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted">

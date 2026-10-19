@@ -323,7 +323,9 @@ export default function ModelsPage() {
             <h2 className="text-lg font-semibold tracking-tight">Hvordan modellene henger sammen</h2>
             <p className="text-sm text-muted">
               Hver modell er en endring av den den kommer fra. Teksten under navnet sier hva som ble
-              endret, og tallet er resultatet over 20 mm på teståret.
+              endret. Tallet nederst er hvor mye bedre eller dårligere modellen varsler mer enn 20 mm
+              regn i døgnet enn kontrollarmen med samme antall steg, etter kalibrering, over hele
+              teståret. Grønt betyr at forskjellen er sikker, grått at den kan være tilfeldig.
             </p>
           </div>
           <ModelLineage info={info} />
