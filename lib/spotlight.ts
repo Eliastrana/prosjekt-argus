@@ -23,6 +23,21 @@ export type Spotlight = {
   /* What the extra penalty counts, in a sentence, and how it gets there. */
   sees: { short: string; how: string };
   code: { threshold: string; weight: string };
+  /* The same model for MET's Bris developers: exact settings and every
+     number with its interval. Shown at /modeller/<id>?for=met. */
+  expert: Expert;
+};
+
+export type ExpertResult = { label: string; value: string; ci?: string; good?: boolean; note?: string };
+
+export type Expert = {
+  tldr: string;
+  threshold: string;
+  gamma: string;
+  measured: string;
+  yaml: string;
+  results: ExpertResult[];
+  notes: string[];
 };
 
 const SHARED_ROWS: Row[] = [
@@ -74,6 +89,46 @@ export const SPOTLIGHT: Spotlight[] = [
       how: "Straffen sammenligner nedbøren modellen varslet med nedbøren som faktisk kom, på hvert punkt over Norden, akkurat som den vanlige poengsummen gjør. Ingenting filtreres bort. En feil på 2 mm i lett regn teller, og en feil på 30 mm i et styrtregn teller.",
     },
     code: { threshold: "ingen (−1 000 000)", weight: "39,09" },
+    expert: {
+      tldr: "bris-crpsfft finjustert 2 000 steg med afCRPS pluss et andre afCRPS-ledd på tp over LAM-nodene, uten terskel, γ = 39,09. Rå er Brier over 20 mm/døgn 6,5 % verre enn kontrollarmen (overvarsling), men etter isotonisk kalibrering 7,1 % bedre, og ROC-arealet går fra 0,851 til 0,908. Gjentatt med nytt seed: −6,6 %.",
+      threshold: "−10⁶ (normalisert), så v(z) = z: leddet er afCRPS på rå tp",
+      gamma: "39,09",
+      measured: "Målt på CPU på de samme 23 ekstreme og 23 vanlige tilstandene som de andre armene: leddet er like stort som afCRPS på ekstreme tilstander ved γ* = 390,9 (median av forhold per tilstand 385,1), og Pavo bruker γ*/10. Uten terskel er leddet like stort på vanlige tilstander, så over hele treningsvinduet er det omtrent 5 % av tapet, mot omtrent 2 % for armene med terskel.",
+      yaml: `training:
+  max_steps: 2000
+  lr: { rate: 3.75e-6, min: 3.75e-7, iterations: 3000, warmup: 100 }
+  ensemble_size_per_device: 3
+  training_loss:
+    _target_: anemoi.training.losses.combined.CombinedLoss
+    losses:
+      - _target_: anemoi.training.losses.AlmostFairKernelCRPS
+        alpha: 0.95
+        scalers: [pressure_level, general_variable, nan_mask_weights, node_weights]
+      - _target_: xbris.losses.TailWeightedKernelCRPS
+        alpha: 0.95
+        scalers: [pressure_level, general_variable, nan_mask_weights, lam_node_weights]
+        tail_threshold: -1.0e6     # ingen terskel
+        tail_variable: tp
+        tail_index: 38
+    scalers: ['*']
+    loss_weights: [1.0, 39.09]`,
+      results: [
+        { label: "Kalibrert Brier, 20 mm, mot kontrollarmen", value: "−0,00154 (−7,1 %)", ci: "[−0,00218, −0,00100]", good: true, note: "primærendepunkt, plan låst på forhånd" },
+        { label: "Ny trekning (seed 20261003) mot F", value: "−0,00143 (−6,6 %)", ci: "[−0,00205, −0,00091]", good: true, note: "replikasjon, egen låst plan" },
+        { label: "Kalibrering tilpasset valideringsperioden", value: "−0,00201 (−9,0 %)", ci: "[−0,00283, −0,00130]", good: true, note: "tabell fra apr–jul 2025 brukt uendret" },
+        { label: "Bilineær punktuttrekk (gridpp-stil)", value: "−0,00146 (−6,8 %)", ci: "[−0,00210, −0,00091]", good: true },
+        { label: "Kalibrert Brier, 10 mm", value: "−0,00184 (−3,7 %)", ci: "[−0,00292, −0,00074]", good: true },
+        { label: "Kalibrert Brier, 50 mm", value: "−0,00005 (−2,4 %)", ci: "[−0,00012, +0,00003]", note: "603 hendelser, ikke avgjort" },
+        { label: "Rå Brier, 20 mm", value: "0,02397 mot 0,02250", note: "+6,5 %, frekvensbias 1,41 ved 2 av 4 medlemmer" },
+        { label: "ROC-areal, 20 mm", value: "0,908 mot 0,851", good: true, note: "vanlig Bris 0,808" },
+        { label: "Stasjonens egen 99-persentil", value: "−0,00040 (−4,6 %)", ci: "[−0,00058, −0,00024]", good: true, note: "utforskende" },
+      ],
+      notes: [
+        "Kontrollarmen er identisk bortsett fra det andre leddet (sjekket med en diff av de komponerte Hydra-konfigurasjonene). Normaliseringen er arvet fra sjekkpunktet: bufferne er bit-like i kontrollarmen, Pavo og bris-crpsfft.",
+        "Gevinsten etter kalibrering kommer fra oppløsning, ikke pålitelighet. Pavo legger 15 % av hendelsene over 20 mm i 0-av-4-kategorien, mot 27 % for kontrollarmen, men har fire ganger så stor pålitelighetsfeil før kalibrering.",
+        "Fordelen holder med 16 medlemmer på 61 valideringsdøgn (kalibrert −6,1 %, intervallet berører null på så få døgn, som det også gjorde med 4), så den skyldes ikke bare at fire medlemmer gir grove sannsynligheter.",
+      ],
+    },
     subtitle: "Bris trent til å ta all nedbør mer på alvor",
     oneLiner:
       "Vanlig Bris trent videre med en ekstra straff for feil i nedbøren. Den varsler kraftig regn for ofte, men er best til å skjelne dagene som faktisk blir våte.",
@@ -133,6 +188,44 @@ export const SPOTLIGHT: Spotlight[] = [
       how: "Før straffen regnes ut, heves alle verdier under 20 mm til 20 mm, både i varselet og i fasiten. Sa modellen 3 mm og det kom 8 mm, blir begge 20, og feilen forsvinner. Bare når minst én av dem er over 20 mm, blir det en forskjell å straffe. Derfor merker modellen straffen bare på de kraftigste bygene.",
     },
     code: { threshold: "20 mm per 6 timer", weight: "1 371,6" },
+    expert: {
+      tldr: "bris-crpsfft finjustert 2 000 steg med afCRPS pluss et andre afCRPS-ledd på max(tp, 20 mm/6 t) over LAM-nodene, γ = 1 371,6, en tidel av den opprinnelige halearmen. Den eneste varianten som er bedre enn kontrollarmen også rå (Brier over 20 mm/døgn −3,9 %). Kalibrert −6,1 %. Samme ledd med full vekt gir ingen gevinst (−0,7 %, ikke signifikant), så dosen ser ut til å avgjøre.",
+      threshold: "8,44074 (normalisert) = 20 mm per 6 t; v(z) = max(z, t) på både ensemble og analyse",
+      gamma: "1 371,6",
+      measured: "Den opprinnelige halearmen brukte γ* = 13 716, målt slik at leddet er like stort som afCRPS på 23 ekstreme tilstander (median av forhold per tilstand). A bruker γ*/10, så leddet er en tidel av afCRPS på ekstreme tilstander. Under terskelen er v(x) og v(y) begge t, så leddet er null på de fleste tilstander, og derfor må γ være mye større enn Pavos for samme virkning på de ekstreme.",
+      yaml: `training:
+  max_steps: 2000
+  lr: { rate: 3.75e-6, min: 3.75e-7, iterations: 3000, warmup: 100 }
+  ensemble_size_per_device: 3
+  training_loss:
+    _target_: anemoi.training.losses.combined.CombinedLoss
+    losses:
+      - _target_: anemoi.training.losses.AlmostFairKernelCRPS
+        alpha: 0.95
+        scalers: [pressure_level, general_variable, nan_mask_weights, node_weights]
+      - _target_: xbris.losses.TailWeightedKernelCRPS
+        alpha: 0.95
+        scalers: [pressure_level, general_variable, nan_mask_weights, lam_node_weights]
+        tail_threshold: 8.44074    # 0,020 m · 422,037
+        tail_variable: tp
+        tail_index: 38
+    scalers: ['*']
+    loss_weights: [1.0, 1371.6]`,
+      results: [
+        { label: "Kalibrert Brier, 20 mm, mot kontrollarmen", value: "−0,00133 (−6,1 %)", ci: "[−0,00194, −0,00083]", good: true, note: "låst plan for variantene" },
+        { label: "Rå Brier, 20 mm", value: "0,02163 mot 0,02250 (−3,9 %)", good: true, note: "intervall ikke regnet ut ennå" },
+        { label: "Bilineær punktuttrekk (gridpp-stil)", value: "−0,00134 (−6,2 %)", ci: "[−0,00196, −0,00085]", good: true },
+        { label: "Kalibrert Brier, 10 mm", value: "−0,00118 (−2,4 %)", ci: "[−0,00192, −0,00046]", good: true },
+        { label: "Kalibrert Brier, 50 mm", value: "−0,00008 (−4,0 %)", ci: "[−0,00019, +0,00001]", note: "603 hendelser, ikke avgjort" },
+        { label: "ROC-areal, 20 mm", value: "0,870 mot 0,851", good: true, note: "Pavo 0,908, vanlig Bris 0,808" },
+        { label: "Samme ledd, full vekt (γ = 13 716)", value: "−0,00014 (−0,7 %)", ci: "[−0,00082, +0,00048]", note: "ingen gevinst" },
+      ],
+      notes: [
+        "Den registrerte prediksjonen var at en hard terskel på 20 mm ikke gir noen kalibrert gevinst. A motbeviste den. A og den opprinnelige halearmen skiller seg bare i γ, så dosen er nå hypotesen. Doser på 1/30 og 1/3 kjører med en egen låst plan.",
+        "Fordi leddet er null under terskelen, flytter A nivået lite: frekvensbias ved 2 av 4 medlemmer over 20 mm er 1,04, mot 0,93 for kontrollarmen og 1,41 for Pavo.",
+        "Kontrollarmen er identisk bortsett fra det andre leddet, og normaliseringen er arvet fra bris-crpsfft: bufferne er bit-like i A, kontrollarmen og bris-crpsfft.",
+      ],
+    },
     subtitle: "Bris trent til å passe ekstra på de våteste dagene",
     oneLiner:
       "Vanlig Bris trent videre med en mild ekstra straff, men bare for de kraftigste regnbygene. Den eneste som er bedre uten noen justering i etterkant.",
