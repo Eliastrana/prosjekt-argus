@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 /* The two fine-tuned models worth showing on the front page, each against
-   Bris as MET published it. Numbers are the test year (1 August 2025 to
-   6 September 2026, 259 178 station-days, +30 h), calibrated month-out unless
-   said otherwise; see /modeller for every model and the blog for the method. */
+   Bris as MET published it. Written for someone who has read nothing else on
+   the site: every term is explained where it first appears, and the numbers
+   are the test year (1 August 2025 to 6 September 2026, 259 178 station-days,
+   +30 h), calibrated month-out unless said otherwise. /modeller has the rest. */
 
 type Row = { label: string; bris: string; model: string; changed?: boolean };
 type Result = { label: string; value: string; good?: boolean; note?: string };
@@ -26,108 +27,172 @@ type Spotlight = {
 };
 
 const SHARED_ROWS: Row[] = [
-  { label: "Utgangspunkt", bris: "trent av MET", model: "vektene til Bris" },
   {
-    label: "Finjustert",
-    bris: "nei",
-    model: "ja, på MEPS og IFS fra oktober 2023 til mars 2025",
+    label: "Hvem som laget den",
+    bris: "Meteorologisk institutt (MET)",
+    model: "vanlig Bris, trent videre i dette prosjektet",
     changed: true,
   },
   {
-    label: "Grunntap",
-    bris: "ensemble-CRPS pluss et spektralledd",
-    model: "ensemble-CRPS (almost-fair, α = 0,95), uten spektralleddet, som ikke finnes i anemoi 0.5.1",
+    label: "Ekstra trening",
+    bris: "nei",
+    model: "ja, på 18 måneder med værdata over Norden, oktober 2023 til mars 2025",
+    changed: true,
+  },
+  {
+    label: "Hvordan feil straffes",
+    bris: "én poengsum for alle værtyper, pluss en for hvor detaljerte værkartene er",
+    model: "den samme poengsummen for alle værtyper, uten den for detaljer",
     changed: true,
   },
 ];
 
-const TAIL_ROWS: Row[] = [
-  { label: "Steg i finjusteringen", bris: "–", model: "2 000 av en plan på 3 000", changed: true },
-  { label: "Læringsrate i finjusteringen", bris: "–", model: "cosinus fra 3,75·10⁻⁶ ned mot 3,75·10⁻⁷", changed: true },
-  { label: "Ensemble i finjusteringen", bris: "–", model: "3 medlemmer", changed: true },
-  { label: "Maskinvare for finjusteringen", bris: "–", model: "ett H200-kort, 18,5 timer", changed: true },
-  { label: "Arkitektur og data inn", bris: "graftransformer, strukket gitter", model: "uendret" },
-  { label: "Varsling", bris: "4 medlemmer, 6 timers steg", model: "uendret" },
+const SHARED_TAIL: Row[] = [
+  {
+    label: "Hvor lenge den er trent videre",
+    bris: "–",
+    model: "2 000 runder, omtrent 18 timer på én kraftig grafikkprosessor",
+    changed: true,
+  },
+  {
+    label: "Selve modellen",
+    bris: "et nevralt nettverk som ser værkart over Norden i detalj og resten av kloden grovere",
+    model: "det samme nettverket, bare med justerte tall inni",
+  },
+  {
+    label: "Hvordan varslene i testen ble laget",
+    bris: "fire varsler samtidig, seks timer om gangen",
+    model: "helt likt",
+  },
 ];
 
 const MODELS: Spotlight[] = [
   {
     id: "pavo",
     name: "Pavo",
-    subtitle: "variant C",
-    oneLiner: "Ekstra vekt på all nedbør. Overdriver kraftig regn, men skiller kraftige regndøgn best av alle.",
-    headline: { value: "7 %", label: "bedre enn kontrollarmen, kalibrert" },
-    secondary: { value: "0,91", label: "ROC-areal, mot 0,81 for Bris" },
+    subtitle: "Bris trent til å ta all nedbør mer på alvor",
+    oneLiner:
+      "Vanlig Bris trent videre med en ekstra straff for feil i nedbøren. Den varsler kraftig regn for ofte, men er best til å skjelne dagene som faktisk blir våte.",
+    headline: { value: "7 %", label: "mer treffsikre varsler om kraftig regn" },
+    secondary: { value: "44 %", label: "færre kraftige regndøgn den bommer helt på" },
     story: [
-      "Pavo er latin for påfugl. Da kjempen Argus døde, satte Hera de hundre øynene hans i påfuglens hale, og det er akkurat det denne finjusteringen gjør med Bris.",
-      "Modellen er Bris finjustert videre med et ekstra ledd i tapet. Leddet regner ensembletapet én gang til, men bare på nedbør og bare over Norden. Det ser all nedbør, ingen terskel, så modellen får mer å lære av hver eneste regnbyge.",
-      "Resultatet er en modell som tar nedbøren mer på alvor. Den sier kraftig regn oftere enn den burde, men den gjemmer langt færre kraftige regndøgn blant dem den kaller trygge.",
+      "Pavo er en versjon av Bris som er trent videre med én endring: hver gang den bommer på nedbøren under treningen, får den en ekstra straff. Straffen gjelder all nedbør, fra lett yr til styrtregn, og bare over Norden. Alt annet er som før.",
+      "Med den ekstra straffen lærer modellen å ta nedbøren mer på alvor. Den sier oftere at det kan komme kraftig regn, også på dager der det ikke kommer. Men den overser langt færre av dagene der det faktisk kommer mye regn.",
+      "Navnet er latin for påfugl. I gresk mytologi hadde kjempen Argus hundre øyne, og da han døde, satte gudinnen Hera øynene hans i påfuglens hale. Prosjektet heter Argus, og «halen» er det meteorologer kaller de sjeldne, ekstreme verdiene.",
     ],
     rows: [
       ...SHARED_ROWS,
-      { label: "Ekstra ledd", bris: "nei", model: "ensemble-CRPS én gang til, bare nedbør, bare Norden", changed: true },
-      { label: "Hva leddet ser", bris: "–", model: "all nedbør, ingen terskel", changed: true },
-      { label: "Vekt på leddet", bris: "–", model: "39,09", changed: true },
-      { label: "Andel av tapet på ekstremdøgn", bris: "–", model: "1/11", changed: true },
-      ...TAIL_ROWS,
+      {
+        label: "Ekstra straff for nedbør",
+        bris: "nei",
+        model: "ja, bare for nedbør og bare over Norden",
+        changed: true,
+      },
+      {
+        label: "Hvilken nedbør straffen gjelder",
+        bris: "–",
+        model: "all nedbør, uansett mengde",
+        changed: true,
+      },
+      {
+        label: "Hvor sterk straffen er",
+        bris: "–",
+        model: "omtrent en tidel av den vanlige straffen på dager med mye regn",
+        changed: true,
+      },
+      ...SHARED_TAIL,
     ],
     results: [
-      { label: "Kalibrert, mot kontrollarmen", value: "7,1 % bedre", good: true, note: "hele intervallet under null" },
-      { label: "Kalibrert, mot vanlig Bris", value: "8 % bedre", good: true },
-      { label: "Ny treningstrekning", value: "6,6 % bedre", good: true, note: "et nytt seed for begge armene" },
-      { label: "Med METs punktmetode", value: "6,8 % bedre", good: true, note: "bilineær interpolasjon" },
-      { label: "Rå, uten kalibrering", value: "6,5 % dårligere", note: "overdriver kraftig regn" },
-      { label: "Stasjonens våteste 1 % av døgnene", value: "4,6 % bedre", good: true },
+      { label: "Mot sammenligningsmodellen", value: "7,1 % bedre", good: true, note: "sikkert, ikke tilfeldig" },
+      { label: "Mot vanlig Bris", value: "8 % bedre", good: true },
+      { label: "Trent på nytt fra start", value: "6,6 % bedre", good: true, note: "resultatet gjentok seg" },
+      { label: "Målt slik MET selv måler", value: "6,8 % bedre", good: true },
+      { label: "Uten kalibrering", value: "6,5 % dårligere", note: "fordi den overdriver" },
+      { label: "Hvert steds våteste dager", value: "4,6 % bedre", good: true, note: "de 1 % våteste dagene på hvert sted, rundt fire i året" },
     ],
     strengths: [
-      "Skiller kraftige regndøgn fra andre best av alle modellene (ROC 0,91).",
-      "Bommer helt på 44 % færre døgn med over 20 mm enn kontrollarmen.",
-      "Testet etter en plan låst på forhånd, og bekreftet på en ny trekning.",
+      "Best av alle modellene i prosjektet til å skille dager med kraftig regn fra vanlige dager.",
+      "Av alle dagene med over 20 mm regn, overså den 44 % færre enn sammenligningsmodellen.",
+      "Testet etter en plan som ble skrevet før resultatene fantes, og bekreftet en gang til fra start.",
     ],
     limits: [
-      "Trenger kalibrering. Rå varsler den kraftig regn for ofte.",
-      "Over 50 mm i døgnet er det for få tilfeller til å si noe sikkert.",
-      "Bare nedbør er testet. Temperatur, trykk og vind er ikke sjekket ennå.",
+      "Sannsynlighetene må justeres med kalibrering før de brukes, fordi den overdriver.",
+      "For de mest ekstreme dagene, over 50 mm, er det for få tilfeller til å si noe sikkert.",
+      "Bare nedbør er sjekket. Om temperatur og vind ble påvirket, er ikke testet ennå.",
     ],
   },
   {
     id: "a",
     name: "A",
-    subtitle: "hard terskel, lav dose",
-    oneLiner: "Det opprinnelige halearm-leddet med en tidel av vekten. Den eneste som er bedre også uten kalibrering.",
-    headline: { value: "6 %", label: "bedre enn kontrollarmen, kalibrert" },
-    secondary: { value: "4 %", label: "bedre også rå, uten kalibrering" },
+    subtitle: "Bris trent til å passe ekstra på de våteste dagene",
+    oneLiner:
+      "Vanlig Bris trent videre med en mild ekstra straff, men bare for de kraftigste regnbygene. Den eneste som er bedre uten noen justering i etterkant.",
+    headline: { value: "6 %", label: "mer treffsikre varsler om kraftig regn" },
+    secondary: { value: "4 %", label: "bedre også uten noen justering" },
     story: [
-      "A er den opprinnelige ideen i oppgaven, bare dosert mye svakere. Den første halearmen la et ekstra ledd på nedbør over 20 millimeter med full vekt, og ble ikke bedre. A har nøyaktig det samme leddet, med en tidel av vekten.",
-      "Fordi leddet bare ser nedbør over terskelen, dytter det bare på døgn med mye regn. Modellen blir ikke generelt våtere, og den roper nesten ikke ulv oftere enn før.",
-      "Det gjør A til den eneste varianten som er bedre enn kontrollarmen også rå. Den er også grunnen til at jeg nå tror dosen, ikke terskelen, avgjorde om halearmen virket.",
+      "A er en versjon av Bris som er trent videre med en ekstra straff når den bommer på nedbøren. I motsetning til Pavo gjelder straffen bare de kraftigste regnbygene, over 20 millimeter på seks timer. Vanlig regn påvirker den ikke.",
+      "Det var den opprinnelige ideen i prosjektet. Det første forsøket brukte en ti ganger så sterk straff, og da ble modellen ikke bedre. A er det samme forsøket med en mye mildere straff, og da virket det.",
+      "Fordi straffen bare gjelder de kraftigste bygene, blir modellen ikke generelt våtere. Den roper nesten ikke ulv oftere enn før. Derfor er A den eneste av variantene som er bedre enn utgangspunktet også uten at tallene justeres i etterkant.",
     ],
     rows: [
       ...SHARED_ROWS,
-      { label: "Ekstra ledd", bris: "nei", model: "ensemble-CRPS én gang til, bare nedbør, bare Norden", changed: true },
-      { label: "Hva leddet ser", bris: "–", model: "bare nedbør over 20 mm per 6 timer, hard terskel", changed: true },
-      { label: "Vekt på leddet", bris: "–", model: "1 371,6, en tidel av den opprinnelige halearmen", changed: true },
-      { label: "Andel av tapet på ekstremdøgn", bris: "–", model: "1/11", changed: true },
-      ...TAIL_ROWS,
+      {
+        label: "Ekstra straff for nedbør",
+        bris: "nei",
+        model: "ja, bare for nedbør og bare over Norden",
+        changed: true,
+      },
+      {
+        label: "Hvilken nedbør straffen gjelder",
+        bris: "–",
+        model: "bare de kraftigste bygene, over 20 mm på seks timer",
+        changed: true,
+      },
+      {
+        label: "Hvor sterk straffen er",
+        bris: "–",
+        model: "omtrent en tidel av den vanlige straffen på dager med mye regn, ti ganger svakere enn det første forsøket",
+        changed: true,
+      },
+      ...SHARED_TAIL,
     ],
     results: [
-      { label: "Kalibrert, mot kontrollarmen", value: "6,1 % bedre", good: true, note: "hele intervallet under null" },
-      { label: "Kalibrert, mot vanlig Bris", value: "7 % bedre", good: true },
-      { label: "Rå, uten kalibrering", value: "3,9 % bedre", good: true, note: "den eneste varianten som er det" },
-      { label: "Med METs punktmetode", value: "6,2 % bedre", good: true, note: "bilineær interpolasjon" },
-      { label: "Over 10 mm, kalibrert", value: "2,4 % bedre", good: true, note: "mindre enn Pavo" },
-      { label: "Den opprinnelige halearmen (full vekt)", value: "0,7 % bedre", note: "ikke sikker" },
+      { label: "Mot sammenligningsmodellen", value: "6,1 % bedre", good: true, note: "sikkert, ikke tilfeldig" },
+      { label: "Mot vanlig Bris", value: "7 % bedre", good: true },
+      { label: "Uten kalibrering", value: "3,9 % bedre", good: true, note: "den eneste varianten som er det" },
+      { label: "Målt slik MET selv måler", value: "6,2 % bedre", good: true },
+      { label: "Over 10 mm i døgnet", value: "2,4 % bedre", good: true, note: "mindre gevinst enn Pavo" },
+      { label: "Det første forsøket, ti ganger sterkere straff", value: "0,7 % bedre", note: "ikke sikkert, kan være tilfeldig" },
     ],
     strengths: [
-      "Bedre enn kontrollarmen både med og uten kalibrering.",
-      "Overdriver nesten ikke, og trenger derfor minst etterbehandling.",
-      "Viser at den opprinnelige ideen virker, bare med lavere dose.",
+      "Bedre enn sammenligningsmodellen både med og uten justering i etterkant.",
+      "Overdriver nesten ikke, så tallene den gir kan nesten brukes som de er.",
+      "Viser at den opprinnelige ideen i prosjektet virker, bare med en mildere straff.",
     ],
     limits: [
-      "Skiller kraftige regndøgn dårligere enn Pavo (ROC 0,87 mot 0,91).",
-      "Svakere over 10 mm, fordi leddet bare ser nedbør over 20 mm.",
-      "Én treningstrekning. Dose-serien som tester vekten, kjører nå.",
+      "Skiller dager med kraftig regn fra vanlige dager litt dårligere enn Pavo.",
+      "Hjelper mindre for moderat regn, fordi straffen bare gjelder de kraftigste bygene.",
+      "Trent bare én gang. Forsøk med andre styrker på straffen kjører nå.",
     ],
+  },
+];
+
+const GLOSSARY: { term: string; text: string }[] = [
+  {
+    term: "Sammenligningsmodellen",
+    text: "Vanlig Bris trent videre på nøyaktig samme måte, men uten den ekstra straffen. Den finnes for å vise at forbedringen kommer av straffen, og ikke bare av mer trening. I prosjektet heter den kontrollarmen.",
+  },
+  {
+    term: "Fire varsler samtidig",
+    text: "Bris lager fire litt forskjellige varsler for samme dag, et såkalt ensemble. Sannsynligheten for kraftig regn er hvor mange av de fire som sier det: to av fire betyr 50 %.",
+  },
+  {
+    term: "Kalibrering",
+    text: "Modellene er ofte for sikre. Når de sier 75 %, skjer det kanskje bare i halvparten av tilfellene. Kalibrering oversetter tallene til hvor ofte det faktisk har skjedd før. Værtjenester etterbehandler varslene sine på denne måten før de vises.",
+  },
+  {
+    term: "Mer treffsikre",
+    text: "Målt med Brier-skåren: avstanden mellom sannsynligheten modellen ga og det som skjedde, snittet over alle dagene. 7 % bedre betyr at den avstanden er 7 % mindre.",
   },
 ];
 
@@ -163,10 +228,10 @@ function SpotlightModal({ model, onClose }: { model: Spotlight; onClose: () => v
       >
         <div className="flex items-start justify-between gap-4 border-b border-foreground/8 px-6 py-5">
           <div>
-            <div className="text-xs text-muted">{model.subtitle}</div>
             <h3 id={`spotlight-${model.id}`} className="text-2xl font-semibold tracking-tight">
               {model.name}
             </h3>
+            <div className="mt-0.5 text-sm text-muted">{model.subtitle}</div>
           </div>
           <button
             ref={closeRef}
@@ -188,20 +253,38 @@ function SpotlightModal({ model, onClose }: { model: Spotlight; onClose: () => v
             ))}
           </div>
 
-          <div className="flex flex-col gap-3 text-sm leading-relaxed text-muted">
-            {model.story.map((p) => (
-              <p key={p.slice(0, 24)}>{p}</p>
-            ))}
+          <div className="flex flex-col gap-2 rounded-2xl border border-foreground/8 p-5">
+            <h4 className="text-sm font-semibold">Først: hva er Bris?</h4>
+            <p className="text-sm leading-relaxed text-muted">
+              Bris er en værmodell laget av Meteorologisk institutt med kunstig intelligens. I stedet
+              for å regne ut været fra fysikkens ligninger, har den lært av mange år med værdata
+              hvordan været pleier å utvikle seg. Den varsler blant annet temperatur, vind og
+              nedbør for Norden.
+            </p>
+            <p className="text-sm leading-relaxed text-muted">
+              En slik modell lærer ved å få en straff hver gang den bommer, og justere seg for å
+              bomme mindre. Dette prosjektet tester om Bris blir flinkere til å varsle kraftig regn
+              hvis den trenes videre med en ekstra straff for feil i nedbøren.
+            </p>
           </div>
 
           <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold">Hva som er annerledes enn vanlig Bris</h4>
+            <h4 className="text-sm font-semibold">Hva er gjort med {model.name}?</h4>
+            <div className="flex flex-col gap-3 text-sm leading-relaxed text-muted">
+              {model.story.map((p) => (
+                <p key={p.slice(0, 24)}>{p}</p>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <h4 className="text-sm font-semibold">Forskjellen fra vanlig Bris, punkt for punkt</h4>
             <div className="overflow-x-auto rounded-2xl border border-foreground/8">
               <table className="w-full min-w-[520px] border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-foreground/10 text-xs text-muted">
-                    <th className="w-[30%] px-4 py-2.5 font-medium" />
-                    <th className="w-[30%] px-4 py-2.5 font-medium">Vanlig Bris</th>
+                    <th className="w-[28%] px-4 py-2.5 font-medium" />
+                    <th className="w-[32%] px-4 py-2.5 font-medium">Vanlig Bris</th>
                     <th className="px-4 py-2.5 font-medium">{model.name}</th>
                   </tr>
                 </thead>
@@ -219,15 +302,19 @@ function SpotlightModal({ model, onClose }: { model: Spotlight; onClose: () => v
                 </tbody>
               </table>
             </div>
-            <p className="text-xs text-muted">
-              Grønn prikk betyr at det er endret fra vanlig Bris. Kontrollarmen er Bris finjustert
-              helt likt, men uten det ekstra leddet. Den finnes for å skille effekten av leddet fra
-              effekten av mer trening.
-            </p>
+            <p className="text-xs text-muted">Grønn prikk betyr at det er endret fra vanlig Bris.</p>
           </div>
 
           <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold">Resultater på teståret, over 20 mm regn i døgnet</h4>
+            <h4 className="text-sm font-semibold">Hvordan vet vi at den er bedre?</h4>
+            <p className="text-sm leading-relaxed text-muted">
+              Alle modellene laget varsler for et helt år, fra august 2025 til september 2026, som
+              ingen av dem hadde sett under treningen. Varslene ble sammenlignet med hva 715
+              målestasjoner i Norden faktisk målte, til sammen 259 178 målinger. Spørsmålet var hvor
+              godt modellen ga sannsynlighet for mer enn 20 mm regn i løpet av et døgn, fra et
+              varsel laget seks timer før døgnet startet. 20 mm i døgnet er kraftig regn, mer enn de fleste steder får på en vanlig
+              regnværsdag.
+            </p>
             <div className="grid gap-2 sm:grid-cols-2">
               {model.results.map((r) => (
                 <div key={r.label} className="flex flex-col gap-0.5 rounded-xl border border-foreground/8 px-4 py-3">
@@ -239,11 +326,6 @@ function SpotlightModal({ model, onClose }: { model: Spotlight; onClose: () => v
                 </div>
               ))}
             </div>
-            <p className="text-xs text-muted">
-              Brier-skår for sannsynligheten for over 20 mm, 30 timer fram, 259 178 stasjonsdøgn fra
-              august 2025 til september 2026. Kalibrert betyr at sannsynlighetene er oversatt til hvor
-              ofte det faktisk regnet så mye, med en tabell laget av de andre månedene.
-            </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -271,11 +353,23 @@ function SpotlightModal({ model, onClose }: { model: Spotlight; onClose: () => v
             </div>
           </div>
 
+          <div className="flex flex-col gap-3">
+            <h4 className="text-sm font-semibold">Ordliste</h4>
+            <dl className="flex flex-col gap-3">
+              {GLOSSARY.map((g) => (
+                <div key={g.term} className="text-sm">
+                  <dt className="font-medium text-foreground">{g.term}</dt>
+                  <dd className="mt-0.5 leading-relaxed text-muted">{g.text}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
           <Link
             href="/modeller"
             className="self-start text-sm text-muted underline underline-offset-2 transition hover:text-foreground"
           >
-            Se alle modellene →
+            Se alle modellene i prosjektet →
           </Link>
         </div>
       </div>
@@ -292,10 +386,11 @@ export default function ModelSpotlight() {
         <div>
           <h2 className="text-lg font-semibold">To modeller som virker</h2>
           <p className="mt-1 text-sm text-muted">
-            Finjusterte versjoner av Bris som varsler kraftig regn bedre enn originalen.
+            Versjoner av Meteorologisk institutts KI-værmodell Bris som varsler kraftig regn bedre
+            enn originalen.
           </p>
         </div>
-        <Link href="/modeller" className="text-sm text-muted transition hover:text-foreground">
+        <Link href="/modeller" className="shrink-0 text-sm text-muted transition hover:text-foreground">
           Alle modellene →
         </Link>
       </div>
@@ -310,11 +405,11 @@ export default function ModelSpotlight() {
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <div className="text-xs text-muted">{m.subtitle}</div>
                 <div className="text-2xl font-semibold tracking-tight">{m.name}</div>
+                <div className="text-xs text-muted">{m.subtitle}</div>
               </div>
-              <span className="rounded-full bg-tint px-3 py-1 text-xs font-semibold text-foreground transition group-hover:bg-accent group-hover:text-accent-foreground">
-                Se detaljer
+              <span className="shrink-0 rounded-full bg-tint px-3 py-1 text-xs font-semibold text-foreground transition group-hover:bg-accent group-hover:text-accent-foreground">
+                Les mer
               </span>
             </div>
             <p className="text-sm text-muted">{m.oneLiner}</p>
