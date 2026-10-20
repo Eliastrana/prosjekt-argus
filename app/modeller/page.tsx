@@ -267,6 +267,9 @@ const RUNS: Run[] = [
   { when: "21.–22. okt", tags: ["tailC3000"], hours: "~29 t", note: "starter når dose 1/30 er ferdig", status: "i kø" },
 ];
 
+/* Models with a page of their own (app/modeller/[slug]). */
+const PAGES: Record<string, string> = { tailC2000: "/modeller/pavo", tailA2000: "/modeller/a" };
+
 const COMMON: { term: string; value: string }[] = [
   { term: "Utgangspunkt", value: "Bris fra MET, varm start med bare vektene" },
   { term: "Rammeverk", value: "anemoi-training 0.5.1" },
@@ -542,7 +545,13 @@ export default function ModelsPage() {
                     {section.models.map((m) => (
                       <tr key={m.tag} className="border-b border-foreground/5 last:border-0 align-top">
                         <td className="px-4 py-3">
-                          <div className="font-medium">{m.name}</div>
+                          {PAGES[m.tag] ? (
+                            <Link href={PAGES[m.tag]} className="font-medium underline decoration-foreground/30 underline-offset-2 hover:decoration-accent">
+                              {m.name}
+                            </Link>
+                          ) : (
+                            <div className="font-medium">{m.name}</div>
+                          )}
                           <div className="font-mono text-xs text-muted">{m.tag}</div>
                           {m.note ? <div className="mt-1 text-xs text-muted">{m.note}</div> : null}
                         </td>

@@ -1,0 +1,210 @@
+/* The two fine-tuned models shown on the front page and on their own pages
+   (/modeller/pavo, /modeller/a), each against Bris as MET published it.
+   Written for someone who has read nothing else on the site: every term is
+   explained where it first appears. Numbers are the test year (1 August 2025
+   to 6 September 2026, 259 178 station-days, +30 h), calibrated month-out
+   unless said otherwise. /modeller has every model. */
+
+export type Row = { label: string; bris: string; model: string; changed?: boolean };
+export type Result = { label: string; value: string; good?: boolean; note?: string };
+
+export type Spotlight = {
+  id: string;
+  name: string;
+  subtitle: string;
+  oneLiner: string;
+  headline: { value: string; label: string };
+  secondary: { value: string; label: string };
+  story: string[];
+  rows: Row[];
+  results: Result[];
+  strengths: string[];
+  limits: string[];
+  /* What the extra penalty counts, in a sentence, and how it gets there. */
+  sees: { short: string; how: string };
+  code: { threshold: string; weight: string };
+};
+
+const SHARED_ROWS: Row[] = [
+  {
+    label: "Hvem som laget den",
+    bris: "Meteorologisk institutt (MET)",
+    model: "vanlig Bris, trent videre i dette prosjektet",
+    changed: true,
+  },
+  {
+    label: "Ekstra trening",
+    bris: "nei",
+    model: "ja, på 18 måneder med værdata over Norden, oktober 2023 til mars 2025",
+    changed: true,
+  },
+  {
+    label: "Hvordan feil straffes",
+    bris: "én poengsum for alle værtyper, pluss en for hvor detaljerte værkartene er",
+    model: "den samme poengsummen for alle værtyper, uten den for detaljer",
+    changed: true,
+  },
+];
+
+const SHARED_TAIL: Row[] = [
+  {
+    label: "Hvor lenge den er trent videre",
+    bris: "–",
+    model: "2 000 runder, omtrent 18 timer på én kraftig grafikkprosessor",
+    changed: true,
+  },
+  {
+    label: "Selve modellen",
+    bris: "et nevralt nettverk som ser værkart over Norden i detalj og resten av kloden grovere",
+    model: "det samme nettverket, bare med justerte tall inni",
+  },
+  {
+    label: "Hvordan varslene i testen ble laget",
+    bris: "fire varsler samtidig, seks timer om gangen",
+    model: "helt likt",
+  },
+];
+
+export const SPOTLIGHT: Spotlight[] = [
+  {
+    id: "pavo",
+    name: "Pavo",
+    sees: {
+      short: "all nedbør, uansett mengde",
+      how: "Straffen sammenligner nedbøren modellen varslet med nedbøren som faktisk kom, på hvert punkt over Norden, akkurat som den vanlige poengsummen gjør. Ingenting filtreres bort. En feil på 2 mm i lett regn teller, og en feil på 30 mm i et styrtregn teller.",
+    },
+    code: { threshold: "ingen (−1 000 000)", weight: "39,09" },
+    subtitle: "Bris trent til å ta all nedbør mer på alvor",
+    oneLiner:
+      "Vanlig Bris trent videre med en ekstra straff for feil i nedbøren. Den varsler kraftig regn for ofte, men er best til å skjelne dagene som faktisk blir våte.",
+    headline: { value: "7 %", label: "mer treffsikre varsler om kraftig regn" },
+    secondary: { value: "44 %", label: "færre kraftige regndøgn den bommer helt på" },
+    story: [
+      "Pavo er en versjon av Bris som er trent videre med én endring: hver gang den bommer på nedbøren under treningen, får den en ekstra straff. Straffen gjelder all nedbør, fra lett yr til styrtregn, og bare over Norden. Alt annet er som før.",
+      "Med den ekstra straffen lærer modellen å ta nedbøren mer på alvor. Den sier oftere at det kan komme kraftig regn, også på dager der det ikke kommer. Men den overser langt færre av dagene der det faktisk kommer mye regn.",
+      "Navnet er latin for påfugl. I gresk mytologi hadde kjempen Argus hundre øyne, og da han døde, satte gudinnen Hera øynene hans i påfuglens hale. Prosjektet heter Argus, og «halen» er det meteorologer kaller de sjeldne, ekstreme verdiene.",
+    ],
+    rows: [
+      ...SHARED_ROWS,
+      {
+        label: "Ekstra straff for nedbør",
+        bris: "nei",
+        model: "ja, bare for nedbør og bare over Norden",
+        changed: true,
+      },
+      {
+        label: "Hvilken nedbør straffen gjelder",
+        bris: "–",
+        model: "all nedbør, uansett mengde",
+        changed: true,
+      },
+      {
+        label: "Hvor sterk straffen er",
+        bris: "–",
+        model: "omtrent en tidel av den vanlige straffen på dager med mye regn",
+        changed: true,
+      },
+      ...SHARED_TAIL,
+    ],
+    results: [
+      { label: "Mot sammenligningsmodellen", value: "7,1 % bedre", good: true, note: "sikkert, ikke tilfeldig" },
+      { label: "Mot vanlig Bris", value: "8 % bedre", good: true },
+      { label: "Trent på nytt fra start", value: "6,6 % bedre", good: true, note: "resultatet gjentok seg" },
+      { label: "Målt slik MET selv måler", value: "6,8 % bedre", good: true },
+      { label: "Uten kalibrering", value: "6,5 % dårligere", note: "fordi den overdriver" },
+      { label: "Hvert steds våteste dager", value: "4,6 % bedre", good: true, note: "de 1 % våteste dagene på hvert sted, rundt fire i året" },
+    ],
+    strengths: [
+      "Best av alle modellene i prosjektet til å skille dager med kraftig regn fra vanlige dager.",
+      "Av alle dagene med over 20 mm regn, overså den 44 % færre enn sammenligningsmodellen.",
+      "Testet etter en plan som ble skrevet før resultatene fantes, og bekreftet en gang til fra start.",
+    ],
+    limits: [
+      "Sannsynlighetene må justeres med kalibrering før de brukes, fordi den overdriver.",
+      "For de mest ekstreme dagene, over 50 mm, er det for få tilfeller til å si noe sikkert.",
+      "Bare nedbør er sjekket. Om temperatur og vind ble påvirket, er ikke testet ennå.",
+    ],
+  },
+  {
+    id: "a",
+    name: "A",
+    sees: {
+      short: "bare nedbør over 20 mm på seks timer",
+      how: "Før straffen regnes ut, heves alle verdier under 20 mm til 20 mm, både i varselet og i fasiten. Sa modellen 3 mm og det kom 8 mm, blir begge 20, og feilen forsvinner. Bare når minst én av dem er over 20 mm, blir det en forskjell å straffe. Derfor merker modellen straffen bare på de kraftigste bygene.",
+    },
+    code: { threshold: "20 mm per 6 timer", weight: "1 371,6" },
+    subtitle: "Bris trent til å passe ekstra på de våteste dagene",
+    oneLiner:
+      "Vanlig Bris trent videre med en mild ekstra straff, men bare for de kraftigste regnbygene. Den eneste som er bedre uten noen justering i etterkant.",
+    headline: { value: "6 %", label: "mer treffsikre varsler om kraftig regn" },
+    secondary: { value: "4 %", label: "bedre også uten noen justering" },
+    story: [
+      "A er en versjon av Bris som er trent videre med en ekstra straff når den bommer på nedbøren. I motsetning til Pavo gjelder straffen bare de kraftigste regnbygene, over 20 millimeter på seks timer. Vanlig regn påvirker den ikke.",
+      "Det var den opprinnelige ideen i prosjektet. Det første forsøket brukte en ti ganger så sterk straff, og da ble modellen ikke bedre. A er det samme forsøket med en mye mildere straff, og da virket det.",
+      "Fordi straffen bare gjelder de kraftigste bygene, blir modellen ikke generelt våtere. Den roper nesten ikke ulv oftere enn før. Derfor er A den eneste av variantene som er bedre enn utgangspunktet også uten at tallene justeres i etterkant.",
+    ],
+    rows: [
+      ...SHARED_ROWS,
+      {
+        label: "Ekstra straff for nedbør",
+        bris: "nei",
+        model: "ja, bare for nedbør og bare over Norden",
+        changed: true,
+      },
+      {
+        label: "Hvilken nedbør straffen gjelder",
+        bris: "–",
+        model: "bare de kraftigste bygene, over 20 mm på seks timer",
+        changed: true,
+      },
+      {
+        label: "Hvor sterk straffen er",
+        bris: "–",
+        model: "omtrent en tidel av den vanlige straffen på dager med mye regn, ti ganger svakere enn det første forsøket",
+        changed: true,
+      },
+      ...SHARED_TAIL,
+    ],
+    results: [
+      { label: "Mot sammenligningsmodellen", value: "6,1 % bedre", good: true, note: "sikkert, ikke tilfeldig" },
+      { label: "Mot vanlig Bris", value: "7 % bedre", good: true },
+      { label: "Uten kalibrering", value: "3,9 % bedre", good: true, note: "den eneste varianten som er det" },
+      { label: "Målt slik MET selv måler", value: "6,2 % bedre", good: true },
+      { label: "Over 10 mm i døgnet", value: "2,4 % bedre", good: true, note: "mindre gevinst enn Pavo" },
+      { label: "Det første forsøket, ti ganger sterkere straff", value: "0,7 % bedre", note: "ikke sikkert, kan være tilfeldig" },
+    ],
+    strengths: [
+      "Bedre enn sammenligningsmodellen både med og uten justering i etterkant.",
+      "Overdriver nesten ikke, så tallene den gir kan nesten brukes som de er.",
+      "Viser at den opprinnelige ideen i prosjektet virker, bare med en mildere straff.",
+    ],
+    limits: [
+      "Skiller dager med kraftig regn fra vanlige dager litt dårligere enn Pavo.",
+      "Hjelper mindre for moderat regn, fordi straffen bare gjelder de kraftigste bygene.",
+      "Trent bare én gang. Forsøk med andre styrker på straffen kjører nå.",
+    ],
+  },
+];
+
+export const GLOSSARY: { term: string; text: string }[] = [
+  {
+    term: "Sammenligningsmodellen",
+    text: "Vanlig Bris trent videre på nøyaktig samme måte, men uten den ekstra straffen. Den finnes for å vise at forbedringen kommer av straffen, og ikke bare av mer trening. I prosjektet heter den kontrollarmen.",
+  },
+  {
+    term: "Fire varsler samtidig",
+    text: "Bris lager fire litt forskjellige varsler for samme dag, et såkalt ensemble. Sannsynligheten for kraftig regn er hvor mange av de fire som sier det: to av fire betyr 50 %.",
+  },
+  {
+    term: "Kalibrering",
+    text: "Modellene er ofte for sikre. Når de sier 75 %, skjer det kanskje bare i halvparten av tilfellene. Kalibrering oversetter tallene til hvor ofte det faktisk har skjedd før. Værtjenester etterbehandler varslene sine på denne måten før de vises.",
+  },
+  {
+    term: "Mer treffsikre",
+    text: "Målt med Brier-skåren: avstanden mellom sannsynligheten modellen ga og det som skjedde, snittet over alle dagene. 7 % bedre betyr at den avstanden er 7 % mindre.",
+  },
+];
+
+export function spotlightById(id: string): Spotlight | undefined {
+  return SPOTLIGHT.find((m) => m.id === id);
+}
