@@ -5,6 +5,7 @@ import RelevantPapers from "./components/RelevantPapers";
 import BrisShowcase from "./components/BrisShowcase";
 import Presentation from "@/app/components/Presentation";
 import ComputeUsage from "./components/ComputeUsage";
+import ModelSpotlight from "./components/ModelSpotlight";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,8 @@ export default function HomePage() {
       <FrontpageHero />
 
       <section className="mx-auto max-w-5xl px-6 py-16">
+          <ModelSpotlight />
+
           <BrisShowcase />
 
         <NewestPost />
