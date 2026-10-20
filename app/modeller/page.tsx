@@ -14,7 +14,8 @@ export const metadata: Metadata = {
    better. `better` is true only when the whole 95 percent interval is below
    zero. Update the rows here when a run is scored; nothing else reads them. */
 
-type Status = "ferdig" | "trener" | "i kø" | "publisert";
+// "varsles": trained, its test-year forecasts are being made, no result yet.
+type Status = "ferdig" | "trener" | "varsles" | "i kø" | "publisert";
 
 type Model = {
   name: string;
@@ -105,7 +106,7 @@ const SECTIONS: Section[] = [
         dose: "1/31",
         steps: "2 000",
         seed: "20260909",
-        status: "i kø",
+        status: "trener",
       },
       {
         name: "A",
@@ -128,7 +129,8 @@ const SECTIONS: Section[] = [
         dose: "1/4",
         steps: "2 000",
         seed: "20260909",
-        status: "trener",
+        status: "varsles",
+        note: "trent; teståret varsles nå",
       },
       {
         name: "Opprinnelig halearm, steg 2 000",
@@ -260,9 +262,9 @@ const RUNS: Run[] = [
   { when: "5.–6. okt", tags: ["control2000s2"], hours: "18,5 t", status: "ferdig" },
   { when: "6.–7. okt", tags: ["tailD2000"], hours: "18,5 t", status: "ferdig" },
   { when: "14.–15. okt", tags: ["tailC2000s2"], hours: "18,5 t", status: "ferdig" },
-  { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "18,5 t", status: "trener" },
-  { when: "20.–21. okt", tags: ["tail30th2000"], hours: "18,5 t", status: "i kø" },
-  { when: "21.–22. okt", tags: ["tailC3000"], hours: "~28 t", status: "i kø" },
+  { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "19,3 t", note: "teståret varsles nå", status: "ferdig" },
+  { when: "20.–21. okt", tags: ["tail30th2000"], hours: "~19 t", note: "startet 04:02, ferdig rundt 23:30", status: "trener" },
+  { when: "21.–22. okt", tags: ["tailC3000"], hours: "~29 t", note: "starter når dose 1/30 er ferdig", status: "i kø" },
 ];
 
 const COMMON: { term: string; value: string }[] = [
@@ -285,6 +287,7 @@ const STATUS_STYLE: Record<Status, string> = {
   ferdig: "bg-foreground/5 text-muted",
   publisert: "bg-foreground/5 text-muted",
   trener: "bg-accent/15 text-accent",
+  varsles: "bg-accent/15 text-accent",
   "i kø": "bg-foreground/5 text-muted",
 };
 

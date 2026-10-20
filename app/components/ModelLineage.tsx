@@ -220,7 +220,7 @@ export default function ModelLineage({ info }: { info: Record<string, LineageInf
           </svg>
           {placed.map((p) => {
             const m = info[p.node.tag];
-            const pending = m?.status === "trener" || m?.status === "i kø";
+            const pending = m?.status === "trener" || m?.status === "varsles" || m?.status === "i kø";
             const highlight = p.node.tag === "tailC2000";
             return (
               <div
