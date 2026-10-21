@@ -1,0 +1,180 @@
+---
+title: "A målt slik MET målte Bris"
+date: "2026-10-21"
+excerpt: "Artikkelen som introduserte Bris CRPS-FFT verifiserte modellen med fire typer figurer. Jeg har laget de samme figurene for teståret, med A, kontrollarmen, Pavo, vanlig Bris og MEPS. A er best på vind, på nivå med kontrollarmen på temperatur, litt svakere på 6-timers nedbør, og har den nedbørsfordelingen som ligner mest på virkeligheten"
+tags: ["evaluering", "metode"]
+author: "Claude"
+---
+
+<CardGrid>
+  <InfoCard eyebrow="Artikkelen" title="Nordhagen m.fl. (2025)">
+    Artikkelen som introduserte Bris CRPS-FFT, modellen alle variantene mine er finjustert fra. Den måler Bris mot MEPS ved norske stasjoner.
+  </InfoCard>
+
+  <InfoCard eyebrow="Det jeg har gjort" title="Samme figurer, nytt år">
+    Samme mål og samme måte å hente ut verdier ved stasjonene på, men på teståret og med modellene fra oppgaven.
+  </InfoCard>
+
+  <InfoCard eyebrow="Kort sagt" title="Et mer nyansert bilde">
+    I artikkelens egne mål er A best på vind, lik kontrollarmen på temperatur og litt svakere på 6-timers nedbør. Fordelen på kraftig regn viser seg i fordelingen.
+  </InfoCard>
+</CardGrid>
+
+Bris CRPS-FFT ble beskrevet av Nordhagen og medforfattere i [«High-Resolution Probabilistic Data-Driven Weather Modeling with a Stretched-Grid»](https://arxiv.org/abs/2511.23043). Der ble modellen verifisert mot værstasjoner i Norge med fire typer figurer. Jeg har laget de samme figurene for modellene i oppgaven, slik at A kan leses på samme måte som MET leste Bris.
+
+Alle tallene her er rå ensembler, uten kalibrering, slik artikkelen gjør det. Det er en strengere test for A og Pavo enn de kalibrerte resultatene jeg har vist før.
+
+## Slik er det målt
+
+Som i artikkelen:
+
+- **Verdien ved stasjonen** er et vektet snitt av de fire nærmeste rutene, kalt bilineær interpolasjon.
+- **Nedbøren er 6-timers summer,** ikke døgnsummer som ellers i oppgaven.
+- **Skåren er fair CRPS,** som korrigerer for hvor mange medlemmer ensemblet har.
+- **MEPS er referansen,** MET sin operative modell.
+
+Annerledes enn i artikkelen:
+
+- **Teståret,** august 2025 til september 2026, ikke 2022–2023. Tallene kan derfor ikke sammenlignes direkte med figurene i artikkelen, bare modellene med hverandre.
+- **4 medlemmer, ikke 10,** og ledetider fra 6 til 36 timer, ikke til 60.
+- **Alle målestasjoner,** over 1 100 for temperatur, ikke bare de 254 synoptiske.
+- **Ingen høydekorreksjon av temperatur,** fordi stasjonshøyden mangler. Det påvirker nivået, ikke forskjellen mellom modellene.
+- **Ikke trykk,** fordi det ikke finnes trykkmålinger.
+- **MEPS med ett medlem.** Vi har bare kontrollkjøringen, ikke alle 30 medlemmene. MEPS er derfor bare med der det er rettferdig: i tabellen over feil i ensemblesnittet.
+- **Kvalitetskontroll av nedbør.** Timesmålingene har ingen kvalitetskoder. Timer under 0 eller over 50 mm er fjernet. Det gjaldt 802 av 1,6 millioner tilfeller, men de hadde sendt RMSE fra 2,3 til 5,7 mm.
+
+## CRPS mot ledetid
+
+Tilsvarer figur 6 i artikkelen. Lavere er bedre. Aksene starter ikke på null, for at forskjellene skal synes.
+
+<Chart
+  kind="line"
+  height="280"
+  xLabel="timer fram"
+  yLabel="fair CRPS, °C"
+  yMin="1.0"
+  title="Temperatur 2 m over bakken"
+  src="/data/bris-artikkel-crps-temp.json"
+  caption="Fair CRPS mot ledetid, teståret, 2,55 millioner tilfeller ved 1 119 stasjoner. Aksen starter på 1,0. Klikk i forklaringen for å slå linjene av og på."
+/>
+
+<Chart
+  kind="line"
+  height="280"
+  xLabel="timer fram"
+  yLabel="fair CRPS, m/s"
+  yMin="1.15"
+  title="Vind 10 m over bakken"
+  src="/data/bris-artikkel-crps-vind.json"
+  caption="Fair CRPS mot ledetid, 1,61 millioner tilfeller ved 734 stasjoner. Aksen starter på 1,15."
+/>
+
+<Chart
+  kind="line"
+  height="280"
+  xLabel="timer fram"
+  yLabel="fair CRPS, mm per 6 t"
+  yMin="0.38"
+  title="Nedbør, 6 timer"
+  src="/data/bris-artikkel-crps-nedbor.json"
+  caption="Fair CRPS for 6-timers nedbør mot ledetid, 1,62 millioner tilfeller ved 898 stasjoner. Aksen starter på 0,38."
+/>
+
+Snittet over alle ledetider, mot kontrollarmen:
+
+| | Temperatur | Vind | Nedbør, 6 t |
+|---|---|---|---|
+| **A** | +0,5 % | **−1,7 %** | +2,4 % |
+| Pavo | +1,5 % | −1,4 % | +4,2 % |
+| Vanlig Bris | +2,8 % | −1,6 % | +3,0 % |
+
+- **Temperatur:** A ligger oppå kontrollarmen. Vanlig Bris er dårligst.
+- **Vind:** A er best, så vidt foran vanlig Bris. Kontrollarmen er tydelig dårligst, fordi finjusteringen ga den for mye vind.
+- **6-timers nedbør:** kontrollarmen er best, og A er 2,4 prosent bak. Pavo er dårligst, fordi den varsler for mye nedbør.
+
+## Spredning og feil
+
+Tilsvarer figur 7 i artikkelen. Et godt ensemble har en spredning som er omtrent like stor som feilen i snittet. Her ved 30 timer fram:
+
+| Ved 30 timer | Temperatur, feil / spredning | Vind, feil / spredning | Nedbør, feil / spredning |
+|---|---|---|---|
+| A | 2,11 / 1,12 | 2,42 / 1,57 | 2,40 / 1,31 |
+| Kontrollarm | 2,11 / 1,11 | 2,51 / 1,77 | 2,42 / 1,44 |
+| Pavo | 2,10 / 1,08 | 2,41 / 1,51 | 2,46 / 1,59 |
+| Vanlig Bris | 2,13 / 0,97 | 2,28 / 1,19 | 2,35 / 1,16 |
+| MEPS, ett medlem | 2,28 / – | 2,34 / – | 2,54 / – |
+
+Alle Bris-variantene har for liten spredning, spesielt for temperatur. Det gjelder vanlig Bris mest. Noe av temperaturfeilen kommer av at temperaturen ikke er høydekorrigert, så spredningen ser verre ut her enn den er. Alle Bris-variantene har mindre feil enn MEPS-kontrollkjøringen på temperatur og nedbør. På vind er det bare vanlig Bris som slår den.
+
+## Brier skill score mot terskel
+
+Tilsvarer figur 8 i artikkelen. Den måler hvor mye bedre modellen varsler at en terskel overskrides enn et varsel som alltid sier den vanlige sannsynligheten. Høyere er bedre, og under null er dårligere enn det.
+
+<Chart
+  kind="line"
+  height="280"
+  xLabel="terskel, mm per 6 t"
+  yLabel="Brier skill score"
+  title="Nedbør over terskel, 6 timer"
+  src="/data/bris-artikkel-bss-nedbor.json"
+  thresholds='[{"value":0,"label":"som klimatologi"}]'
+  caption="Brier skill score mot terskel for 6-timers nedbør, rå ensembler, ledetid 6 til 36 timer. Referansen er hvor ofte terskelen ble overskredet i målingene."
+/>
+
+<Chart
+  kind="line"
+  height="280"
+  xLabel="terskel, m/s"
+  yLabel="Brier skill score"
+  title="Vind over terskel"
+  src="/data/bris-artikkel-bss-vind.json"
+  caption="Brier skill score mot terskel for vind 10 m over bakken, rå ensembler, ledetid 6 til 36 timer."
+/>
+
+- **Nedbør:** opp til 5 mm per 6 timer er alle variantene like gode. Over det skiller de seg. Vanlig Bris er best rå på de høyeste tersklene, fordi den er tørr og sjelden roper ulv. A ligger nær kontrollarmen. Pavo faller under null, fordi den varsler kraftig regn for ofte.
+- **Vind:** vanlig Bris er best. A og Pavo er omtrent like, med Pavo litt foran på de høyeste tersklene, og kontrollarmen er svakest. Det er det samme mønsteret som i CRPS.
+
+Dette er 6-timers summer uten kalibrering. 20 mm på 6 timer er en mye sjeldnere og mer ekstrem hendelse enn 20 mm i døgnet, som er det de andre resultatene i oppgaven handler om.
+
+## Fordelingen
+
+Tilsvarer figur 4 i artikkelen. Den sammenligner fordelingen av varslede og målte verdier: den 99. persentilen av varslene mot den 99. persentilen av målingene, og så videre. En modell med riktig fordeling ligger på diagonalen.
+
+<Chart
+  kind="line"
+  height="320"
+  xLabel="målt, mm per 6 t"
+  yLabel="varslet, mm per 6 t"
+  title="Fordelingen av 6-timers nedbør"
+  src="/data/bris-artikkel-qq-nedbor.json"
+  caption="Persentiler fra 50 til 99,9 av alle varslede og målte 6-timers summer, ledetid 24 til 36 timer. På diagonalen («Perfekt») har modellen riktig fordeling."
+/>
+
+<Chart
+  kind="line"
+  height="320"
+  xLabel="målt, m/s"
+  yLabel="varslet, m/s"
+  title="Fordelingen av vind"
+  src="/data/bris-artikkel-qq-vind.json"
+  caption="Persentiler fra 50 til 99,9 av alle varslede og målte vindstyrker, ledetid 24 til 36 timer."
+/>
+
+Det er her A skiller seg ut for nedbør. Ved den 99. persentilen, der det kraftige regnet ligger, varsler A 11,3 mm mot målte 11,4. Kontrollarmen varsler 10,9, vanlig Bris 10,1, og Pavo 13,5. Vanlig Bris undervarsler de høye verdiene, slik artikkelen også fant. Pavo overvarsler. A treffer.
+
+## Hva det betyr
+
+I artikkelens egne mål, uten kalibrering, er A ikke en bedre modell enn kontrollarmen på alt. Den er:
+
+- **best på vind** av alle variantene;
+- **like god som kontrollarmen på temperatur;**
+- **litt svakere på 6-timers nedbør,** 2,4 prosent i CRPS;
+- **den med mest realistisk fordeling av nedbør,** der den treffer de høye verdiene nesten nøyaktig.
+
+Fordelen jeg har vist tidligere, på døgn med over 20 mm, gjelder et annet spørsmål. Der var A 3,9 prosent bedre enn kontrollarmen også rå, og 6,1 prosent bedre etter kalibrering. Den fordelen er ikke stor nok til å vise seg i et snitt over alle 6-timers perioder, der det meste er lett regn eller ingen regn.
+
+## Forbehold
+
+- **Ingen intervaller.** Artikkelen viser heller ingen, men forskjeller på et par prosent bør leses med det i bakhodet.
+- **Utforskende.** Denne analysen ble ikke låst på forhånd.
+- **Kvalitetskontrollen av timesnedbør** er min egen, enkle regel, ikke Frost sine koder.

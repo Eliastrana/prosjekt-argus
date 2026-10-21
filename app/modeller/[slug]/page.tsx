@@ -663,6 +663,12 @@ vekt:         ${model.code.weight}`}
             </Link>
           ) : null}
           <Link
+            href="/blog/bris-artikkelens-figurer"
+            className="text-sm text-muted transition hover:text-foreground"
+          >
+            Målt slik MET målte Bris →
+          </Link>
+          <Link
             href="/modeller"
             className="text-sm text-muted transition hover:text-foreground"
           >
