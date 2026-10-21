@@ -318,16 +318,9 @@ function Formula({ children }: { children: React.ReactNode }) {
   );
 }
 
-function CalibrationExplainer() {
+function CalibrationBody() {
   return (
-    <section className="mt-14 flex flex-col gap-6">
-      <div className="flex max-w-3xl flex-col gap-1">
-        <h2 className="text-lg font-semibold tracking-tight">Kalibreringen, kort forklart</h2>
-        <p className="text-sm text-muted">
-          Alle prosentene over er målt etter kalibrering. Her er hva det betyr.
-        </p>
-      </div>
-
+    <div className="flex flex-col gap-6">
       <div className="grid gap-4 md:grid-cols-3">
         {[
           {
@@ -422,7 +415,7 @@ function CalibrationExplainer() {
           </p>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -438,72 +431,206 @@ function ResultCell({ m }: { m: Model }) {
   );
 }
 
-export default function ModelsPage() {
-  const byTag: Record<string, Model> = Object.fromEntries(
-    SECTIONS.flatMap((section) => section.models).map((m) => [m.tag, m]),
+/* A collapsible block for the method sections, so the page leads with the
+   models and keeps the explanations one click away. */
+function Fold({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) {
+  return (
+    <details className="group rounded-2xl border border-foreground/8 bg-card open:bg-card">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="flex flex-col">
+          <span className="text-sm font-semibold">{title}</span>
+          <span className="text-xs text-muted">{hint}</span>
+        </span>
+        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-tint text-muted transition group-open:rotate-45">+</span>
+      </summary>
+      <div className="border-t border-foreground/8 px-5 py-5">{children}</div>
+    </details>
   );
+}
+
+function SectionHead({ id, title, text }: { id: string; title: string; text: string }) {
+  return (
+    <div id={id} className="flex scroll-mt-24 flex-col gap-1">
+      <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
+      <p className="max-w-3xl text-sm text-muted">{text}</p>
+    </div>
+  );
+}
+
+const NAV = [
+  { href: "#kart", label: "Kart" },
+  { href: "#alle", label: "Alle modeller" },
+  { href: "#tidslinje", label: "Tidslinje" },
+  { href: "#metode", label: "Metode" },
+];
+
+export default function ModelsPage() {
+  const all = SECTIONS.flatMap((section) => section.models);
+  const byTag: Record<string, Model> = Object.fromEntries(all.map((m) => [m.tag, m]));
   const info: Record<string, LineageInfo> = byTag;
+  const scored = all.filter((m) => m.better !== undefined || m.result === "referanse");
+  const better = all.filter((m) => m.better);
+  const running = all.filter((m) => m.status === "trener" || m.status === "varsles" || m.status === "i kø");
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-        <header className="flex max-w-3xl flex-col gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Modellene</h1>
-          <p className="text-sm text-muted md:text-base">
-            Alle variantene av Bris som er trent i prosjektet. De er like på alt unntatt det ekstra
-            leddet i tapet, antall steg og seed. Resultatet er hvor mye bedre eller dårligere
-            modellen varsler over 20 mm regn i døgnet enn kontrollarmen, etter kalibrering, over hele
-            teståret.
-          </p>
-        </header>
-
-        <section className="mt-12 flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <h2 className="text-lg font-semibold tracking-tight">Hvordan modellene henger sammen</h2>
-            <p className="text-sm text-muted">
-              Hver modell er en endring av den den kommer fra. Teksten under navnet sier hva som ble
-              endret. Tallet nederst er hvor mye bedre eller dårligere modellen varsler mer enn 20 mm
-              regn i døgnet enn kontrollarmen med samme antall steg, etter kalibrering, over hele
-              teståret. Grønt betyr at forskjellen er sikker, grått at den kan være tilfeldig.
+      <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-24 sm:px-6">
+        <header className="flex flex-col gap-6">
+          <div className="flex max-w-3xl flex-col gap-3">
+            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Modellene</h1>
+            <p className="text-sm text-muted md:text-base">
+              Alle versjonene av Bris som er trent i prosjektet. De er like på alt unntatt det ekstra
+              leddet i tapet, antall steg og seed, så hver forskjell i resultatet kan føres tilbake til
+              én endring.
             </p>
           </div>
+
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {[
+              { value: String(all.length), label: "modeller" },
+              { value: String(scored.length), label: "scoret på teståret" },
+              { value: String(better.length), label: "sikkert bedre enn kontrollarmen" },
+              { value: String(running.length), label: "kjører nå" },
+            ].map((s) => (
+              <div key={s.label} className="rounded-2xl border border-foreground/8 bg-card px-4 py-3">
+                <div className="text-2xl font-semibold tracking-tight">{s.value}</div>
+                <div className="text-xs text-muted">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <nav aria-label="Innhold" className="flex flex-wrap gap-1.5">
+              {NAV.map((n) => (
+                <a
+                  key={n.href}
+                  href={n.href}
+                  className="rounded-full border border-foreground/10 px-3.5 py-1.5 text-sm text-muted transition hover:border-foreground/25 hover:text-foreground"
+                >
+                  {n.label}
+                </a>
+              ))}
+            </nav>
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted">Les om</span>
+              <Link href="/modeller/pavo" className="font-medium underline decoration-foreground/30 underline-offset-2 hover:decoration-accent">
+                Pavo
+              </Link>
+              <span className="text-muted">og</span>
+              <Link href="/modeller/a" className="font-medium underline decoration-foreground/30 underline-offset-2 hover:decoration-accent">
+                A
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        <section className="flex flex-col gap-4">
+          <SectionHead
+            id="kart"
+            title="Hvordan modellene henger sammen"
+            text="Hver modell er en endring av den den kommer fra. Tallet er hvor mye bedre eller dårligere den varsler mer enn 20 mm regn i døgnet enn kontrollarmen med samme antall steg. Grønt betyr at forskjellen er sikker."
+          />
           <ModelLineage info={info} />
         </section>
 
-        <CalibrationExplainer />
-
-        <section className="mt-14 flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <h2 className="text-lg font-semibold tracking-tight">Treningene i rekkefølge</h2>
-            <p className="text-sm text-muted">
-              Alle treningskjøringene etter dato, på H200-kortene på eX3.
-            </p>
+        <section className="flex flex-col gap-4">
+          <SectionHead
+            id="alle"
+            title="Alle modeller"
+            text="Oppsett og resultat for hver modell. Over 20 mm er endringen i Brier-skår etter kalibrering, mot kontrollarmen, over hele teståret. Negativt er bedre."
+          />
+          <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
+            <table className="w-full min-w-[820px] border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-foreground/10 text-xs text-muted">
+                  <th className="px-4 py-3 font-medium">Modell</th>
+                  <th className="px-4 py-3 font-medium">Ekstra straff</th>
+                  <th className="px-4 py-3 text-right font-medium">Steg</th>
+                  <th className="px-4 py-3 font-medium">Seed</th>
+                  <th className="px-4 py-3 text-right font-medium">Over 20 mm</th>
+                  <th className="px-4 py-3 text-right font-medium">ROC</th>
+                  <th className="px-4 py-3 text-right font-medium">Status</th>
+                </tr>
+              </thead>
+              {SECTIONS.map((section) => (
+                <tbody key={section.title}>
+                  <tr className="border-b border-foreground/8 bg-foreground/[0.025]">
+                    <td colSpan={7} className="px-4 py-2">
+                      <span className="text-xs font-semibold">{section.title}</span>
+                      <span className="ml-2 text-xs text-muted">{section.blurb}</span>
+                    </td>
+                  </tr>
+                  {section.models.map((m) => (
+                    <tr key={m.tag} className="border-b border-foreground/5 align-top transition hover:bg-foreground/[0.02]">
+                      <td className="px-4 py-3">
+                        {PAGES[m.tag] ? (
+                          <Link href={PAGES[m.tag]} className="font-medium underline decoration-foreground/30 underline-offset-2 hover:decoration-accent">
+                            {m.name}
+                          </Link>
+                        ) : (
+                          <span className="font-medium">{m.name}</span>
+                        )}
+                        <div className="font-mono text-[11px] text-muted">{m.tag}</div>
+                        {m.note ? <div className="mt-1 max-w-[18rem] text-xs text-muted">{m.note}</div> : null}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div>{m.threshold}</div>
+                        {m.weight !== "–" ? (
+                          <div className="text-xs text-muted">
+                            vekt {m.weight} · dose {m.dose}
+                          </div>
+                        ) : null}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">{m.steps}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-muted">{m.seed}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">
+                        <ResultCell m={m} />
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums text-muted">{m.roc ?? "–"}</td>
+                      <td className="px-4 py-3 text-right">
+                        <span className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs ${STATUS_STYLE[m.status]}`}>
+                          {m.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              ))}
+            </table>
           </div>
-          <ol className="relative ml-2 flex flex-col border-l border-foreground/10">
+        </section>
+
+        <section className="flex flex-col gap-4">
+          <SectionHead
+            id="tidslinje"
+            title="Treningene i rekkefølge"
+            text="Alle treningskjøringene etter dato, på H200-kortene på eX3."
+          />
+          <ol className="gap-x-10 md:columns-2">
             {RUNS.map((run) => {
               const pending = run.status !== "ferdig";
               return (
-                <li key={run.tags.join("+")} className="relative grid gap-1 py-3 pl-6 sm:grid-cols-[8.5rem_1fr] sm:gap-4">
+                <li key={run.tags.join("+")} className="flex break-inside-avoid gap-4 border-b border-foreground/5 py-3">
                   <span
                     className={[
-                      "absolute -left-[5px] top-[18px] size-2.5 rounded-full",
-                      pending ? "border border-dashed border-foreground/40 bg-background" : "bg-accent",
+                      "mt-1.5 size-2.5 shrink-0 rounded-full",
+                      pending ? "border border-dashed border-foreground/40" : "bg-accent",
                     ].join(" ")}
                   />
-                  <span className="text-sm tabular-nums text-muted">{run.when}</span>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex flex-wrap items-baseline gap-x-2">
-                      <span className="font-medium">
-                        {run.tags.map((t) => byTag[t]?.name ?? t).join(" og ")}
+                  <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                      <span className="font-medium">{run.tags.map((t) => byTag[t]?.name ?? t).join(" og ")}</span>
+                      <span className="text-xs tabular-nums text-muted">
+                        {run.when}
+                        {run.hours ? ` · ${run.hours}` : ""}
                       </span>
-                      {run.hours ? <span className="text-xs text-muted">{run.hours}</span> : null}
-                      {pending ? (
-                        <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_STYLE[run.status]}`}>
-                          {run.status}
-                        </span>
-                      ) : null}
                     </div>
-                    {run.note ? <span className="text-xs text-muted">{run.note}</span> : null}
+                    {run.note || pending ? (
+                      <span className="text-xs text-muted">
+                        {pending ? <span className="mr-1.5 text-accent">{run.status}</span> : null}
+                        {run.note}
+                      </span>
+                    ) : null}
                   </div>
                 </li>
               );
@@ -511,114 +638,55 @@ export default function ModelsPage() {
           </ol>
         </section>
 
-        <section className="mt-14 flex flex-col gap-12">
-          {SECTIONS.map((section) => (
-            <div key={section.title} className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <h2 className="text-lg font-semibold tracking-tight">{section.title}</h2>
-                <p className="text-sm text-muted">{section.blurb}</p>
-              </div>
-              <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
-                <table className="w-full min-w-[900px] table-fixed border-collapse text-left text-sm">
-                  {/* The same widths in every section, so the columns line up
-                      down the page and the tables read as one. */}
-                  <colgroup>
-                    <col className="w-[25%]" />
-                    <col className="w-[13%]" />
-                    <col className="w-[9%]" />
-                    <col className="w-[6%]" />
-                    <col className="w-[7%]" />
-                    <col className="w-[10%]" />
-                    <col className="w-[13%]" />
-                    <col className="w-[6%]" />
-                    <col className="w-[11%]" />
-                  </colgroup>
-                  <thead>
-                    <tr className="border-b border-foreground/10 text-xs text-muted">
-                      <th className="px-4 py-3 font-medium">Modell</th>
-                      <th className="px-4 py-3 font-medium">Terskel</th>
-                      <th className="px-4 py-3 text-right font-medium">Vekt</th>
-                      <th className="px-4 py-3 text-right font-medium">Dose</th>
-                      <th className="px-4 py-3 text-right font-medium">Steg</th>
-                      <th className="px-4 py-3 font-medium">Seed</th>
-                      <th className="px-4 py-3 text-right font-medium">Over 20 mm</th>
-                      <th className="px-4 py-3 text-right font-medium">ROC</th>
-                      <th className="px-4 py-3 font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {section.models.map((m) => (
-                      <tr key={m.tag} className="border-b border-foreground/5 last:border-0 align-top">
-                        <td className="px-4 py-3">
-                          {PAGES[m.tag] ? (
-                            <Link href={PAGES[m.tag]} className="font-medium underline decoration-foreground/30 underline-offset-2 hover:decoration-accent">
-                              {m.name}
-                            </Link>
-                          ) : (
-                            <div className="font-medium">{m.name}</div>
-                          )}
-                          <div className="font-mono text-xs text-muted">{m.tag}</div>
-                          {m.note ? <div className="mt-1 text-xs text-muted">{m.note}</div> : null}
-                        </td>
-                        <td className="px-4 py-3">{m.threshold}</td>
-                        <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">{m.weight}</td>
-                        <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">{m.dose}</td>
-                        <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">{m.steps}</td>
-                        <td className="px-4 py-3 font-mono text-xs">{m.seed}</td>
-                        <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">
-                          <ResultCell m={m} />
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">{m.roc ?? "–"}</td>
-                        <td className="px-4 py-3">
-                          <span className={`rounded-full px-2.5 py-0.5 text-xs ${STATUS_STYLE[m.status]}`}>
-                            {m.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ))}
-        </section>
+        <section className="flex flex-col gap-4">
+          <SectionHead
+            id="metode"
+            title="Metode"
+            text="Hvordan tallene er målt, og hva alle de finjusterte modellene har felles."
+          />
+          <div className="flex flex-col gap-3">
+            <Fold title="Slik leses tallene" hint="vekt, dose, resultat og ROC">
+              <ul className="flex flex-col gap-2.5 text-sm text-muted">
+                <li>
+                  <span className="text-foreground">Ekstra straff</span> er leddet som legges til tapet under
+                  treningen: hvilken nedbør det ser, og hvor tungt det veier.
+                </li>
+                <li>
+                  <span className="text-foreground">Vekt</span> er tallet leddet ganges med. Den er målt slik at
+                  leddet er like stort som grunntapet på ekstreme tilstander ved vekten til den opprinnelige
+                  halearmen.
+                </li>
+                <li>
+                  <span className="text-foreground">Dose</span> er hvor stor andel av tapet leddet utgjør på
+                  ekstreme tilstander. 1/2 betyr like stort som grunntapet.
+                </li>
+                <li>
+                  <span className="text-foreground">Over 20 mm</span> er endringen i Brier-skår for
+                  sannsynligheten for over 20 mm i døgnet, etter kalibrering måned for måned, mot kontrollarmen
+                  med samme steg og seed. Negativt er bedre. Grønt betyr at hele 95-prosentintervallet ligger
+                  under null.
+                </li>
+                <li>
+                  <span className="text-foreground">ROC</span> er hvor godt modellen skiller døgn med kraftig
+                  regn fra andre døgn. 0,5 er gjetting og 1 er perfekt.
+                </li>
+              </ul>
+            </Fold>
 
-        <section className="mt-14 grid gap-8 md:grid-cols-[1fr_1.4fr]">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-lg font-semibold tracking-tight">Slik leses tabellen</h2>
-            <ul className="flex flex-col gap-2 text-sm text-muted">
-              <li>
-                <span className="text-foreground">Vekt</span> er vekten på det ekstra leddet, målt slik at
-                leddet er like stort som grunntapet på ekstreme tilstander ved vekten til den
-                opprinnelige halearmen.
-              </li>
-              <li>
-                <span className="text-foreground">Dose</span> er hvor stor andel av tapet det ekstra
-                leddet utgjør på ekstreme tilstander. 1/2 betyr like stort som grunntapet.
-              </li>
-              <li>
-                <span className="text-foreground">Over 20 mm</span> er endringen i Brier-skår for
-                sannsynligheten for over 20 mm i døgnet, etter kalibrering måned for måned, mot
-                kontrollarmen med samme steg og seed. Negativt er bedre. Uthevet betyr at hele
-                95-prosentintervallet ligger under null.
-              </li>
-              <li>
-                <span className="text-foreground">ROC</span> er ROC-arealet for det samme spørsmålet:
-                hvor godt modellen skiller døgn med kraftig regn fra andre. 0,5 er gjetting, 1 er
-                perfekt.
-              </li>
-            </ul>
-          </div>
-          <div className="flex flex-col gap-2">
-            <h2 className="text-lg font-semibold tracking-tight">Felles for alle finjusterte modeller</h2>
-            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
-              {COMMON.map((c) => (
-                <div key={c.term} className="contents">
-                  <dt className="text-muted">{c.term}</dt>
-                  <dd>{c.value}</dd>
-                </div>
-              ))}
-            </dl>
+            <Fold title="Kalibreringen, kort forklart" hint="hva den gjør, med ekte tall og matematikken">
+              <CalibrationBody />
+            </Fold>
+
+            <Fold title="Felles for alle finjusterte modeller" hint="data, perioder, tap og maskinvare">
+              <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+                {COMMON.map((c) => (
+                  <div key={c.term} className="contents">
+                    <dt className="text-muted">{c.term}</dt>
+                    <dd>{c.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Fold>
           </div>
         </section>
       </div>
