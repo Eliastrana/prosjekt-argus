@@ -365,7 +365,7 @@ t = ${e.threshold}
             "CRPSFFT mangler i begge armer, fordi klassen ikke finnes i anemoi-training 0.5.1. Begge armer driver derfor likt mot glattere felt, men mot bris-crpsfft er det to endringer, ikke én.",
             "3 medlemmer på ett kort med medlemmene kjørt etter hverandre, rollout 1 og batch 1. MET trente med flere GPU-er per medlem og lengre rollout.",
             "18 måneders finjusteringsdata og én trekning per variant. Bare Pavo er gjentatt med nytt seed.",
-            "Bare nedbør er evaluert. Effekten på 2t, msl og vind er ikke sjekket ennå.",
+            "msl er ikke evaluert, fordi det ikke finnes trykkmålinger i datasettet. 2t er scoret mot Frost uten høydekorreksjon, så nivået kan være skjevt, men forskjellen mellom modellene er det ikke.",
             "Fast inferens-seed (bris-inference setter 1234): alle modeller og dager får samme støy. Det er rettferdig parvis, men ikke uavhengig over dager.",
           ].map((t) => (
             <li key={t} className="flex gap-2">

@@ -122,6 +122,11 @@ export const SPOTLIGHT: Spotlight[] = [
         { label: "Rå Brier, 20 mm", value: "0,02397 mot 0,02250", note: "+6,5 %, frekvensbias 1,41 ved 2 av 4 medlemmer" },
         { label: "ROC-areal, 20 mm", value: "0,908 mot 0,851", good: true, note: "vanlig Bris 0,808" },
         { label: "Stasjonens egen 99-persentil", value: "−0,00040 (−4,6 %)", ci: "[−0,00058, −0,00024]", good: true, note: "utforskende" },
+        { label: "Kalibrert Brier, 20 mm, Pavo − A", value: "−0,00021", ci: "[−0,00064, +0,00021]", note: "ingen forskjell; rå er A bedre, +0,00235 [+0,00144, +0,00330]" },
+        { label: "tp alle døgn: middel / observert", value: "×1,18", note: "×1,11 på ny trekning; kontrollarm ×0,96" },
+        { label: "tp alle døgn, fair CRPS", value: "+2,9 %", ci: "[−0,3, +6,2] %", note: "ny trekning mot F: −0,4 % [−2,5, +1,8]" },
+        { label: "2 m-temperatur, fair CRPS", value: "+0,0171 (+1,5 %)", ci: "[+0,0120, +0,0220]", note: "ny trekning +1,3 %; F −0,3 %" },
+        { label: "10 m-vind, fair CRPS", value: "−0,0144 (−1,2 %)", ci: "[−0,0171, −0,0118]", good: true, note: "ny trekning −1,3 %" },
       ],
       notes: [
         "Kontrollarmen er identisk bortsett fra det andre leddet (sjekket med en diff av de komponerte Hydra-konfigurasjonene). Normaliseringen er arvet fra sjekkpunktet: bufferne er bit-like i kontrollarmen, Pavo og bris-crpsfft.",
@@ -168,6 +173,10 @@ export const SPOTLIGHT: Spotlight[] = [
       { label: "Målt slik MET selv måler", value: "6,8 % bedre", good: true },
       { label: "Uten kalibrering", value: "6,5 % dårligere", note: "fordi den overdriver" },
       { label: "Hvert steds våteste dager", value: "4,6 % bedre", good: true, note: "de 1 % våteste dagene på hvert sted, rundt fire i året" },
+      { label: "Nedbør i snitt over alle dager", value: "18 % for mye", note: "for våt generelt; 11 % på ny trekning" },
+      { label: "Temperatur", value: "1,5 % dårligere", note: "gjentok seg på ny trekning" },
+      { label: "Vind", value: "1,2 % bedre", good: true },
+      { label: "Mot A, med kalibrering", value: "ingen sikker forskjell", note: "A er sikkert bedre uten kalibrering" },
     ],
     strengths: [
       "Best av alle modellene i prosjektet til å skille dager med kraftig regn fra vanlige dager.",
@@ -177,7 +186,7 @@ export const SPOTLIGHT: Spotlight[] = [
     limits: [
       "Sannsynlighetene må justeres med kalibrering før de brukes, fordi den overdriver.",
       "For de mest ekstreme dagene, over 50 mm, er det for få tilfeller til å si noe sikkert.",
-      "Bare nedbør er sjekket. Om temperatur og vind ble påvirket, er ikke testet ennå.",
+      "Varsler 11–18 % for mye nedbør i snitt over alle dager, og er litt dårligere på temperatur.",
     ],
   },
   {
@@ -219,6 +228,11 @@ export const SPOTLIGHT: Spotlight[] = [
         { label: "Kalibrert Brier, 50 mm", value: "−0,00008 (−4,0 %)", ci: "[−0,00019, +0,00001]", note: "603 hendelser, ikke avgjort" },
         { label: "ROC-areal, 20 mm", value: "0,870 mot 0,851", good: true, note: "Pavo 0,908, vanlig Bris 0,808" },
         { label: "Samme ledd, full vekt (γ = 13 716)", value: "−0,00014 (−0,7 %)", ci: "[−0,00082, +0,00048]", note: "ingen gevinst" },
+        { label: "Rå Brier, 20 mm, Pavo − A", value: "+0,00235", ci: "[+0,00144, +0,00330]", good: true, note: "A sikkert bedre rå; kalibrert −0,00021 [−0,00064, +0,00021]" },
+        { label: "tp alle døgn: middel / observert", value: "×1,00", good: true, note: "kontrollarm ×0,96, Pavo ×1,18" },
+        { label: "tp alle døgn, fair CRPS", value: "+0,9 %", ci: "[−0,6, +2,7] %" },
+        { label: "2 m-temperatur, fair CRPS", value: "+0,0062 (+0,6 %)", ci: "[+0,0033, +0,0089]", note: "F (bare seed) −0,3 %" },
+        { label: "10 m-vind, fair CRPS", value: "−0,0178 (−1,5 %)", ci: "[−0,0211, −0,0147]", good: true, note: "vindbias +0,30 m/s mot kontrollarmens +0,45" },
       ],
       notes: [
         "Den registrerte prediksjonen var at en hard terskel på 20 mm ikke gir noen kalibrert gevinst. A motbeviste den. A og den opprinnelige halearmen skiller seg bare i γ, så en egen låst plan testet doser på 1/30 og 1/3 av γ*: kalibrert −3,8 % [−0,00137, −0,00037] og −4,4 % [−0,00151, −0,00043] ved 20 mm. Gevinsten topper ved 1/10, og 1/3 er sikkert svakere enn A (+0,00038 [+0,00006, +0,00072]).",
@@ -228,7 +242,7 @@ export const SPOTLIGHT: Spotlight[] = [
     },
     subtitle: "Bris trent til å passe ekstra på de våteste dagene",
     oneLiner:
-      "Vanlig Bris trent videre med en mild ekstra straff, men bare for de kraftigste regnbygene. Den eneste som er bedre uten noen justering i etterkant.",
+      "Vanlig Bris trent videre med en mild ekstra straff, men bare for de kraftigste regnbygene. Bedre på kraftig regn uten noen justering i etterkant, og den treffer nedbørsmengden i snitt.",
     headline: { value: "6 %", label: "mer treffsikre varsler om kraftig regn" },
     secondary: { value: "4 %", label: "bedre også uten noen justering" },
     story: [
@@ -265,16 +279,20 @@ export const SPOTLIGHT: Spotlight[] = [
       { label: "Målt slik MET selv måler", value: "6,2 % bedre", good: true },
       { label: "Over 10 mm i døgnet", value: "2,4 % bedre", good: true, note: "mindre gevinst enn Pavo" },
       { label: "Det første forsøket, ti ganger sterkere straff", value: "0,7 % bedre", note: "ikke sikkert, kan være tilfeldig" },
+      { label: "Nedbør i snitt over alle dager", value: "riktig mengde", good: true, note: "1,00 ganger det som ble målt" },
+      { label: "Temperatur", value: "0,6 % dårligere", note: "nesten uendret" },
+      { label: "Vind", value: "1,5 % bedre", good: true },
+      { label: "Mot Pavo, uten kalibrering", value: "sikkert bedre", good: true, note: "med kalibrering er de like gode" },
     ],
     strengths: [
-      "Bedre enn sammenligningsmodellen både med og uten justering i etterkant.",
-      "Overdriver nesten ikke, så tallene den gir kan nesten brukes som de er.",
+      "Bedre enn sammenligningsmodellen både med og uten justering i etterkant, og minst like god som Pavo.",
+      "Varsler riktig mengde nedbør i snitt, er bedre på vind og nesten uendret på temperatur.",
       "Viser at den opprinnelige ideen i prosjektet virker, bare med en mildere straff.",
     ],
     limits: [
-      "Skiller dager med kraftig regn fra vanlige dager litt dårligere enn Pavo.",
+      "Rangerer kraftige regndager litt dårligere enn Pavo (ROC 0,87 mot 0,91), selv om de er like gode etter kalibrering.",
       "Hjelper mindre for moderat regn, fordi straffen bare gjelder de kraftigste bygene.",
-      "Trent bare én gang. Svakere (1/30) og sterkere (1/3) straff ga mindre gevinst, så styrken må treffes ganske presist.",
+      "Trent bare én gang så langt; en ny trening med nytt seed kjører nå. Svakere og sterkere straff ga mindre gevinst.",
     ],
   },
 ];

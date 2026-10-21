@@ -272,6 +272,40 @@ const RUNS: Run[] = [
   { when: "21.–22. okt", tags: ["tailC3000"], hours: "~28 t", note: "startet 02:45, ferdig rundt 07:00 torsdag", status: "trener" },
 ];
 
+/* Beyond heavy rain: mean daily precipitation relative to observed (1,00 is
+   right), and fair CRPS of 2 m temperature and 10 m wind against Frost's
+   hourly observations at leads 6-36 h, relative to control2000, all on the
+   test year (precip_overall.py, general_skill.py). "better"/"worse" only when
+   the 95 percent interval excludes zero. Models not scored are left out. */
+type Sig = "better" | "worse" | "none";
+const GENERAL: Record<string, { mean?: string; t2m?: [string, Sig]; wind?: [string, Sig] }> = {
+  "bris-crpsfft": { mean: "0,84", t2m: ["+3,0 %", "worse"], wind: ["−1,1 %", "better"] },
+  control2000: { mean: "0,96", t2m: ["referanse", "none"], wind: ["referanse", "none"] },
+  control: { mean: "0,98" },
+  control2000s2: { mean: "0,99", t2m: ["−0,3 %", "better"], wind: ["−0,1 %", "better"] },
+  tail30th2000: { mean: "0,95", t2m: ["+0,1 %", "none"], wind: ["−0,1 %", "none"] },
+  tailA2000: { mean: "1,00", t2m: ["+0,6 %", "worse"], wind: ["−1,5 %", "better"] },
+  tail3rd2000: { mean: "0,93", t2m: ["−0,1 %", "none"], wind: ["−2,6 %", "better"] },
+  tail2000: { mean: "0,86" },
+  tail: { mean: "0,93" },
+  tailB2000: { mean: "1,21" },
+  tailD2000: { mean: "1,20" },
+  tailE2000: { mean: "1,14" },
+  tailC2000: { mean: "1,18", t2m: ["+1,5 %", "worse"], wind: ["−1,2 %", "better"] },
+  tailC2000s2: { mean: "1,11", t2m: ["+1,3 %", "worse"], wind: ["−1,3 %", "better"] },
+};
+
+const SIG_STYLE: Record<Sig, string> = {
+  better: "font-medium text-accent",
+  worse: "font-medium text-[#f59e0b]",
+  none: "text-muted",
+};
+
+function SkillCell({ v }: { v?: [string, Sig] }) {
+  if (!v) return <span className="text-muted/60">–</span>;
+  return <span className={`whitespace-nowrap ${SIG_STYLE[v[1]]}`}>{v[0]}</span>;
+}
+
 /* Models with a page of their own (app/modeller/[slug]). */
 const PAGES: Record<string, string> = { tailC2000: "/modeller/pavo", tailA2000: "/modeller/a" };
 
@@ -548,25 +582,35 @@ export default function ModelsPage() {
           <SectionHead
             id="alle"
             title="Alle modeller"
-            text="Oppsett og resultat for hver modell. Over 20 mm er endringen i Brier-skår etter kalibrering, mot kontrollarmen, over hele teståret. Negativt er bedre."
+            text="Oppsett og resultat for hver modell, over hele teståret. Kraftig regn er endringen i Brier-skår over 20 mm etter kalibrering, mot kontrollarmen. Været ellers viser om modellen har blitt for våt eller tørr, og hvordan den varsler temperatur og vind. Negativt er bedre; grønt er sikkert bedre, oransje sikkert dårligere."
           />
           <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
-            <table className="w-full min-w-[820px] border-collapse text-left text-sm">
+            <table className="w-full min-w-[980px] border-collapse text-left text-sm">
               <thead>
+                <tr className="text-xs text-muted">
+                  <th className="px-4 pt-3 font-medium" />
+                  <th className="px-4 pt-3 font-medium" />
+                  <th className="px-4 pt-3 font-medium" />
+                  <th colSpan={2} className="px-4 pt-3 text-center font-medium">Kraftig regn</th>
+                  <th colSpan={3} className="border-l border-foreground/8 px-4 pt-3 text-center font-medium">Været ellers</th>
+                  <th className="px-4 pt-3 font-medium" />
+                </tr>
                 <tr className="border-b border-foreground/10 text-xs text-muted">
                   <th className="px-4 py-3 font-medium">Modell</th>
                   <th className="px-4 py-3 font-medium">Ekstra straff</th>
                   <th className="px-4 py-3 text-right font-medium">Steg</th>
-                  <th className="px-4 py-3 font-medium">Seed</th>
                   <th className="px-4 py-3 text-right font-medium">Over 20 mm</th>
                   <th className="px-4 py-3 text-right font-medium">ROC</th>
+                  <th className="border-l border-foreground/8 px-4 py-3 text-right font-medium">Nedbør i snitt</th>
+                  <th className="px-4 py-3 text-right font-medium">Temperatur</th>
+                  <th className="px-4 py-3 text-right font-medium">Vind</th>
                   <th className="px-4 py-3 text-right font-medium">Status</th>
                 </tr>
               </thead>
               {SECTIONS.map((section) => (
                 <tbody key={section.title}>
                   <tr className="border-b border-foreground/8 bg-foreground/[0.025]">
-                    <td colSpan={7} className="px-4 py-2">
+                    <td colSpan={9} className="px-4 py-2">
                       <span className="text-xs font-semibold">{section.title}</span>
                       <span className="ml-2 text-xs text-muted">{section.blurb}</span>
                     </td>
@@ -581,23 +625,46 @@ export default function ModelsPage() {
                         ) : (
                           <span className="font-medium">{m.name}</span>
                         )}
-                        <div className="font-mono text-[11px] text-muted">{m.tag}</div>
+                        <div className="font-mono text-[11px] text-muted">
+                          {m.tag}
+                          {m.seed !== "–" ? ` · seed ${m.seed}` : ""}
+                        </div>
                         {m.note ? <div className="mt-1 max-w-[18rem] text-xs text-muted">{m.note}</div> : null}
                       </td>
                       <td className="px-4 py-3">
                         <div>{m.threshold}</div>
                         {m.weight !== "–" ? (
-                          <div className="text-xs text-muted">
+                          <div className="whitespace-nowrap text-xs text-muted">
                             vekt {m.weight} · dose {m.dose}
                           </div>
                         ) : null}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">{m.steps}</td>
-                      <td className="px-4 py-3 font-mono text-xs text-muted">{m.seed}</td>
                       <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">
                         <ResultCell m={m} />
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums text-muted">{m.roc ?? "–"}</td>
+                      <td className="whitespace-nowrap border-l border-foreground/8 px-4 py-3 text-right tabular-nums">
+                        {GENERAL[m.tag]?.mean ? (
+                          <span
+                            className={
+                              Math.abs(parseFloat(GENERAL[m.tag].mean!.replace(",", ".")) - 1) > 0.1
+                                ? "text-[#f59e0b]"
+                                : "text-foreground"
+                            }
+                          >
+                            ×{GENERAL[m.tag].mean}
+                          </span>
+                        ) : (
+                          <span className="text-muted/60">–</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right tabular-nums">
+                        <SkillCell v={GENERAL[m.tag]?.t2m} />
+                      </td>
+                      <td className="px-4 py-3 text-right tabular-nums">
+                        <SkillCell v={GENERAL[m.tag]?.wind} />
+                      </td>
                       <td className="px-4 py-3 text-right">
                         <span className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs ${STATUS_STYLE[m.status]}`}>
                           {m.status}
@@ -680,6 +747,18 @@ export default function ModelsPage() {
                 <li>
                   <span className="text-foreground">ROC</span> er hvor godt modellen skiller døgn med kraftig
                   regn fra andre døgn. 0,5 er gjetting og 1 er perfekt.
+                </li>
+                <li>
+                  <span className="text-foreground">Nedbør i snitt</span> er hvor mye nedbør modellen varsler
+                  over alle døgn, delt på hvor mye som ble målt. ×1,00 er riktig, over er for vått, under er
+                  for tørt. Oransje betyr mer enn 10 prosent feil.
+                </li>
+                <li>
+                  <span className="text-foreground">Temperatur og vind</span> er endringen i CRPS for
+                  temperatur 2 m over bakken og vind 10 m over bakken, mot kontrollarmen, målt mot timesverdier
+                  fra over 1 000 og 670 stasjoner, 6 til 36 timer fram. Negativt er bedre. Temperaturen er ikke
+                  høydekorrigert, så nivået kan være skjevt, men forskjellen mellom modellene er det ikke.
+                  Trykk er ikke målt, fordi det mangler trykkmålinger.
                 </li>
               </ul>
             </Fold>
