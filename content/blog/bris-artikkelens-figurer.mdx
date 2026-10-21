@@ -147,7 +147,7 @@ Tilsvarer figur 4 i artikkelen. Den sammenligner fordelingen av varslede og mål
   yLabel="varslet, mm per 6 t"
   title="Fordelingen av 6-timers nedbør"
   src="/data/bris-artikkel-qq-nedbor.json"
-  caption="Persentiler fra 50 til 99,9 av alle varslede og målte 6-timers summer, ledetid 24 til 36 timer. På diagonalen («Perfekt») har modellen riktig fordeling."
+  caption="Persentiler fra 50 til 99,9 av alle varslede og målte 6-timers summer, ledetid 24 til 36 timer. På diagonalen («Virkeligheten») har modellen riktig fordeling."
 />
 
 <Chart
@@ -162,6 +162,81 @@ Tilsvarer figur 4 i artikkelen. Den sammenligner fordelingen av varslede og mål
 
 Det er her A skiller seg ut for nedbør. Ved den 99. persentilen, der det kraftige regnet ligger, varsler A 11,3 mm mot målte 11,4. Kontrollarmen varsler 10,9, vanlig Bris 10,1, og Pavo 13,5. Vanlig Bris undervarsler de høye verdiene, slik artikkelen også fant. Pavo overvarsler. A treffer.
 
+## Hvor nært virkeligheten?
+
+Figurene over måler feil. Her er det samme sett direkte mot det som faktisk skjedde. Disse figurene finnes ikke i artikkelen, men de svarer på det enkleste spørsmålet: varsler modellen hver type vær omtrent så ofte som det skjer?
+
+<Chart
+  kind="line"
+  height="300"
+  unit="%"
+  xLabel="terskel, mm per 6 t"
+  yLabel="hvor ofte varslet, i prosent av hvor ofte det skjedde"
+  title="Hvor ofte modellen varsler nedbør over terskelen"
+  src="/data/bris-artikkel-frekvens-nedbor.json"
+  caption="Hvor ofte hver modell varsler 6-timers nedbør over terskelen, i prosent av hvor ofte det faktisk skjedde. Virkeligheten er 100 %. Over linjen varsler modellen for ofte, under for sjelden. Rå ensembler, ledetid 6 til 36 timer."
+/>
+
+| Over terskel, 6 t | 5 mm | 10 mm | 15 mm | 20 mm |
+|---|---|---|---|---|
+| Virkeligheten | 4,44 % av tilfellene | 1,36 % | 0,51 % | 0,23 % |
+| **A** | **97 %** av det | **96 %** | **98 %** | **94 %** |
+| Kontrollarm | 94 % | 88 % | 88 % | 83 % |
+| Pavo | 129 % | 137 % | 144 % | 139 % |
+| Vanlig Bris | 81 % | 68 % | 58 % | **47 %** |
+
+Dette er det tydeligste resultatet i hele sammenligningen. **Vanlig Bris varsler kraftig regn halvparten så ofte som det skjer,** og jo kraftigere, jo verre. Det er den svakheten artikkelen også peker på. Kontrollarmen retter noe av det. **A treffer nesten nøyaktig i alle kategoriene fra 5 mm og oppover.** Pavo overdriver.
+
+Under 2 mm varsler A litt for ofte, rundt 10–17 prosent. Det er yr og lett regn.
+
+<Chart
+  kind="line"
+  height="300"
+  unit="%"
+  xLabel="terskel, m/s"
+  yLabel="hvor ofte varslet, i prosent av hvor ofte det skjedde"
+  title="Hvor ofte modellen varsler vind over terskelen"
+  src="/data/bris-artikkel-frekvens-vind.json"
+  caption="Hvor ofte hver modell varsler vind over terskelen, i prosent av hvor ofte det faktisk skjedde. Virkeligheten er 100 %."
+/>
+
+For vind er bildet et annet. Kontrollarmen ligger nærmest i de sterkeste kategoriene, 93–98 prosent. A og Pavo varsler sterk vind litt for sjelden, rundt 75–85 prosent over 15 m/s, og vanlig Bris bare halvparten så ofte. Alle varsler svak vind litt for ofte.
+
+<Chart
+  kind="line"
+  height="260"
+  xLabel="timer fram"
+  yLabel="°C"
+  yMin="3.5"
+  title="Temperatur i snitt, varslet og målt"
+  src="/data/bris-artikkel-snitt-temp.json"
+  caption="Gjennomsnittlig temperatur over alle stasjoner og døgn, per ledetid. Aksen starter på 3,5. Alle modellene ligger rundt en halv grad under målt, mye fordi temperaturen ikke er høydekorrigert: mange stasjoner ligger lavere enn rutene rundt dem."
+/>
+
+<Chart
+  kind="line"
+  height="260"
+  xLabel="timer fram"
+  yLabel="m/s"
+  yMin="3.5"
+  title="Vind i snitt, varslet og målt"
+  src="/data/bris-artikkel-snitt-vind.json"
+  caption="Gjennomsnittlig vindstyrke per ledetid. Aksen starter på 3,5. Vanlig Bris ligger nærmest. Alle de finjusterte modellene varsler litt for mye vind, kontrollarmen mest."
+/>
+
+<Chart
+  kind="line"
+  height="260"
+  xLabel="timer fram"
+  yLabel="mm per 6 t"
+  yMin="0.5"
+  title="Nedbør i snitt, varslet og målt"
+  src="/data/bris-artikkel-snitt-nedbor.json"
+  caption="Gjennomsnittlig 6-timers nedbør per ledetid. Aksen starter på 0,5. Kontrollarmen og A ligger nærmest, vanlig Bris for lavt og Pavo for høyt."
+/>
+
+Over 6 timer ligger kontrollarmen nærmest målt i snitt, rundt 1 prosent over, og A rundt 5 prosent over. Over hele døgn var A nærmest. Forskjellen kommer av at timesmålingene og døgnmålingene er fra litt forskjellige stasjoner og har ulik kvalitetskontroll.
+
 ## Hva det betyr
 
 I artikkelens egne mål, uten kalibrering, er A ikke en bedre modell enn kontrollarmen på alt. Den er:
@@ -169,7 +244,8 @@ I artikkelens egne mål, uten kalibrering, er A ikke en bedre modell enn kontrol
 - **best på vind** av alle variantene;
 - **like god som kontrollarmen på temperatur;**
 - **litt svakere på 6-timers nedbør,** 2,4 prosent i CRPS;
-- **den med mest realistisk fordeling av nedbør,** der den treffer de høye verdiene nesten nøyaktig.
+- **den med mest realistisk fordeling av nedbør,** der den treffer de høye verdiene nesten nøyaktig;
+- **den eneste som varsler kraftig regn omtrent så ofte som det skjer,** 94–98 prosent av virkeligheten fra 5 mm per 6 timer og oppover, der vanlig Bris bare når halvparten.
 
 Fordelen jeg har vist tidligere, på døgn med over 20 mm, gjelder et annet spørsmål. Der var A 3,9 prosent bedre enn kontrollarmen også rå, og 6,1 prosent bedre etter kalibrering. Den fordelen er ikke stor nok til å vise seg i et snitt over alle 6-timers perioder, der det meste er lett regn eller ingen regn.
 
