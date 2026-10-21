@@ -49,35 +49,35 @@ Tilsvarer figur 6 i artikkelen. Lavere er bedre. Aksene starter ikke på null, f
 
 <Chart
   kind="line"
-  height="280"
+  height="560"
   xLabel="timer fram"
   yLabel="fair CRPS, °C"
-  yMin="1.0"
+  yMin="1.03"
   title="Temperatur 2 m over bakken"
   src="/data/bris-artikkel-crps-temp.json"
-  caption="Fair CRPS mot ledetid, teståret, 2,55 millioner tilfeller ved 1 119 stasjoner. Aksen starter på 1,0. Klikk i forklaringen for å slå linjene av og på."
+  caption="Fair CRPS mot ledetid, teståret, 2,55 millioner tilfeller ved 1 119 stasjoner. Aksen starter på 1,03. Klikk i forklaringen for å slå linjene av og på."
 />
 
 <Chart
   kind="line"
-  height="280"
+  height="560"
   xLabel="timer fram"
   yLabel="fair CRPS, m/s"
-  yMin="1.15"
+  yMin="1.16"
   title="Vind 10 m over bakken"
   src="/data/bris-artikkel-crps-vind.json"
-  caption="Fair CRPS mot ledetid, 1,61 millioner tilfeller ved 734 stasjoner. Aksen starter på 1,15."
+  caption="Fair CRPS mot ledetid, 1,61 millioner tilfeller ved 734 stasjoner. Aksen starter på 1,16."
 />
 
 <Chart
   kind="line"
-  height="280"
+  height="560"
   xLabel="timer fram"
   yLabel="fair CRPS, mm per 6 t"
-  yMin="0.38"
+  yMin="0.39"
   title="Nedbør, 6 timer"
   src="/data/bris-artikkel-crps-nedbor.json"
-  caption="Fair CRPS for 6-timers nedbør mot ledetid, 1,62 millioner tilfeller ved 898 stasjoner. Aksen starter på 0,38."
+  caption="Fair CRPS for 6-timers nedbør mot ledetid, 1,62 millioner tilfeller ved 898 stasjoner. Aksen starter på 0,39."
 />
 
 Snittet over alle ledetider, mot kontrollarmen:
@@ -112,7 +112,7 @@ Tilsvarer figur 8 i artikkelen. Den måler hvor mye bedre modellen varsler at en
 
 <Chart
   kind="line"
-  height="280"
+  height="560"
   xLabel="terskel, mm per 6 t"
   yLabel="Brier skill score"
   title="Nedbør over terskel, 6 timer"
@@ -123,7 +123,7 @@ Tilsvarer figur 8 i artikkelen. Den måler hvor mye bedre modellen varsler at en
 
 <Chart
   kind="line"
-  height="280"
+  height="560"
   xLabel="terskel, m/s"
   yLabel="Brier skill score"
   title="Vind over terskel"
@@ -142,7 +142,7 @@ Tilsvarer figur 4 i artikkelen. Den sammenligner fordelingen av varslede og mål
 
 <Chart
   kind="line"
-  height="320"
+  height="640"
   xLabel="målt, mm per 6 t"
   yLabel="varslet, mm per 6 t"
   title="Fordelingen av 6-timers nedbør"
@@ -152,7 +152,7 @@ Tilsvarer figur 4 i artikkelen. Den sammenligner fordelingen av varslede og mål
 
 <Chart
   kind="line"
-  height="320"
+  height="640"
   xLabel="målt, m/s"
   yLabel="varslet, m/s"
   title="Fordelingen av vind"
@@ -168,7 +168,7 @@ Figurene over måler feil. Her er det samme sett direkte mot det som faktisk skj
 
 <Chart
   kind="line"
-  height="300"
+  height="600"
   unit="%"
   xLabel="terskel, mm per 6 t"
   yLabel="hvor ofte varslet, i prosent av hvor ofte det skjedde"
@@ -191,7 +191,7 @@ Under 2 mm varsler A litt for ofte, rundt 10–17 prosent. Det er yr og lett reg
 
 <Chart
   kind="line"
-  height="300"
+  height="600"
   unit="%"
   xLabel="terskel, m/s"
   yLabel="hvor ofte varslet, i prosent av hvor ofte det skjedde"
@@ -204,7 +204,7 @@ For vind er bildet et annet. Kontrollarmen ligger nærmest i de sterkeste katego
 
 <Chart
   kind="line"
-  height="260"
+  height="520"
   xLabel="timer fram"
   yLabel="°C"
   yMin="3.5"
@@ -215,24 +215,24 @@ For vind er bildet et annet. Kontrollarmen ligger nærmest i de sterkeste katego
 
 <Chart
   kind="line"
-  height="260"
+  height="520"
   xLabel="timer fram"
   yLabel="m/s"
-  yMin="3.5"
+  yMin="3.7"
   title="Vind i snitt, varslet og målt"
   src="/data/bris-artikkel-snitt-vind.json"
-  caption="Gjennomsnittlig vindstyrke per ledetid. Aksen starter på 3,5. Vanlig Bris ligger nærmest. Alle de finjusterte modellene varsler litt for mye vind, kontrollarmen mest."
+  caption="Gjennomsnittlig vindstyrke per ledetid. Aksen starter på 3,7. Vanlig Bris ligger nærmest. Alle de finjusterte modellene varsler litt for mye vind, kontrollarmen mest."
 />
 
 <Chart
   kind="line"
-  height="260"
+  height="520"
   xLabel="timer fram"
   yLabel="mm per 6 t"
-  yMin="0.5"
+  yMin="0.6"
   title="Nedbør i snitt, varslet og målt"
   src="/data/bris-artikkel-snitt-nedbor.json"
-  caption="Gjennomsnittlig 6-timers nedbør per ledetid. Aksen starter på 0,5. Kontrollarmen og A ligger nærmest, vanlig Bris for lavt og Pavo for høyt."
+  caption="Gjennomsnittlig 6-timers nedbør per ledetid. Aksen starter på 0,6. Kontrollarmen og A ligger nærmest, vanlig Bris for lavt og Pavo for høyt."
 />
 
 Over 6 timer ligger kontrollarmen nærmest målt i snitt, rundt 1 prosent over, og A rundt 5 prosent over. Over hele døgn var A nærmest. Forskjellen kommer av at timesmålingene og døgnmålingene er fra litt forskjellige stasjoner og har ulik kvalitetskontroll.
