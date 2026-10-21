@@ -106,7 +106,10 @@ const SECTIONS: Section[] = [
         dose: "1/31",
         steps: "2 000",
         seed: "20260909",
-        status: "trener",
+        result: "−3,8 %",
+        better: true,
+        roc: "0,86",
+        status: "ferdig",
       },
       {
         name: "A",
@@ -129,8 +132,10 @@ const SECTIONS: Section[] = [
         dose: "1/4",
         steps: "2 000",
         seed: "20260909",
-        status: "varsles",
-        note: "trent; teståret varsles nå",
+        result: "−4,4 %",
+        better: true,
+        roc: "0,85",
+        status: "ferdig",
       },
       {
         name: "Opprinnelig halearm, steg 2 000",
@@ -241,7 +246,7 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "3 000",
         seed: "20260909",
-        status: "i kø",
+        status: "trener",
         note: "scores mot kontrollarmen ved steg 3 000",
       },
     ],
@@ -262,9 +267,9 @@ const RUNS: Run[] = [
   { when: "5.–6. okt", tags: ["control2000s2"], hours: "18,5 t", status: "ferdig" },
   { when: "6.–7. okt", tags: ["tailD2000"], hours: "18,5 t", status: "ferdig" },
   { when: "14.–15. okt", tags: ["tailC2000s2"], hours: "18,5 t", status: "ferdig" },
-  { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "19,3 t", note: "teståret varsles nå", status: "ferdig" },
-  { when: "20.–21. okt", tags: ["tail30th2000"], hours: "~19 t", note: "startet 04:02, ferdig rundt 23:30", status: "trener" },
-  { when: "21.–22. okt", tags: ["tailC3000"], hours: "~29 t", note: "starter når dose 1/30 er ferdig", status: "i kø" },
+  { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "19,3 t", status: "ferdig" },
+  { when: "20. okt", tags: ["tail30th2000"], hours: "18,8 t", status: "ferdig" },
+  { when: "21.–22. okt", tags: ["tailC3000"], hours: "~28 t", note: "startet 02:45, ferdig rundt 07:00 torsdag", status: "trener" },
 ];
 
 /* Models with a page of their own (app/modeller/[slug]). */

@@ -221,7 +221,7 @@ export const SPOTLIGHT: Spotlight[] = [
         { label: "Samme ledd, full vekt (γ = 13 716)", value: "−0,00014 (−0,7 %)", ci: "[−0,00082, +0,00048]", note: "ingen gevinst" },
       ],
       notes: [
-        "Den registrerte prediksjonen var at en hard terskel på 20 mm ikke gir noen kalibrert gevinst. A motbeviste den. A og den opprinnelige halearmen skiller seg bare i γ, så dosen er nå hypotesen. Doser på 1/30 og 1/3 kjører med en egen låst plan.",
+        "Den registrerte prediksjonen var at en hard terskel på 20 mm ikke gir noen kalibrert gevinst. A motbeviste den. A og den opprinnelige halearmen skiller seg bare i γ, så en egen låst plan testet doser på 1/30 og 1/3 av γ*: kalibrert −3,8 % [−0,00137, −0,00037] og −4,4 % [−0,00151, −0,00043] ved 20 mm. Gevinsten topper ved 1/10, og 1/3 er sikkert svakere enn A (+0,00038 [+0,00006, +0,00072]).",
         "Fordi leddet er null under terskelen, flytter A nivået lite: frekvensbias ved 2 av 4 medlemmer over 20 mm er 1,04, mot 0,93 for kontrollarmen og 1,41 for Pavo.",
         "Kontrollarmen er identisk bortsett fra det andre leddet, og normaliseringen er arvet fra bris-crpsfft: bufferne er bit-like i A, kontrollarmen og bris-crpsfft.",
       ],
@@ -274,7 +274,7 @@ export const SPOTLIGHT: Spotlight[] = [
     limits: [
       "Skiller dager med kraftig regn fra vanlige dager litt dårligere enn Pavo.",
       "Hjelper mindre for moderat regn, fordi straffen bare gjelder de kraftigste bygene.",
-      "Trent bare én gang. Forsøk med andre styrker på straffen kjører nå.",
+      "Trent bare én gang. Svakere (1/30) og sterkere (1/3) straff ga mindre gevinst, så styrken må treffes ganske presist.",
     ],
   },
 ];
