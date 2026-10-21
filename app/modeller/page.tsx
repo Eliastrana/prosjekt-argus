@@ -436,12 +436,23 @@ function ResultCell({ m }: { m: Model }) {
 function Fold({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) {
   return (
     <details className="group rounded-2xl border border-foreground/8 bg-card open:bg-card">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 transition hover:bg-foreground/[0.02] [&::-webkit-details-marker]:hidden">
         <span className="flex flex-col">
           <span className="text-sm font-semibold">{title}</span>
           <span className="text-xs text-muted">{hint}</span>
         </span>
-        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-tint text-muted transition group-open:rotate-45">+</span>
+        <svg
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className="size-4 shrink-0 text-muted transition-transform duration-200 group-open:rotate-180"
+        >
+          <path d="M5 7.5 10 12.5 15 7.5" />
+        </svg>
       </summary>
       <div className="border-t border-foreground/8 px-5 py-5">{children}</div>
     </details>
