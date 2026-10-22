@@ -377,7 +377,7 @@ function CalibrationBody() {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-[1fr_1.1fr]">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1.1fr]">
         <div className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold">Oversettelsestabellen, med ekte tall</h3>
           <p className="text-sm text-muted">
