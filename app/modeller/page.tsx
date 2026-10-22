@@ -346,7 +346,7 @@ const CALIBRATION_EXAMPLE = [
 
 function Formula({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-xl bg-background px-4 py-3 font-mono text-[13px] leading-relaxed text-foreground">
+    <div className="overflow-x-auto rounded-md bg-foreground/[0.035] px-4 py-3 font-mono text-[13px] leading-relaxed text-foreground">
       {children}
     </div>
   );
@@ -370,7 +370,7 @@ function CalibrationBody() {
             text: "Den endrer bare tallene, ikke rekkefølgen. Døgnene modellen var mest sikker på, er fortsatt de den er mest sikker på. Kalibrering gjør en modell ærlig, ikke flinkere.",
           },
         ].map((c) => (
-          <div key={c.title} className="flex flex-col gap-2 rounded-2xl border border-foreground/8 bg-card p-5">
+          <div key={c.title} className="flex flex-col gap-2 border-t border-foreground/15 pt-4">
             <h3 className="text-sm font-semibold">{c.title}</h3>
             <p className="text-sm text-muted">{c.text}</p>
           </div>
@@ -384,7 +384,7 @@ function CalibrationBody() {
             Over 20 mm i døgnet, hele teståret. Hver rad er det modellen sa, og hva det betydde i
             virkeligheten. De to siste kolonnene er kalibreringen for hver modell.
           </p>
-          <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
+          <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-foreground/10 text-xs text-muted">
@@ -469,8 +469,8 @@ function ResultCell({ m }: { m: Model }) {
    models and keeps the explanations one click away. */
 function Fold({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) {
   return (
-    <details className="group rounded-2xl border border-foreground/8 bg-card open:bg-card">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 transition hover:bg-foreground/[0.02] [&::-webkit-details-marker]:hidden">
+    <details className="group border-t border-foreground/12 last:border-b">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 transition hover:text-accent [&::-webkit-details-marker]:hidden">
         <span className="flex flex-col">
           <span className="text-sm font-semibold">{title}</span>
           <span className="text-xs text-muted">{hint}</span>
@@ -488,7 +488,7 @@ function Fold({ title, hint, children }: { title: string; hint: string; children
           <path d="M5 7.5 10 12.5 15 7.5" />
         </svg>
       </summary>
-      <div className="border-t border-foreground/8 px-5 py-5">{children}</div>
+      <div className="pb-8 pt-2">{children}</div>
     </details>
   );
 }
@@ -537,7 +537,7 @@ export default function ModelsPage() {
               { value: String(better.length), label: "sikkert bedre enn kontrollarmen" },
               { value: String(running.length), label: "kjører nå" },
             ].map((s) => (
-              <div key={s.label} className="rounded-2xl border border-foreground/8 bg-card px-4 py-3">
+              <div key={s.label} className="border-t border-foreground/15 pt-3">
                 <div className="text-2xl font-semibold tracking-tight">{s.value}</div>
                 <div className="text-xs text-muted">{s.label}</div>
               </div>
@@ -584,7 +584,7 @@ export default function ModelsPage() {
             title="Alle modeller"
             text="Oppsett og resultat for hver modell, over hele teståret. Kraftig regn er endringen i Brier-skår over 20 mm etter kalibrering, mot kontrollarmen. Været ellers viser om modellen har blitt for våt eller tørr, og hvordan den varsler temperatur og vind. Negativt er bedre; grønt er sikkert bedre, oransje sikkert dårligere."
           />
-          <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
+          <div className="overflow-x-auto">
             <table className="w-full min-w-[980px] border-collapse text-left text-sm">
               <thead>
                 <tr className="text-xs text-muted">

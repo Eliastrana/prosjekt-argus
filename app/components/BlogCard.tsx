@@ -20,13 +20,13 @@ export default function BlogCard({
     <Link
       href={`/blog/${slug}`}
       className={[
-        "group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-card",
-        "p-6 transition duration-300",
-        "hover:border-accent/40",
-        featured ? "min-h-[22rem] justify-end sm:p-9" : "min-h-[17rem]",
+        "group relative flex h-full flex-col border-t border-foreground/15",
+        "pt-6 transition duration-300",
+        "hover:border-accent",
+        featured ? "justify-end sm:pt-8" : "",
       ].join(" ")}
     >
-      <div className="mb-auto flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <time
             dateTime={frontmatter.date}
@@ -49,7 +49,7 @@ export default function BlogCard({
         </span>
       </div>
 
-      <div className={featured ? "mt-20 max-w-2xl" : "mt-12"}>
+      <div className={featured ? "mt-10 max-w-2xl" : "mt-7"}>
         <h2
           className={[
             "font-semibold leading-tight tracking-[-0.025em] text-foreground",

@@ -183,7 +183,7 @@ export default function ModelLineage({ info }: { info: Record<string, LineageInf
     <div className="flex flex-col gap-3">
       <div
         ref={fieldRef}
-        className="relative cursor-grab touch-none overflow-hidden rounded-2xl border border-foreground/8 bg-card active:cursor-grabbing"
+        className="relative cursor-grab touch-none overflow-hidden rounded-lg bg-card active:cursor-grabbing"
         style={{ height: "min(720px, 72vh)" }}
       >
         <div

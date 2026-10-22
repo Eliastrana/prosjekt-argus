@@ -70,10 +70,10 @@ function Steps({ model }: { model: Spotlight }) {
         <div
           key={s.n}
           className={[
-            "relative flex flex-col gap-2 rounded-2xl border p-5",
+            "relative flex flex-col gap-2 border-t pt-4",
             i === 2
-              ? "border-accent/50 bg-accent/5"
-              : "border-foreground/8 bg-card",
+              ? "border-accent"
+              : "border-foreground/15",
           ].join(" ")}
         >
           <div className="flex items-center justify-between gap-2">
@@ -108,7 +108,7 @@ function ThreeWay({ model }: { model: Spotlight }) {
     })),
   ];
   return (
-    <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
+    <div className="overflow-x-auto">
       <table className="w-full min-w-[560px] border-collapse text-left text-sm">
         <thead>
           <tr className="border-b border-foreground/10 text-xs text-muted">
@@ -174,7 +174,7 @@ function AudienceToggle({ id, met }: { id: string; met: boolean }) {
 
 function Mono({ children }: { children: React.ReactNode }) {
   return (
-    <pre className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card px-5 py-4 font-mono text-[12.5px] leading-relaxed">
+    <pre className="overflow-x-auto rounded-md bg-foreground/[0.035] px-5 py-4 font-mono text-[12.5px] leading-relaxed">
       {children}
     </pre>
   );
@@ -243,7 +243,7 @@ function ExpertView({ model }: { model: Spotlight }) {
       </Section>
 
       <Section title="Oppsett, side om side">
-        <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
+        <div className="overflow-x-auto">
           <table className="w-full min-w-[680px] border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-foreground/10 text-xs text-muted">
@@ -327,7 +327,7 @@ t = ${e.threshold}
           {e.results.map((r) => (
             <div
               key={r.label}
-              className="flex flex-col gap-0.5 rounded-xl border border-foreground/8 bg-card px-4 py-3"
+              className="flex flex-col gap-0.5 border-t border-foreground/15 pt-3"
             >
               <span className="text-xs text-muted">{r.label}</span>
               <span
@@ -418,7 +418,7 @@ export default async function SpotlightPage({
               </p>
               <div className="grid grid-cols-2 gap-3">
                 {[model.headline, model.secondary].map((h) => (
-                  <div key={h.label} className="rounded-2xl bg-card-2 p-4">
+                  <div key={h.label} className="border-t border-foreground/15 pt-3">
                     <div className="text-3xl font-semibold tracking-tight text-accent">
                       {h.value}
                     </div>
@@ -461,7 +461,7 @@ export default async function SpotlightPage({
             </Section>
 
             <Section title="Den ene endringen: en ekstra straff">
-              <div className="rounded-2xl border border-foreground/8 bg-card px-5 py-4 text-center text-sm md:text-base">
+              <div className="border-y border-foreground/12 py-5 text-center text-sm md:text-base">
                 <span className="text-muted">poengsum</span> ={" "}
                 <span className="font-medium">feil på alt været</span> +{" "}
                 <span className="font-semibold text-accent">
@@ -513,7 +513,7 @@ export default async function SpotlightPage({
                 ].map((a) => (
                   <div
                     key={a.who}
-                    className={`rounded-xl border px-4 py-3 text-sm ${a.who === model.name ? "border-accent/50 bg-accent/5" : "border-foreground/8"}`}
+                    className={`border-t pt-3 text-sm ${a.who === model.name ? "border-accent" : "border-foreground/15"}`}
                   >
                     <span className="font-medium">{a.who}</span>{" "}
                     <span className="text-muted">{a.what}</span>
@@ -531,7 +531,7 @@ export default async function SpotlightPage({
                 treningsoppsettet. Alt annet er identisk, og det er sjekket med
                 et skript som sammenligner hele oppsettene.
               </p>
-              <pre className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card px-5 py-4 font-mono text-[13px] leading-relaxed">
+              <pre className="overflow-x-auto rounded-md bg-foreground/[0.035] px-5 py-4 font-mono text-[13px] leading-relaxed">
                 {`ekstra ledd:  samme ensemble-CRPS én gang til, bare nedbør, bare Norden
 terskel:      ${model.code.threshold}
 vekt:         ${model.code.weight}`}
@@ -547,7 +547,7 @@ vekt:         ${model.code.weight}`}
             </Section>
 
             <Section title="Alt som er forskjellig fra vanlig Bris, punkt for punkt">
-              <div className="overflow-x-auto rounded-2xl border border-foreground/8 bg-card">
+              <div className="overflow-x-auto">
                 <table className="w-full min-w-[520px] border-collapse text-left text-sm">
                   <thead>
                     <tr className="border-b border-foreground/10 text-xs text-muted">
@@ -599,7 +599,7 @@ vekt:         ${model.code.weight}`}
                 {model.results.map((r) => (
                   <div
                     key={r.label}
-                    className="flex flex-col gap-0.5 rounded-xl border border-foreground/8 bg-card px-4 py-3"
+                    className="flex flex-col gap-0.5 border-t border-foreground/15 pt-3"
                   >
                     <span className="text-xs text-muted">{r.label}</span>
                     <span

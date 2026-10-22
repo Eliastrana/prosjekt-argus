@@ -137,7 +137,7 @@ export default function BrisShowcase() {
       <div className="mt-4 grid gap-4 md:grid-cols-[auto_1fr] md:items-stretch">
         <div
           ref={boxRef}
-          className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-card md:w-72"
+          className="relative aspect-square w-full overflow-hidden rounded-lg bg-card md:w-72"
         >
           {/* Every frame is stacked and cross-faded rather than swapping one
               src: changing src makes the element blank for a beat between
@@ -168,7 +168,7 @@ export default function BrisShowcase() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center rounded-[1.75rem] border border-foreground/10 bg-card p-6">
+        <div className="flex flex-col justify-center border-t border-foreground/15 pt-6 md:border-t-0 md:border-l md:pl-8 md:pt-0">
           <p className="text-sm leading-6 text-muted">
             Modellen fikk to tilstander og regnet 120 timer framover på egen
             hånd. Feltet over Norge er 2,5 km, det er den delen Bris løser

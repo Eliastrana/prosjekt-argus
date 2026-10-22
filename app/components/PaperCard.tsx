@@ -16,8 +16,8 @@ function getPrimaryLink(paper: RelevantPaper) {
 // pinned to the top, the title and its detail sitting at the bottom, and the
 // arrow that lights up on hover.
 const SHELL = [
-  "group relative flex h-full min-h-[17rem] flex-col overflow-hidden",
-  "rounded-[1.75rem] border border-foreground/10 bg-card p-6",
+  "group relative flex h-full flex-col",
+  "border-t border-foreground/15 pt-6",
   "transition duration-300",
 ].join(" ");
 
@@ -33,7 +33,7 @@ function Body({ paper }: { paper: RelevantPaper }) {
   const detail = [paper.venue, paper.note].filter(Boolean);
 
   return (
-    <div className="mt-12">
+    <div className="mt-7">
       <h3 className="text-xl font-semibold leading-tight tracking-[-0.025em] text-foreground">
         {paper.title}
       </h3>
@@ -56,7 +56,7 @@ function Body({ paper }: { paper: RelevantPaper }) {
 
 function Meta({ paper, linked }: { paper: RelevantPaper; linked: boolean }) {
   return (
-    <div className="mb-auto flex items-center justify-between gap-3">
+    <div className="flex items-center justify-between gap-3">
       <div className="flex min-w-0 items-center gap-3">
         {paper.year ? (
           <span className="shrink-0 text-sm font-medium text-muted">{paper.year}</span>
@@ -103,7 +103,7 @@ export default function PaperCard({ paper }: { paper: RelevantPaper }) {
       target="_blank"
       rel="noreferrer"
       aria-label={`${paper.title} — ${primaryLink.label}`}
-      className={`${SHELL} hover:border-accent/40`}
+      className={`${SHELL} hover:border-accent`}
     >
       <Meta paper={paper} linked />
       <Body paper={paper} />
