@@ -38,10 +38,10 @@ export default function StepsPage() {
     <main className="min-h-screen bg-background text-foreground">
       
 
-      <div className="mx-auto max-w-5xl px-6 py-16">
+      <div className="page-shell">
         <header className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            <h1 className="page-title">
               Prosjektsteg
             </h1>
           </div>

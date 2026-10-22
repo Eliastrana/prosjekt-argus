@@ -519,10 +519,10 @@ export default function ModelsPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-24 sm:px-6">
+      <div className="page-shell flex flex-col gap-16">
         <header className="flex flex-col gap-6">
           <div className="flex max-w-3xl flex-col gap-3">
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Modellene</h1>
+            <h1 className="page-title">Modellene</h1>
             <p className="text-sm text-muted md:text-base">
               Alle versjonene av Bris som er trent i prosjektet. De er like på alt unntatt det ekstra
               leddet i tapet, antall steg og seed, så hver forskjell i resultatet kan føres tilbake til

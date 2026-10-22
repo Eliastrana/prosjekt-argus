@@ -197,9 +197,9 @@ export default function CheckRiskPage() {
 
     return (
         <main className="min-h-screen bg-background text-foreground">
-            <div className="mx-auto max-w-3xl px-6 py-16">
+            <div className="page-shell">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <h1 className="text-3xl font-semibold tracking-tight">Sjekk risiko med posisjon</h1>
+                    <h1 className="page-title">Sjekk risiko med posisjon</h1>
                     <Link href="/map" className="text-sm text-muted hover:text-foreground transition">
                         Se kart →
                     </Link>

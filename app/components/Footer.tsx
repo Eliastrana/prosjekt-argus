@@ -15,7 +15,7 @@ export default function Footer() {
         />
       </div>
 
-      <div className="relative mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-center px-6 py-10 dark:text-white">
+      <div className="relative mx-auto flex min-h-[70vh] max-w-5xl flex-col justify-center px-6 py-10 dark:text-white">
         <div className="max-w-2xl">
           <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-4xl">
               I don't think I'm as revolutionary as Galileo, but I don't think I'm not as revolutionary as Galileo.

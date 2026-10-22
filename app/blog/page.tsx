@@ -11,10 +11,10 @@ export default function BlogIndexPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-6xl px-6 pb-24 pt-14 sm:pt-20">
+      <div className="page-shell">
         <header className=" pb-10 sm:pb-14">
           <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
-            <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
+            <h1 className="page-title max-w-3xl">
               Innsikt underveis.
             </h1>
             {/*<p className="max-w-xl text-base leading-7 text-muted lg:justify-self-end">*/}

@@ -394,17 +394,17 @@ export default async function SpotlightPage({
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <article className="mx-auto flex max-w-3xl flex-col gap-12 px-4 py-24 sm:px-6">
+      <article className="page-shell flex flex-col gap-12">
         <header className="flex flex-col gap-4">
-          <AudienceToggle id={model.id} met={met} />
           <div>
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+            <h1 className="page-title">
               {model.name}
             </h1>
             <p className="mt-2 text-base text-muted md:text-lg">
               {model.subtitle}
             </p>
           </div>
+          <AudienceToggle id={model.id} met={met} />
           {met ? null : (
             <>
               <p className="text-sm leading-relaxed text-muted md:text-base">

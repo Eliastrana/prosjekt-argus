@@ -78,11 +78,11 @@ export default function ForecastDemoPage() {
                 <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-accent/12 blur-3xl" />
             </div>
 
-            <div className="mx-auto max-w-5xl px-6 py-16">
+            <div className="page-shell">
                 <div className="rounded-2xl bg-card p-6 shadow-soft">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                         <div>
-                            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                            <h1 className="page-title">
                                 ECMWF forecast (live)
                             </h1>
                             <p className="mt-1 text-sm text-muted">

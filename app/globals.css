@@ -104,6 +104,28 @@
   }
 }
 
+/* Page frame ------------------------------------------------------------- */
+/* Every page with a title uses the same column, top offset and title size, and
+   the footer the same column, so nothing jumps when moving between pages. */
+.page-shell {
+  margin-inline: auto;
+  max-width: 64rem;
+  padding: 3rem 1.5rem 6rem;
+  width: 100%;
+}
+
+.page-title {
+  font-size: 2.25rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+@media (min-width: 768px) {
+  .page-shell { padding-top: 5rem; }
+  .page-title { font-size: 3rem; }
+}
+
 /* Blog article system ----------------------------------------------------- */
 .blog-prose {
   color: rgb(var(--foreground));
