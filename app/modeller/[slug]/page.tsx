@@ -396,12 +396,6 @@ export default async function SpotlightPage({
     <main className="min-h-screen bg-background text-foreground">
       <article className="mx-auto flex max-w-3xl flex-col gap-12 px-4 py-24 sm:px-6">
         <header className="flex flex-col gap-4">
-          <Link
-            href="/modeller"
-            className="text-sm text-muted transition hover:text-foreground"
-          >
-            ← Alle modellene
-          </Link>
           <AudienceToggle id={model.id} met={met} />
           <div>
             <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">

@@ -1,5 +1,4 @@
 // app/blog/[slug]/page.tsx
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -7,7 +6,6 @@ import remarkGfm from "remark-gfm";
 import type { Metadata } from "next";
 import { blogMdxComponents } from "@/app/components/BlogContent";
 import { AuthorByline } from "@/app/components/AuthorByline";
-import { BlogExplanation } from "@/app/components/BlogExplanation";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -66,19 +64,8 @@ export default async function BlogPostPage({
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="blog-post-column mx-auto max-w-5xl px-6 pb-24 pt-12 sm:pt-20">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-foreground"
-        >
-          <span aria-hidden="true">←</span>
-          Alle innlegg
-        </Link>
-
         <header className="mt-10 border-b border-foreground/10 pb-10 sm:pb-14">
-          <p className="text-sm font-medium text-accent">
-            Prosjektjournal
-          </p>
-          <h1 className="mt-5 text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl">
+          <h1 className="text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-6xl">
             {frontmatter.title}
           </h1>
 
@@ -110,7 +97,6 @@ export default async function BlogPostPage({
           )}
         </header>
 
-        <BlogExplanation key={slug} slug={slug} excerpt={frontmatter.excerpt} />
 
 
         <article className="blog-prose mt-10 sm:mt-14">
@@ -121,17 +107,6 @@ export default async function BlogPostPage({
           />
         </article>
 
-        <footer className="mt-16 border-t border-foreground/10 pt-8">
-          <Link
-            href="/blog"
-            className="group inline-flex items-center gap-3 font-semibold text-foreground"
-          >
-            <span className="grid size-10 place-items-center rounded-full border border-foreground/10 transition group-hover:border-accent/40 group-hover:bg-tint">
-              <span aria-hidden="true">←</span>
-            </span>
-            Tilbake til prosjektjournalen
-          </Link>
-        </footer>
       </div>
     </main>
   );

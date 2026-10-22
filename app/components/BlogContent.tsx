@@ -23,10 +23,9 @@ export function CardGrid({ children }: ContentBlockProps) {
   return <div className="article-grid">{children}</div>;
 }
 
-export function InfoCard({ children, eyebrow, title }: InfoCardProps) {
+export function InfoCard({ children, title }: InfoCardProps) {
   return (
     <section className="article-info-card">
-      {eyebrow ? <p className="article-info-card__eyebrow">{eyebrow}</p> : null}
       <h3 className="article-info-card__title">{title}</h3>
       <div className="article-info-card__body">{children}</div>
     </section>

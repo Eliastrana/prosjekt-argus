@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { intro } from "@/lib/intro";
 
 const INTRO_HOLD_MS = 900;
 const INTRO_FALLBACK_MS = 2200;
@@ -9,9 +10,14 @@ const INTRO_FALLBACK_MS = 2200;
 export default function FrontpageHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  // The intro only plays on the first visit to the front page in a page load.
+  const [showIntro, setShowIntro] = useState(() => !intro.played);
 
   useEffect(() => {
+    if (!showIntro) {
+      return;
+    }
+
     const fallbackTimer = window.setTimeout(() => {
       setIsVideoReady(true);
     }, INTRO_FALLBACK_MS);
@@ -24,7 +30,7 @@ export default function FrontpageHero() {
     return () => {
       window.clearTimeout(fallbackTimer);
     };
-  }, []);
+  }, [showIntro]);
 
   useEffect(() => {
     if (!isVideoReady) {
@@ -45,6 +51,7 @@ export default function FrontpageHero() {
       return;
     }
 
+    intro.played = true;
     window.dispatchEvent(new Event("frontpage:reveal"));
   }, [showIntro]);
 

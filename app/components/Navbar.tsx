@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
+import { intro } from "@/lib/intro";
 
 const navItems = [
   { href: "/", label: "Hjem" },
@@ -18,11 +19,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const [visibility, setVisibility] = useState(() => ({
     pathname,
-    isVisible: pathname !== "/",
+    isVisible: pathname !== "/" || intro.played,
   }));
 
   if (visibility.pathname !== pathname) {
-    setVisibility({ pathname, isVisible: pathname !== "/" });
+    setVisibility({ pathname, isVisible: pathname !== "/" || intro.played });
   }
 
   const isVisible = visibility.pathname === pathname && visibility.isVisible;
@@ -31,6 +32,11 @@ export default function Navbar() {
     if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(href + "/");
   };
+
+  // A visit that started on another page never shows the front-page intro.
+  useEffect(() => {
+    if (pathname !== "/") intro.played = true;
+  }, [pathname]);
 
   useEffect(() => {
     if (pathname !== "/") return;

@@ -13,10 +13,7 @@ export default function BlogIndexPage() {
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-6xl px-6 pb-24 pt-14 sm:pt-20">
         <header className=" pb-10 sm:pb-14">
-          <p className="text-sm font-medium text-accent">
-            Prosjektjournal
-          </p>
-          <div className="mt-5 grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+          <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
             <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
               Innsikt underveis.
             </h1>
