@@ -125,6 +125,17 @@ const SECTIONS: Section[] = [
         status: "ferdig",
       },
       {
+        name: "A, ny trekning",
+        tag: "tailA2000s2",
+        threshold: "hard, 20 mm",
+        weight: "1 371,6",
+        dose: "1/11",
+        steps: "2 000",
+        seed: "20261003",
+        status: "trener",
+        note: "scores mot F, som har samme seed, etter låst plan",
+      },
+      {
         name: "Dose 1/3",
         tag: "tail3rd2000",
         threshold: "hard, 20 mm",
@@ -246,8 +257,11 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "3 000",
         seed: "20260909",
-        status: "trener",
-        note: "scores mot kontrollarmen ved steg 3 000",
+        result: "−5,2 %",
+        better: true,
+        roc: "0,90",
+        status: "ferdig",
+        note: "mot kontrollarmen ved steg 3 000; bekreftet etter låst plan",
       },
     ],
   },
@@ -269,7 +283,8 @@ const RUNS: Run[] = [
   { when: "14.–15. okt", tags: ["tailC2000s2"], hours: "18,5 t", status: "ferdig" },
   { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "19,3 t", status: "ferdig" },
   { when: "20. okt", tags: ["tail30th2000"], hours: "18,8 t", status: "ferdig" },
-  { when: "21.–22. okt", tags: ["tailC3000"], hours: "~28 t", note: "startet 02:45, ferdig rundt 07:00 torsdag", status: "trener" },
+  { when: "21.–22. okt", tags: ["tailC3000"], hours: "31,7 t", status: "ferdig" },
+  { when: "22.–23. okt", tags: ["tailA2000s2"], hours: "~18,5 t", note: "startet 10:26, resultat ventet fredag ettermiddag", status: "trener" },
 ];
 
 /* Beyond heavy rain: mean daily precipitation relative to observed (1,00 is
