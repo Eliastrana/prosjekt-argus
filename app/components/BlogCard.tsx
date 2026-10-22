@@ -20,10 +20,10 @@ export default function BlogCard({
     <Link
       href={`/blog/${slug}`}
       className={[
-        "group relative flex h-full flex-col border-t border-foreground/15",
-        "pt-6 transition duration-300",
-        "hover:border-accent",
-        featured ? "justify-end sm:pt-8" : "",
+        "group relative flex h-full flex-col rounded-[10px] bg-foreground/[0.04]",
+        "p-6 transition duration-300",
+        "hover:bg-foreground/[0.07]",
+        featured ? "justify-end sm:p-8" : "",
       ].join(" ")}
     >
       <div className="flex items-center justify-between gap-3">

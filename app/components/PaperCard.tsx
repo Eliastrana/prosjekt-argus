@@ -17,7 +17,7 @@ function getPrimaryLink(paper: RelevantPaper) {
 // arrow that lights up on hover.
 const SHELL = [
   "group relative flex h-full flex-col",
-  "border-t border-foreground/15 pt-6",
+  "rounded-[10px] bg-foreground/[0.04] p-6",
   "transition duration-300",
 ].join(" ");
 
@@ -103,7 +103,7 @@ export default function PaperCard({ paper }: { paper: RelevantPaper }) {
       target="_blank"
       rel="noreferrer"
       aria-label={`${paper.title} — ${primaryLink.label}`}
-      className={`${SHELL} hover:border-accent`}
+      className={`${SHELL} hover:bg-foreground/[0.07]`}
     >
       <Meta paper={paper} linked />
       <Body paper={paper} />

@@ -26,7 +26,7 @@ export default function ModelSpotlight() {
           <Link
             key={m.id}
             href={`/modeller/${m.id}`}
-            className="group flex flex-col gap-4 border-t border-foreground/15 pt-5 text-left transition hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+            className="group flex flex-col gap-4 rounded-[10px] bg-foreground/[0.04] p-6 text-left transition hover:bg-foreground/[0.07] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
           >
             <div className="flex items-start justify-between gap-3">
               <div>

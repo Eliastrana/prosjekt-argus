@@ -370,7 +370,7 @@ function CalibrationBody() {
             text: "Den endrer bare tallene, ikke rekkefølgen. Døgnene modellen var mest sikker på, er fortsatt de den er mest sikker på. Kalibrering gjør en modell ærlig, ikke flinkere.",
           },
         ].map((c) => (
-          <div key={c.title} className="flex flex-col gap-2 border-t border-foreground/15 pt-4">
+          <div key={c.title} className="flex flex-col gap-2 rounded-[10px] bg-foreground/[0.04] p-5">
             <h3 className="text-sm font-semibold">{c.title}</h3>
             <p className="text-sm text-muted">{c.text}</p>
           </div>
@@ -537,7 +537,7 @@ export default function ModelsPage() {
               { value: String(better.length), label: "sikkert bedre enn kontrollarmen" },
               { value: String(running.length), label: "kjører nå" },
             ].map((s) => (
-              <div key={s.label} className="border-t border-foreground/15 pt-3">
+              <div key={s.label} className="rounded-[10px] bg-foreground/[0.04] px-4 py-3">
                 <div className="text-2xl font-semibold tracking-tight">{s.value}</div>
                 <div className="text-xs text-muted">{s.label}</div>
               </div>

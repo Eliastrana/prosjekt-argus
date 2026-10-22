@@ -79,7 +79,7 @@ export default function ComputeUsage() {
         {tiles.map((tile) => (
           <div
             key={tile.label}
-            className="border-t border-foreground/15 pt-5"
+            className="rounded-[10px] bg-foreground/[0.04] p-5"
           >
             <p className="text-sm font-medium text-muted">
               {tile.label}

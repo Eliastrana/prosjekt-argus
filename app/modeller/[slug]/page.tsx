@@ -70,10 +70,10 @@ function Steps({ model }: { model: Spotlight }) {
         <div
           key={s.n}
           className={[
-            "relative flex flex-col gap-2 border-t pt-4",
+            "relative flex flex-col gap-2 rounded-[10px] p-5",
             i === 2
-              ? "border-accent"
-              : "border-foreground/15",
+              ? "bg-accent/[0.12]"
+              : "bg-foreground/[0.04]",
           ].join(" ")}
         >
           <div className="flex items-center justify-between gap-2">
@@ -327,7 +327,7 @@ t = ${e.threshold}
           {e.results.map((r) => (
             <div
               key={r.label}
-              className="flex flex-col gap-0.5 border-t border-foreground/15 pt-3"
+              className="flex flex-col gap-0.5 rounded-[10px] bg-foreground/[0.04] px-4 py-3"
             >
               <span className="text-xs text-muted">{r.label}</span>
               <span
@@ -418,7 +418,7 @@ export default async function SpotlightPage({
               </p>
               <div className="grid grid-cols-2 gap-3">
                 {[model.headline, model.secondary].map((h) => (
-                  <div key={h.label} className="border-t border-foreground/15 pt-3">
+                  <div key={h.label} className="rounded-[10px] bg-foreground/[0.04] p-4">
                     <div className="text-3xl font-semibold tracking-tight text-accent">
                       {h.value}
                     </div>
@@ -513,7 +513,7 @@ export default async function SpotlightPage({
                 ].map((a) => (
                   <div
                     key={a.who}
-                    className={`border-t pt-3 text-sm ${a.who === model.name ? "border-accent" : "border-foreground/15"}`}
+                    className={`rounded-[10px] px-4 py-3 text-sm ${a.who === model.name ? "bg-accent/[0.12]" : "bg-foreground/[0.04]"}`}
                   >
                     <span className="font-medium">{a.who}</span>{" "}
                     <span className="text-muted">{a.what}</span>
@@ -599,7 +599,7 @@ vekt:         ${model.code.weight}`}
                 {model.results.map((r) => (
                   <div
                     key={r.label}
-                    className="flex flex-col gap-0.5 border-t border-foreground/15 pt-3"
+                    className="flex flex-col gap-0.5 rounded-[10px] bg-foreground/[0.04] px-4 py-3"
                   >
                     <span className="text-xs text-muted">{r.label}</span>
                     <span
