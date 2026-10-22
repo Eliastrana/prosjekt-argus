@@ -1,7 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
-
 const THEME_STORAGE_KEY = "argus-theme";
 
 type Theme = "light" | "dark";
@@ -36,7 +34,6 @@ export default function ThemeToggle() {
       title="Bytt mellom lys og mørk modus"
       data-nav-item
       className="nav-item grid size-9 shrink-0 place-items-center rounded-full text-foreground sm:size-10 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95"
-      style={{ "--i": 6 } as CSSProperties}
     >
       <span className="theme-icon theme-icon--light" aria-hidden="true">
         ☀︎
