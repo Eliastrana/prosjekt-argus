@@ -16,9 +16,8 @@
 /* Not inline: the base styles read these through var(), and the font
    variables they point at are set on <html> by next/font. */
 @theme {
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  /* Plex Mono has no Greek; the α and γ in the formulas come from Plex Sans. */
-  --font-mono: var(--font-plex-mono), var(--font-plex-sans), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 @layer base {
@@ -200,8 +199,8 @@
 .page-title {
   font-size: 2.25rem;
   font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.08;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
 @media (min-width: 768px) {
