@@ -4,6 +4,23 @@ import Navbar from "./components/Navbar";
 import LayoutPadding from "./components/LayoutPadding";
 import Footer from "./components/Footer";
 import Script from "next/script";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+
+// IBM Plex for everything; the mono cut for code, configs and formulas.
+const plexSans = IBM_Plex_Sans({
+  subsets: ["latin", "greek"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-plex-sans",
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
+  display: "swap",
+});
 
 const themeInitScript = `
   (function () {
@@ -35,7 +52,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="no" suppressHydrationWarning>
+        <html lang="no" className={`${plexSans.variable} ${plexMono.variable}`} suppressHydrationWarning>
         <head>
             <Script id="theme-init" strategy="beforeInteractive">
                 {themeInitScript}

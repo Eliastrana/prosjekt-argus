@@ -13,6 +13,14 @@
   --color-tint: rgb(var(--tint));
 }
 
+/* Not inline: the base styles read these through var(), and the font
+   variables they point at are set on <html> by next/font. */
+@theme {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Plex Mono has no Greek; the α and γ in the formulas come from Plex Sans. */
+  --font-mono: var(--font-plex-mono), var(--font-plex-sans), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 @layer base {
   :root,
   :root[data-theme="light"] {
@@ -192,8 +200,8 @@
 .page-title {
   font-size: 2.25rem;
   font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
 }
 
 @media (min-width: 768px) {
@@ -403,7 +411,7 @@
   background: rgb(var(--foreground) / 0.035);
   border-radius: 6px;
   color: rgb(var(--foreground) / 0.88);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 0.82rem;
   line-height: 1.65;
   margin-bottom: 2rem;
