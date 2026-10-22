@@ -12,7 +12,7 @@ export default function PapersPage() {
     <main className="min-h-screen bg-background text-foreground">
       <div className="page-shell">
         <header className="flex flex-col gap-2">
-          <h1 className="page-title">Relevant Papers</h1>
+          <h1 className="page-title">Relevante artikler</h1>
           <p className="max-w-2xl text-sm text-muted md:text-base">
             Referanser for prosjektet hentet fra en BibTeX-fil.
           </p>
