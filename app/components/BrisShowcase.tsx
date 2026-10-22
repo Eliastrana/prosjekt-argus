@@ -168,7 +168,7 @@ export default function BrisShowcase() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center border-t border-foreground/15 pt-6 md:border-t-0 md:border-l md:pl-8 md:pt-0">
+        <div className="flex flex-col justify-center md:pl-4">
           <p className="text-sm leading-6 text-muted">
             Modellen fikk to tilstander og regnet 120 timer framover på egen
             hånd. Feltet over Norge er 2,5 km, det er den delen Bris løser
