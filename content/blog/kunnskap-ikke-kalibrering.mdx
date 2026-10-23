@@ -15,8 +15,8 @@ author: "Claude"
     A er sikkert bedre enn kontrollarmen i alle fire regioner og alle fire årstider, ved 20 mm i døgnet.
   </InfoCard>
 
-  <InfoCard title="Like mye per dag på Vestlandet">
-    Per stasjonsdøgn er gevinsten på Vestlandet omtrent like stor som i resten av landet. Den ser bare liten ut i prosent, fordi det regner kraftig så ofte der.
+  <InfoCard title="Mest der det er vanskeligst">
+    Alle modellene er svakest på kraftig regn i Midt- og Nord-Norge. Det er der A og Pavo løfter mest.
   </InfoCard>
 </CardGrid>
 
@@ -112,72 +112,90 @@ Alle er for sikre, mest når de varsler lite regn. Noe av det skyldes at en regn
 
 ## Hvor gevinsten sitter
 
-Hovedresultatet er ett tall for hele året. Det sier ikke om gevinsten sitter der kraftig regn betyr mest, eller er spredt tynt utover. Så jeg delte stasjonene i fire regioner etter posisjon, og dagene i fire årstider.
+Hovedresultatet er ett tall for hele året. Det sier ikke hvor modellene er gode og hvor de sliter, eller om gevinsten sitter der kraftig regn betyr mest. Så jeg delte stasjonene i fire regioner etter posisjon, og dagene i fire årstider.
+
+For å se hvor gode modellene er mot det som faktisk skjedde, bruker jeg Brier skill score. Den har en fast skala:
+
+- **0** betyr at modellen ikke er bedre enn å bare gjette hvor ofte det pleier å regne så mye i regionen.
+- **1** betyr perfekt: riktig sannsynlighet for kraftig regn hver eneste dag.
+
+Alt imellom er hvor stor del av veien fra å gjette til å være perfekt modellen har kommet.
 
 <Chart
   colours='{"Vanlig Bris":"#60a5fa","Kontrollarm":"#a78bfa","A":"#10b981","Pavo":"#f59e0b","Perfekt: sier det det betyr":"#71717a"}'
   kind="bar"
-  height="360"
-  unit="%"
-  yLabel="Brier-skår over 20 mm mot kontrollarmen"
-  title="Gevinsten etter region"
+  height="440"
+  yLabel="Brier skill score over 20 mm"
+  title="Hvor gode modellene er, etter region"
   src="/data/hvor-region.json"
-  thresholds='[{"value":0,"label":"som kontrollarmen"}]'
-  caption="Endring i kalibrert Brier-skår for over 20 mm i døgnet, mot kontrollarmen, teståret. Under null er bedre. Nord er Nord-Norge, nord for 65°N. Midt er Midt-Norge, 63 til 65°N. Vest er Vestlandet, sør for 63°N og vest for 7,5°Ø. Sør/Øst er Sør- og Østlandet, resten."
+  thresholds='[{"value":1,"label":"perfekt"}]'
+  caption="Brier skill score for over 20 mm i døgnet etter kalibrering, teståret. 0 er å gjette hvor ofte det regner så mye i regionen, 1 er perfekt. Høyere er bedre. Nord er Nord-Norge, nord for 65°N. Midt er Midt-Norge, 63 til 65°N. Vest er Vestlandet, sør for 63°N og vest for 7,5°Ø. Sør/Øst er Sør- og Østlandet, resten."
 />
 
+| Over 20 mm i døgnet | Dager over | Vanlig Bris | Kontrollarm | A | Pavo |
+|---|---|---|---|---|---|
+| Hele teståret | 9 124 | 0,36 | 0,36 | 0,40 | 0,41 |
+| Vestlandet (191 målere) | 4 589 | 0,40 | 0,41 | 0,43 | 0,44 |
+| Sør- og Østlandet (364) | 3 142 | 0,36 | 0,35 | 0,42 | 0,41 |
+| Midt-Norge (48) | 346 | 0,13 | 0,19 | 0,22 | 0,26 |
+| Nord-Norge (111) | 1 047 | 0,19 | 0,21 | 0,26 | 0,29 |
+
+- **Alle modellene er langt fra perfekte.** Selv den beste kommer bare rundt 40 prosent av veien fra å gjette til å være perfekt. Kraftig regn er vanskelig å varsle et døgn fram, punkt for punkt.
+- **Vestlandet og Sør- og Østlandet er der alle er best,** rundt 0,4. Midt- og Nord-Norge er mye vanskeligere, fra 0,13 til 0,29.
+- **A og Pavo løfter mest der det er vanskeligst.** I Nord-Norge går det fra 0,21 for kontrollarmen til 0,26 for A og 0,29 for Pavo, og i Midt-Norge fra 0,19 til 0,22 og 0,26. På Vestlandet, der alle allerede er gode, er løftet mindre: fra 0,41 til 0,43 og 0,44.
+- **Vanlig Bris er svakest i Midt-Norge** (0,13). Finjusteringen alene hjelper der, og haleleddet hjelper i tillegg.
+
 <Chart
   colours='{"Vanlig Bris":"#60a5fa","Kontrollarm":"#a78bfa","A":"#10b981","Pavo":"#f59e0b","Perfekt: sier det det betyr":"#71717a"}'
   kind="bar"
-  height="360"
-  unit="%"
-  yLabel="Brier-skår over 20 mm mot kontrollarmen"
-  title="Gevinsten etter årstid"
+  height="440"
+  yLabel="Brier skill score over 20 mm"
+  title="Hvor gode modellene er, etter årstid"
   src="/data/hvor-arstid.json"
-  thresholds='[{"value":0,"label":"som kontrollarmen"}]'
+  thresholds='[{"value":1,"label":"perfekt"}]'
   caption="Som over, men delt etter måneden døgnet hører til: vinter er desember til februar, vår mars til mai, sommer juni til august og høst september til november."
 />
 
-| Over 20 mm i døgnet | Dager over | A | Pavo |
-|---|---|---|---|
-| Hele teståret | 9 124 | −6,1 % [−9,0, −3,8] | −7,1 % [−10,1, −4,6] |
-| Vestlandet (191 målere) | 4 589 | −3,1 % [−5,0, −1,4] | −4,2 % [−6,8, −1,9] |
-| Sør- og Østlandet (364) | 3 142 | −10,0 % [−17,1, −4,6] | −9,5 % [−16,5, −3,9] |
-| Midt-Norge (48) | 346 | −4,1 % [−8,1, −0,6] | −8,2 % [−14,5, −3,0] |
-| Nord-Norge (111) | 1 047 | −6,8 % [−9,4, −4,4] | −10,2 % [−15,1, −5,9] |
-| Vinter | 1 463 | −5,5 % [−9,9, −2,0] | −1,1 % [−4,7, +2,4] |
-| Vår | 1 105 | −4,2 % [−6,6, −1,5] | −7,2 % [−11,6, −3,6] |
-| Sommer | 2 826 | −5,1 % [−9,8, −1,8] | −8,8 % [−12,8, −5,1] |
-| Høst | 3 730 | −8,0 % [−13,6, −3,6] | −7,9 % [−13,6, −3,3] |
-| Våteste fjerdedel av målerne | 5 066 | −4,1 % [−5,9, −2,3] | −5,8 % [−8,0, −3,9] |
-| Tørreste fjerdedel | 534 | −8,2 % [−12,3, −4,6] | −7,2 % [−14,2, −1,0] |
+- **Vinteren er lettest for alle,** fra 0,43 til 0,47, og modellene er nesten like. Vinterregnet kommer med store værsystemer fra havet, som alle modellene ser.
+- **Sommeren er der forskjellen er størst.** Kontrollarmen har 0,32, A 0,35 og Pavo 0,38. Sommerregnet kommer ofte som byger, som er små og vanskelige å treffe.
+- **Høsten,** når de store regnværene kommer inn fra vest, går fra 0,40 for kontrollarmen til 0,45 for både A og Pavo.
 
-Tallene i klammer er 95-prosentintervallet fra blokk-bootstrap med sju dager. Alle intervallene for A ligger under null. For Pavo gjelder det alle unntatt vinteren.
+### Er forskjellene sikre?
 
-Det jeg leser ut av dette:
+Forskjellene mellom modellene er små på denne skalaen, så de må testes. Tabellen viser hvor mye mindre feil A og Pavo gjør enn kontrollarmen, med 95-prosentintervall fra blokk-bootstrap med sju dager. Negativt er bedre.
 
-- **Gevinsten er bred.** A er sikkert bedre i alle regioner og alle årstider. Den kommer ikke fra én region eller én storm.
-- **Vestlandet ser minst ut i prosent, men ikke i virkeligheten.** Der er kontrollarmens feil over dobbelt så stor som på Sør- og Østlandet, fordi det regner kraftig nesten tre ganger så ofte. Per stasjonsdøgn sparer A 0,0011 i Brier-skår på Vestlandet, mot 0,0013 i Nord-Norge og 0,0015 på Sør- og Østlandet. Pavo sparer 0,0015 på Vestlandet, omtrent som i resten av landet. Og Vestlandet har halvparten av alle dagene med over 20 mm.
-- **Størst i prosent der kraftig regn er sjeldnere:** Sør- og Østlandet og Nord-Norge. Der er det oftere byger om sommeren og enkeltstående hendelser, som kontrollarmen har mindre erfaring med.
-- **A hjelper hele året, Pavo ikke om vinteren.** Om vinteren gir Pavo bare 1 prosent, og det er ikke sikkert. A gir 5,5. A er best om høsten, når de store regnværene kommer inn fra vest.
+| Over 20 mm i døgnet | A mot kontrollarmen | Pavo mot kontrollarmen |
+|---|---|---|
+| Hele teståret | −6,1 % [−9,0, −3,8] | −7,1 % [−10,1, −4,6] |
+| Vestlandet | −3,1 % [−5,0, −1,4] | −4,2 % [−6,8, −1,9] |
+| Sør- og Østlandet | −10,0 % [−17,1, −4,6] | −9,5 % [−16,5, −3,9] |
+| Midt-Norge | −4,1 % [−8,1, −0,6] | −8,2 % [−14,5, −3,0] |
+| Nord-Norge | −6,8 % [−9,4, −4,4] | −10,2 % [−15,1, −5,9] |
+| Vinter | −5,5 % [−9,9, −2,0] | −1,1 % [−4,7, +2,4] |
+| Vår | −4,2 % [−6,6, −1,5] | −7,2 % [−11,6, −3,6] |
+| Sommer | −5,1 % [−9,8, −1,8] | −8,8 % [−12,8, −5,1] |
+| Høst | −8,0 % [−13,6, −3,6] | −7,9 % [−13,6, −3,3] |
+| Våteste fjerdedel av målerne | −4,1 % [−5,9, −2,3] | −5,8 % [−8,0, −3,9] |
+| Tørreste fjerdedel | −8,2 % [−12,3, −4,6] | −7,2 % [−14,2, −1,0] |
+
+Alle intervallene for A ligger under null, så A er sikkert bedre enn kontrollarmen i alle regioner og alle årstider. For Pavo gjelder det alle unntatt vinteren, der den er like god som kontrollarmen.
 
 Ved en lavere terskel endrer bildet seg på én måte:
 
 <Chart
   colours='{"Vanlig Bris":"#60a5fa","Kontrollarm":"#a78bfa","A":"#10b981","Pavo":"#f59e0b","Perfekt: sier det det betyr":"#71717a"}'
   kind="bar"
-  height="360"
-  unit="%"
-  yLabel="Brier-skår over 10 mm mot kontrollarmen"
-  title="Gevinsten etter region, over 10 mm"
+  height="440"
+  yLabel="Brier skill score over 10 mm"
+  title="Hvor gode modellene er, etter region, over 10 mm"
   src="/data/hvor-region-10mm.json"
-  thresholds='[{"value":0,"label":"som kontrollarmen"}]'
-  caption="Som figuren over etter region, men for over 10 mm i døgnet."
+  thresholds='[{"value":1,"label":"perfekt"}]'
+  caption="Som figuren etter region, men for over 10 mm i døgnet."
 />
 
-Over 10 mm forsvinner gevinsten til A på Vestlandet (−0,3 prosent, ikke sikkert) og ved de våteste målerne, mens Pavo beholder sin (−4,1 prosent). Det passer med hvordan de er bygget. A ser bare nedbør over 20 mm per 6 timer, og på Vestlandet er 10 mm i døgnet vanlig vær. Pavo har ingen terskel og lærer av alt regnet.
+Over 10 mm er alle modellene bedre, fordi moderat regn er lettere å varsle enn kraftig. Men på Vestlandet er A nå like god som kontrollarmen (0,526 mot 0,525), mens Pavo fortsatt er foran (0,544). Det passer med hvordan de er bygget. A ser bare nedbør over 20 mm per 6 timer, og på Vestlandet er 10 mm i døgnet vanlig vær. Pavo har ingen terskel og lærer av alt regnet.
 
-Over 50 mm er det bare 603 dager i hele året, og de fleste av delene blir for små til å si noe sikkert. A er sikkert bedre i Nord-Norge, og Pavo på Vestlandet og i Nord-Norge.
+Over 50 mm er det bare 603 dager i hele året, og de fleste av delene blir for små til å si noe sikkert. A er sikkert bedre enn kontrollarmen i Nord-Norge, og Pavo på Vestlandet og i Nord-Norge.
 
 ## Hva det betyr
 
@@ -185,7 +203,7 @@ To ting står fastere etter dette enn før.
 
 Det første er at gevinsten er ekte. Kalibreringen tar bort feilen i tallene, og den er praktisk talt null for alle etterpå, så den kan ikke ha laget forskjellen. Forskjellen er oppløsning: A og Pavo vet bedre enn kontrollarmen hvilke dager det blir kraftig regn.
 
-Det andre er at gevinsten ikke er et gjennomsnitt som skjuler noe. Den er der i alle regioner, i alle årstider for A, og omtrent like stor per dag på Vestlandet som i resten av landet. Det er det man ville håpet på hvis haleleddet har lært modellen noe generelt om kraftig regn, og ikke bare noe om ett sted eller én type vær.
+Det andre er at gevinsten ikke er et gjennomsnitt som skjuler noe. Den er der i alle regioner og, for A, i alle årstider, og den er størst der alle modellene sliter mest. Det er det man ville håpet på hvis haleleddet har lært modellen noe generelt om kraftig regn, og ikke bare noe om ett sted eller én type vær.
 
 ## Forbehold
 
