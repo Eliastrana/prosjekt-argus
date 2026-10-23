@@ -132,8 +132,19 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "2 000",
         seed: "20261003",
-        status: "trener",
+        status: "varsles",
         note: "scores mot F, som har samme seed, etter låst plan",
+      },
+      {
+        name: "A + spektral",
+        tag: "tailAfft2000",
+        threshold: "hard, 20 mm",
+        weight: "1 371,6",
+        dose: "1/11",
+        steps: "2 000",
+        seed: "20260909",
+        status: "i kø",
+        note: "A med Bris' eget spektralledd tilbake, vekt 0,1; scores mot kontrollarmen etter låst plan",
       },
       {
         name: "Dose 1/3",
@@ -284,7 +295,8 @@ const RUNS: Run[] = [
   { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "19,3 t", status: "ferdig" },
   { when: "20. okt", tags: ["tail30th2000"], hours: "18,8 t", status: "ferdig" },
   { when: "21.–22. okt", tags: ["tailC3000"], hours: "31,7 t", status: "ferdig" },
-  { when: "22.–23. okt", tags: ["tailA2000s2"], hours: "~18,5 t", note: "startet 10:26, resultat ventet fredag ettermiddag", status: "trener" },
+  { when: "22.–23. okt", tags: ["tailA2000s2"], hours: "18,6 t", note: "varslene for teståret går, resultat ventet fredag kveld", status: "varsles" },
+  { when: "23.–24. okt", tags: ["tailAfft2000"], hours: "~20 t", note: "starter når g003 blir ledig fredag kveld", status: "i kø" },
 ];
 
 /* Beyond heavy rain: mean daily precipitation relative to observed (1,00 is

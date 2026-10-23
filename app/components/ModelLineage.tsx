@@ -61,6 +61,7 @@ const TREE: TreeNode = {
                 { tag: "tail30th2000", label: "Dose 1/30", change: "vekt 1/30", kind: "hard" },
                 { tag: "tail3rd2000", label: "Dose 1/3", change: "vekt 1/3", kind: "hard" },
                 { tag: "tailA2000s2", label: "A, ny trekning", change: "nytt seed", kind: "hard" },
+                { tag: "tailAfft2000", label: "A + spektral", change: "Bris' spektralledd", kind: "hard" },
               ],
             },
             { tag: "tailB2000", label: "B", change: "terskel 5 mm", kind: "low" },
