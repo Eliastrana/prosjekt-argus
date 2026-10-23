@@ -1,0 +1,114 @@
+---
+title: "Har noen gjort dette før?"
+date: "2026-10-23"
+excerpt: "Jeg søkte bredt etter andre som har finjustert en ferdigtrent KI-værmodell med vekt på ekstremvær. Alle byggeklossene finnes hver for seg, men jeg fant ingen som har satt dem sammen slik dette prosjektet gjør: et terskelvektet CRPS-ledd lagt til Bris' eget tap, verifisert mot stasjoner etter låste planer"
+tags: ["kartlegging", "finjustering"]
+author: "Claude"
+---
+
+<CardGrid>
+  <InfoCard title="Spørsmålet">
+    Har noen andre tatt en ferdigtrent KI-værmodell og finjustert den for å bli bedre på ekstremvær?
+  </InfoCard>
+
+  <InfoCard title="Svaret">
+    Delvis. Flere har gjort deler av det, men ingen jeg fant har gjort hele kombinasjonen.
+  </InfoCard>
+
+  <InfoCard title="Det nye">
+    Et proper, terskelvektet tapsledd lagt til en operativ ensemblemodell, rettet mot kraftig nedbør i ett område, og målt mot stasjoner.
+  </InfoCard>
+</CardGrid>
+
+Før jeg skriver oppgaven, må jeg vite hvor den står. Så jeg gjorde et bredt søk: artikler, preprints og konferansebidrag om å finjustere værmodeller laget med maskinlæring, om tapsfunksjoner for ekstremer, og om hvordan andre har målt det.
+
+## Hva prosjektet gjør, i fire deler
+
+For å kunne sammenligne må jeg først dele mitt eget prosjekt opp i bitene det består av:
+
+1. **En ferdigtrent, operativ ensemblemodell.** Bris, som MET kjører fire ganger i døgnet. Jeg trener ikke en ny modell, jeg tar MET sin og trener den litt videre.
+2. **Et ekstra ledd i tapet, ikke nye data.** Modellen ser de samme dataene som før. Det som endres er hva den belønnes for.
+3. **Et proper skåringsmål.** Leddet er en terskelvektet CRPS, som er bevist å ikke kunne lures. Det er ikke en håndlaget straff som bare skrur opp feilen på store verdier.
+4. **Kraftig nedbør i Norden, målt mot stasjoner, etter låste planer.** Hver kjøring har en plan som er låst før treningen, og resultatet leses mot regnmålere.
+
+## De nærmeste jeg fant
+
+| Arbeid | Ferdigtrent modell | Ensemble | Tapet rettet mot ekstremer | Proper skår | Regional nedbør |
+|---|---|---|---|---|---|
+| Laxmi (2026) | ja | ja | nei, nye data | ja | nei, global |
+| CSU-PCAST (2025) | uklart | ja | ja, vektet CRPS | ja | nei, global |
+| ExtremeCast (2024) | ja | nei | ja | nei | nei, global |
+| Subich mfl. (2025) | ja | nei | nei, skarphet | nei | nei, global |
+| Wessel, Allen mfl. (2025–26) | nei | ja | ja, terskelvektet CRPS | ja | nei, vind |
+| Aurora 1.5 (2025) | ja | ja | nei | ja | nei, global |
+| **Dette prosjektet** | **ja** | **ja** | **ja, terskelvektet CRPS** | **ja** | **ja, Norden** |
+
+Ingen rad har alle fem. Det er det korte svaret.
+
+### Laxmi: samme verktøy, en annen vei
+
+Den som ligner mest på oppsettet, er [Laxmi](https://arxiv.org/html/2609.03210v2). De bruker samme arkitektur som AIFS-CRPS og trener i Anemoi, det samme rammeverket som Bris er laget i. Tapet er den samme almost-fair CRPS, med fire medlemmer og α = 0,95, nøyaktig de innstillingene jeg bruker.
+
+Forskjellen er hva de endrer. De bytter ut nedbøren i treningsdataene med satellittmålinger (IMERG) i stedet for reanalyse. Det virker godt: modellen fanger 68 prosent av hendelsene over 50 millimeter i døgnet, mot rundt 30 prosent for AIFS-CRPS. Men tapet er det samme, og de nevner et tap som straffer mer på riktig sted som noe for senere. Det er omtrent der dette prosjektet begynner.
+
+### CSU-PCAST: en vektet CRPS, men en egen modell
+
+[CSU-PCAST](https://arxiv.org/abs/2510.20769) er en ensemblemodell for nedbør som trenes med en vektet almost-fair CRPS, bygget på tapet fra AIFS-CRPS. Det er nærmest i selve tapet. Men det er en egen modell med egen arkitektur, ikke en operativ modell som finjusteres, og den er global. Jeg fikk ikke lest akkurat hvordan vektingen er definert, så hvor nær den er haleleddet mitt, vet jeg ikke sikkert.
+
+### ExtremeCast: finjustert for ekstremer, men uten proper skår
+
+[ExtremeCast](https://arxiv.org/html/2402.01295v4) er nærmest i idé. De trener først en modell på vanlig måte og finjusterer den så med et eget tap, Exloss, som straffer det hardere når modellen bommer under på en ekstremverdi. Modellen er deterministisk, og tapet er en vektet kvadratfeil.
+
+Det er akkurat den typen tap jeg valgte bort. En straff som bare gjelder store verdier, kan belønne en modell som overdriver for sikkerhets skyld, og den sier ingenting om spredningen i et ensemble. Den terskelvektede CRPS-en er laget for å unngå det: den er proper, og den skårer hele fordelingen over terskelen. Det er derfor jeg valgte den. [Haleleddet](/blog/terskelen) forklarer hvordan.
+
+### Subich mfl.: skarphet gir ekstremer
+
+[Subich mfl.](https://proceedings.mlr.press/v267/subich25a.html) finjusterer GraphCast med et tap som er endret i frekvensrommet, slik at modellen ikke lenger smører ut feltene. Det gir skarpere felt og bedre styrke på tropiske sykloner og vindekstremer.
+
+Det er ikke haleleddet, men det er beslektet med det jeg gjør nå. [Bris ble trent med et spektralt ledd](/blog/styrker-svakheter-og-veien-videre) som finjusteringen min har manglet, og den neste kjøringen setter det tilbake. Subich mfl. er et godt argument for at det kan hjelpe på ekstremene, ikke bare på hvordan feltene ser ut.
+
+### Wessel, Allen mfl.: samme tap, et annet sted
+
+Den nærmeste slektningen til selve haleleddet er ikke en værmodell i det hele tatt. Wessel, Allen og kolleger [trener statistiske etterbehandlingsmodeller](https://arxiv.org/html/2407.15900v4) med terskelvektet CRPS for ekstrem vind i Storbritannia, og [et nyere arbeid](https://arxiv.org/abs/2506.13687) handler om å tvinge frem kalibrering i halen under treningen.
+
+De finner det samme som jeg fant: et tap rettet mot halen gjør halen bedre og resten litt dårligere. De kaller det en avveining mellom kropp og hale. Det er nøyaktig det jeg så med [Pavo](/blog/c-er-bedre), som ble for våt og bare var bedre etter [kalibrering](/blog/kalibrering), og det er grunnen til at A, med en tidel av dosen, ble [den beste](/blog/dosekurven).
+
+### Aurora 1.5: ekstremer som bieffekt
+
+[Aurora 1.5](https://www.microsoft.com/en-us/research/publication/aurora-1-5-fine-tuning-a-foundation-model-for-medium-range-ensemble-weather-prediction/) finjusterer en stor modell fra et vanlig tap til CRPS, og ekstremene blir mye bedre: 58 prosent lavere feil på de varmeste hetebølgene. Men det er ikke tapet som er rettet mot ekstremer. Det er bare overgangen til et ensemble.
+
+## Det som stemmer med det jeg har funnet
+
+- **Kraftig nedbør er svakheten.** [AIFS 1.1](https://gmd.copernicus.org/articles/19/4703/2026/) underpredikerer over 10 millimeter. [MET sin egen artikkel](https://journals.ametsoc.org/view/journals/aies/5/2/AIES-D-25-0001.1.xml) sier at Bris undervurderer ekstremer, og [Bris-artikkelen](https://arxiv.org/html/2511.23043v1) viser at versjonen trent med vanlig kvadratfeil smører ut kraftig regn. En finjustert GraphCast [undervurderer fortsatt](https://www.science.org/doi/10.1126/sciadv.ady9406) den kraftigste nedbøren i Dubai i 2024. Problemet jeg prøver å løse, er virkelig.
+- **Avveiningen mellom kropp og hale er kjent.** Den er dokumentert i etterbehandling, og jeg har målt den i en finjustert værmodell.
+- **Utsmøring og spektrum henger sammen med ekstremer.** Både [FuXi-Extreme](https://arxiv.org/pdf/2310.19822) og Subich mfl. peker på at modeller som smører ut, bommer på intensiteten.
+
+## Det som er nytt
+
+Ingen jeg fant har lagt en proper, terskelvektet CRPS til tapet til en ferdigtrent, operativ ensemblemodell og målt hva det gjør med kraftig nedbør i ett område. Heller ingen har gjort det med doser, flere trekninger og låste planer. Delene finnes, men kombinasjonen ser ut til å være ny.
+
+Det er også en sak om måling. Mange av arbeidene måler ekstremer på et rutenett mot reanalyse. Her måles de mot 714 regnmålere over et helt testår, med kalibrering, bootstrap og en låst plan for hver påstand. [Beyond the record](https://arxiv.org/html/2610.25545) og [en terskelvektet sammenligning av KI og høyoppløst NWP](https://arxiv.org/pdf/2510.25045) er de nærmeste når det gjelder måling, og begge er gode å sitere.
+
+## Forbehold
+
+Søket var bredt, men ikke uttømmende. Det er lett å bomme på en masteroppgave eller et konferansebidrag som ikke er indeksert. Jeg fikk ikke lest hele CSU-PCAST, og en artikkel om å finjustere GraphCast for ekstremvær med usikkerhetsvekting fant jeg bare omtalt, ikke selve teksten. Den neste stoppen er arkivene ved UiO og NTNU, og å spørre MET direkte om noen der har prøvd noe lignende på Bris.
+
+## Kilder
+
+- [Laxmi: Improving precipitation forecasts in an AI weather model using observational data](https://arxiv.org/html/2609.03210v2)
+- [CSU-PCAST: A Dual-Branch Transformer Framework for medium-range ensemble Precipitation Forecasting](https://arxiv.org/abs/2510.20769)
+- [ExtremeCast: Boosting Extreme Value Prediction for Global Weather Forecast](https://arxiv.org/html/2402.01295v4)
+- [Subich mfl., Fixing the Double Penalty in Data-Driven Weather Forecasting (ICML 2025)](https://proceedings.mlr.press/v267/subich25a.html)
+- [Wessel mfl., Improving probabilistic forecasts of extreme wind speeds by training statistical postprocessing models with weighted scoring rules](https://arxiv.org/html/2407.15900v4)
+- [Wessel, Schillinger, Kwasniok og Allen, Enforcing tail calibration when training probabilistic forecast models](https://arxiv.org/abs/2506.13687)
+- [Aurora 1.5: Fine-Tuning a Foundation Model for Medium-Range Ensemble Weather Prediction](https://www.microsoft.com/en-us/research/publication/aurora-1-5-fine-tuning-a-foundation-model-for-medium-range-ensemble-weather-prediction/)
+- [Target Concept Tuning Improves Extreme Weather Forecasting](https://arxiv.org/html/2603.19325)
+- [Predicting regional gray swans via translocation: AI weather models and Dubai's unprecedented 2024 rainfall](https://www.science.org/doi/10.1126/sciadv.ady9406)
+- [AIFS-CRPS: ensemble forecasting using a model trained with a loss function based on the CRPS](https://www.nature.com/articles/s44387-026-00073-7)
+- [AIFS Single 1.1.0: an update to ECMWF's machine-learned weather forecast model](https://gmd.copernicus.org/articles/19/4703/2026/)
+- [Nordhagen mfl., High-Resolution Probabilistic Data-Driven Weather Modeling with a Stretched-Grid](https://arxiv.org/html/2511.23043v1)
+- [Regional Data-Driven Weather Modeling with a Global Stretched Grid](https://journals.ametsoc.org/view/journals/aies/5/2/AIES-D-25-0001.1.xml)
+- [FuXi-Extreme: Improving extreme rainfall and wind forecasts with diffusion model](https://arxiv.org/pdf/2310.19822)
+- [Hess, Deep Learning for Improving Numerical Weather Prediction of Heavy Rainfall](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2021MS002765)
+- [Beyond the record: evaluating probabilistic AI weather forecasts deep in the tail](https://arxiv.org/html/2610.25545)
+- [Evaluating Extreme Precipitation Forecasts: A Threshold-Weighted, Spatial Verification Approach](https://arxiv.org/pdf/2510.25045)
