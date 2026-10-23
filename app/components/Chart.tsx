@@ -70,6 +70,10 @@ export type ChartProps = {
   yMin?: number | string;
   /** Unit shown on the axis and in the readout. */
   unit?: string;
+  /** Fixed colours by series or group name, as a JSON object string from
+   *  MDX, so the same model keeps its colour across every chart in a post.
+   *  Names not listed fall back to the usual order. */
+  colours?: Record<string, string> | string;
 };
 
 /**
@@ -224,6 +228,15 @@ export function Chart(props: ChartProps) {
     fetched?.compare ??
     props.compare ??
     parseJson<Point[]>(props.comparePoints, []);
+  // Parsed once per attribute, not per render: a new object each time would
+  // redraw the whole chart on every hover.
+  const colours = useMemo(
+    () =>
+      typeof props.colours === "string"
+        ? parseJson<Record<string, string>>(props.colours, {})
+        : props.colours ?? {},
+    [props.colours],
+  );
 
   if (failed) {
     return (
@@ -248,11 +261,12 @@ export function Chart(props: ChartProps) {
       height={num(props.height, 320)}
       yMax={props.yMax === undefined ? undefined : num(props.yMax, 0)}
       yMin={props.yMin === undefined ? undefined : num(props.yMin, 0)}
+      colours={colours}
     />
   );
 }
 
-type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax" | "yMin"> & {
+type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax" | "yMin" | "colours"> & {
   series?: Series[];
   data: Point[];
   compare: Point[];
@@ -261,6 +275,7 @@ type InnerProps = Omit<ChartProps, "thresholds" | "time" | "height" | "yMax" | "
   height: number;
   yMax?: number;
   yMin?: number;
+  colours: Record<string, string>;
 };
 
 function ChartInner({
@@ -280,6 +295,7 @@ function ChartInner({
   yMax,
   yMin,
   unit = "",
+  colours,
 }: InnerProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -298,6 +314,11 @@ function ChartInner({
   // lines would change shape and the comparison the toggle exists for would
   // be lost.
   const [hidden, setHidden] = useState<Set<string>>(new Set());
+
+  const colourOf = useCallback(
+    (name: string, k: number) => colours[name] ?? SERIES_COLOURS[k % SERIES_COLOURS.length],
+    [colours],
+  );
 
   const parsed = useMemo(() => {
     const toX = (p: Point) =>
@@ -536,7 +557,7 @@ function ChartInner({
         .attr("height", (d) => Math.abs(scales.y(d.y) - base))
         .attr("fill", (d) =>
           d.group
-            ? SERIES_COLOURS[groups.indexOf(d.group) % SERIES_COLOURS.length]
+            ? colourOf(d.group, groups.indexOf(d.group))
             : palette.accent,
         )
         .attr("opacity", 0.85)
@@ -550,7 +571,7 @@ function ChartInner({
         .curve(d3.curveMonotoneX);
       parsed.series.forEach((s, k) => {
         if (hidden.has(s.name)) return;
-        const colour = SERIES_COLOURS[k % SERIES_COLOURS.length];
+        const colour = colourOf(s.name, k);
         if (kind === "dots") {
           g.append("g")
             .selectAll("circle")
@@ -658,6 +679,7 @@ function ChartInner({
     groups,
     hidden,
     palette,
+    colourOf,
     innerW,
     innerH,
     kind,
@@ -800,7 +822,7 @@ function ChartInner({
               <span
                 className="chart-legend-swatch"
                 style={{
-                  background: SERIES_COLOURS[k % SERIES_COLOURS.length],
+                  background: colourOf(name, k),
                   width: 10,
                   height: 10,
                 }}
@@ -835,7 +857,7 @@ function ChartInner({
                 <span
                   className="chart-legend-swatch"
                   style={{
-                    background: SERIES_COLOURS[k % SERIES_COLOURS.length],
+                    background: colourOf(s.name, k),
                   }}
                 />
                 {s.name}

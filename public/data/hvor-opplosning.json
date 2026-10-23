@@ -1,0 +1,6 @@
+[{"x":0,"y":-2.1,"label":"Over 20 mm","group":"Vanlig Bris"},
+{"x":1,"y":10.4,"label":"Over 20 mm","group":"A"},
+{"x":2,"y":12.0,"label":"Over 20 mm","group":"Pavo"},
+{"x":3,"y":-12.3,"label":"Over 50 mm","group":"Vanlig Bris"},
+{"x":4,"y":22.9,"label":"Over 50 mm","group":"A"},
+{"x":5,"y":14.0,"label":"Over 50 mm","group":"Pavo"}]

@@ -1,0 +1,8 @@
+[{"x":0,"y":0.67,"label":"Før kalibrering","group":"Vanlig Bris"},
+{"x":1,"y":0.99,"label":"Før kalibrering","group":"Kontrollarm"},
+{"x":2,"y":1.41,"label":"Før kalibrering","group":"A"},
+{"x":3,"y":3.96,"label":"Før kalibrering","group":"Pavo"},
+{"x":4,"y":0.0,"label":"Etter kalibrering","group":"Vanlig Bris"},
+{"x":5,"y":0.0,"label":"Etter kalibrering","group":"Kontrollarm"},
+{"x":6,"y":0.0,"label":"Etter kalibrering","group":"A"},
+{"x":7,"y":0.03,"label":"Etter kalibrering","group":"Pavo"}]

@@ -1,0 +1,8 @@
+[{"x":0,"y":-5.5,"label":"Vinter","group":"A"},
+{"x":1,"y":-1.1,"label":"Vinter","group":"Pavo"},
+{"x":2,"y":-4.2,"label":"Vår","group":"A"},
+{"x":3,"y":-7.2,"label":"Vår","group":"Pavo"},
+{"x":4,"y":-5.1,"label":"Sommer","group":"A"},
+{"x":5,"y":-8.8,"label":"Sommer","group":"Pavo"},
+{"x":6,"y":-8.0,"label":"Høst","group":"A"},
+{"x":7,"y":-7.9,"label":"Høst","group":"Pavo"}]
