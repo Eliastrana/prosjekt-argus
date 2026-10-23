@@ -592,6 +592,10 @@ export default function ModelsPage() {
               <Link href="/modeller/a" className="font-medium underline decoration-foreground/30 underline-offset-2 hover:decoration-accent">
                 A
               </Link>
+              <span className="text-muted">·</span>
+              <Link href="/ordliste" className="font-medium underline decoration-foreground/30 underline-offset-2 hover:decoration-accent">
+                Ordliste
+              </Link>
             </div>
           </div>
         </header>

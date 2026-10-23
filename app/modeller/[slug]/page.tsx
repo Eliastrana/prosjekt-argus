@@ -668,6 +668,12 @@ vekt:         ${model.code.weight}`}
           >
             Se alle modellene i prosjektet →
           </Link>
+          <Link
+            href="/ordliste"
+            className="text-sm text-muted transition hover:text-foreground"
+          >
+            Ordliste →
+          </Link>
         </footer>
       </article>
     </main>
