@@ -1,0 +1,9 @@
+[{"x":0,"y":0.851,"label":"Første trekning","group":"Kontrollarm"},
+{"x":1,"y":0.87,"label":"Første trekning","group":"A"},
+{"x":2,"y":0.908,"label":"Første trekning","group":"Pavo"},
+{"x":3,"y":0.856,"label":"Andre trekning","group":"Kontrollarm"},
+{"x":4,"y":0.858,"label":"Andre trekning","group":"A"},
+{"x":5,"y":0.898,"label":"Andre trekning","group":"Pavo"},
+{"x":6,"y":0.86,"label":"Begge sammen","group":"Kontrollarm"},
+{"x":7,"y":0.9,"label":"Begge sammen","group":"A"},
+{"x":8,"y":0.913,"label":"Begge sammen","group":"Pavo"}]
