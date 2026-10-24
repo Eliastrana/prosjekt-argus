@@ -222,6 +222,7 @@ export const SPOTLIGHT: Spotlight[] = [
     loss_weights: [1.0, 1371.6]`,
       results: [
         { label: "Kalibrert Brier, 20 mm, mot kontrollarmen", value: "−0,00133 (−6,1 %)", ci: "[−0,00194, −0,00083]", good: true, note: "låst plan for variantene" },
+        { label: "Ny trekning (A2, seed 20261003) mot F, kalibrert 20 mm", value: "−0,00055 (−2,6 %)", ci: "[−0,00111, −0,00003]", good: true, note: "låst plan bestått; rå −2,8 %, ROC 0,858 mot 0,856. Under halvparten av As gevinst" },
         { label: "Rå Brier, 20 mm", value: "0,02163 mot 0,02250 (−3,9 %)", good: true, note: "intervall ikke regnet ut ennå" },
         { label: "Bilineær punktuttrekk (gridpp-stil)", value: "−0,00134 (−6,2 %)", ci: "[−0,00196, −0,00085]", good: true },
         { label: "Kalibrert Brier, 10 mm", value: "−0,00118 (−2,4 %)", ci: "[−0,00192, −0,00046]", good: true },
@@ -274,6 +275,7 @@ export const SPOTLIGHT: Spotlight[] = [
     ],
     results: [
       { label: "Mot sammenligningsmodellen", value: "6,1 % bedre", good: true, note: "sikkert, ikke tilfeldig" },
+      { label: "Samme oppskrift, trent på nytt", value: "2,6 % bedre", good: true, note: "fortsatt sikkert bedre, men mindre enn første gang" },
       { label: "Mot vanlig Bris", value: "7 % bedre", good: true },
       { label: "Uten kalibrering", value: "3,9 % bedre", good: true, note: "den eneste varianten som er det" },
       { label: "Målt slik MET selv måler", value: "6,2 % bedre", good: true },

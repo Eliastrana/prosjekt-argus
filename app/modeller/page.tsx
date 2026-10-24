@@ -132,8 +132,11 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "2 000",
         seed: "20261003",
-        status: "varsles",
-        note: "scores mot F, som har samme seed, etter låst plan",
+        result: "−2,6 %",
+        better: true,
+        roc: "0,86",
+        status: "ferdig",
+        note: "mot F, som har samme seed; låst plan bestått, men under halvparten av As gevinst",
       },
       {
         name: "A + spektral",
@@ -143,7 +146,7 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "2 000",
         seed: "20260909",
-        status: "i kø",
+        status: "varsles",
         note: "A med Bris' eget spektralledd tilbake, vekt 0,1; scores mot kontrollarmen etter låst plan",
       },
       {
@@ -295,8 +298,8 @@ const RUNS: Run[] = [
   { when: "19.–20. okt", tags: ["tail3rd2000"], hours: "19,3 t", status: "ferdig" },
   { when: "20. okt", tags: ["tail30th2000"], hours: "18,8 t", status: "ferdig" },
   { when: "21.–22. okt", tags: ["tailC3000"], hours: "31,7 t", status: "ferdig" },
-  { when: "22.–23. okt", tags: ["tailA2000s2"], hours: "18,6 t", note: "varslene for teståret går, resultat ventet fredag kveld", status: "varsles" },
-  { when: "23.–24. okt", tags: ["tailAfft2000"], hours: "~20 t", note: "starter når g003 blir ledig fredag kveld", status: "i kø" },
+  { when: "22.–23. okt", tags: ["tailA2000s2"], hours: "18,6 t", status: "ferdig" },
+  { when: "23.–24. okt", tags: ["tailAfft2000"], hours: "18,7 t", note: "varslene for teståret går, resultat ventet søndag morgen", status: "varsles" },
 ];
 
 /* Beyond heavy rain: mean daily precipitation relative to observed (1,00 is
@@ -320,6 +323,7 @@ const GENERAL: Record<string, { mean?: string; t2m?: [string, Sig]; wind?: [stri
   tailE2000: { mean: "1,14" },
   tailC2000: { mean: "1,18", t2m: ["+1,5 %", "worse"], wind: ["−1,2 %", "better"] },
   tailC2000s2: { mean: "1,11", t2m: ["+1,3 %", "worse"], wind: ["−1,3 %", "better"] },
+  tailA2000s2: { mean: "0,99", t2m: ["−0,3 %", "none"], wind: ["−1,3 %", "better"] },
 };
 
 const SIG_STYLE: Record<Sig, string> = {
