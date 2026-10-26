@@ -92,6 +92,17 @@ const SECTIONS: Section[] = [
         status: "ferdig",
         note: "målestokk: hvor mye seedet alene flytter resultatet",
       },
+      {
+        name: "Kontrollarm + spektral",
+        tag: "controlfft2000",
+        threshold: "ingen ekstra ledd",
+        weight: "–",
+        dose: "–",
+        steps: "2 000",
+        seed: "20260909",
+        status: "trener",
+        note: "Bris' eget spektralledd tilbake, vekt 0,1; referansen A + spektral måles mot, etter låst plan",
+      },
     ],
   },
   {
@@ -146,8 +157,25 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "2 000",
         seed: "20260909",
-        status: "varsles",
-        note: "A med Bris' eget spektralledd tilbake, vekt 0,1; scores mot kontrollarmen etter låst plan",
+        result: "−3,5 %",
+        better: true,
+        roc: "0,84",
+        status: "ferdig",
+        note: "vindfeltene tilbake på Bris-nivå og best på temperatur og vind, men tørrere nedbør og svakere enn A på kraftig regn",
+      },
+      {
+        name: "A, tredje trekning",
+        tag: "tailA2000s3",
+        threshold: "hard, 20 mm",
+        weight: "1 371,6",
+        dose: "1/11",
+        steps: "2 000",
+        seed: "20261024",
+        result: "+0,2 %",
+        better: false,
+        roc: "0,83",
+        status: "ferdig",
+        note: "ingen gevinst alene, men sammen med A gir den −8,0 % og med A2 −5,4 % (8 medlemmer mot kontrollarm + F)",
       },
       {
         name: "Dose 1/3",
@@ -299,7 +327,9 @@ const RUNS: Run[] = [
   { when: "20. okt", tags: ["tail30th2000"], hours: "18,8 t", status: "ferdig" },
   { when: "21.–22. okt", tags: ["tailC3000"], hours: "31,7 t", status: "ferdig" },
   { when: "22.–23. okt", tags: ["tailA2000s2"], hours: "18,6 t", status: "ferdig" },
-  { when: "23.–24. okt", tags: ["tailAfft2000"], hours: "18,7 t", note: "varslene for teståret går, resultat ventet søndag morgen", status: "varsles" },
+  { when: "23.–24. okt", tags: ["tailAfft2000"], hours: "18,7 t", status: "ferdig" },
+  { when: "24.–25. okt", tags: ["tailA2000s3"], hours: "20,5 t", status: "ferdig" },
+  { when: "26.–27. okt", tags: ["controlfft2000"], hours: "~20 t", note: "startet 08:55, resultat ventet tirsdag ettermiddag", status: "trener" },
 ];
 
 /* Beyond heavy rain: mean daily precipitation relative to observed (1,00 is
@@ -324,6 +354,8 @@ const GENERAL: Record<string, { mean?: string; t2m?: [string, Sig]; wind?: [stri
   tailC2000: { mean: "1,18", t2m: ["+1,5 %", "worse"], wind: ["−1,2 %", "better"] },
   tailC2000s2: { mean: "1,11", t2m: ["+1,3 %", "worse"], wind: ["−1,3 %", "better"] },
   tailA2000s2: { mean: "0,99", t2m: ["−0,3 %", "none"], wind: ["−1,3 %", "better"] },
+  tailA2000s3: { mean: "0,85", t2m: ["−1,1 %", "better"], wind: ["−0,9 %", "better"] },
+  tailAfft2000: { mean: "0,90", t2m: ["−1,1 %", "better"], wind: ["−3,9 %", "better"] },
 };
 
 const SIG_STYLE: Record<Sig, string> = {

@@ -47,6 +47,7 @@ const TREE: TreeNode = {
       children: [
         { tag: "control2000", label: "Kontrollarm, steg 2 000", change: "stoppet tidligere", kind: "reference", checkpoint: true },
         { tag: "control2000s2", label: "F", change: "nytt seed", kind: "reference" },
+        { tag: "controlfft2000", label: "Kontrollarm + spektral", change: "Bris' spektralledd", kind: "reference" },
         {
           tag: "tail", label: "Opprinnelig halearm",
           change: "+ haleledd, hard 20 mm",
@@ -61,6 +62,7 @@ const TREE: TreeNode = {
                 { tag: "tail30th2000", label: "Dose 1/30", change: "vekt 1/30", kind: "hard" },
                 { tag: "tail3rd2000", label: "Dose 1/3", change: "vekt 1/3", kind: "hard" },
                 { tag: "tailA2000s2", label: "A, ny trekning", change: "nytt seed", kind: "hard" },
+                { tag: "tailA2000s3", label: "A, tredje trekning", change: "nytt seed", kind: "hard" },
                 { tag: "tailAfft2000", label: "A + spektral", change: "Bris' spektralledd", kind: "hard" },
               ],
             },
