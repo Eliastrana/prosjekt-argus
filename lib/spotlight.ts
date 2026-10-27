@@ -115,6 +115,8 @@ export const SPOTLIGHT: Spotlight[] = [
       results: [
         { label: "Kalibrert Brier, 20 mm, mot kontrollarmen", value: "−0,00154 (−7,1 %)", ci: "[−0,00218, −0,00100]", good: true, note: "primærendepunkt, plan låst på forhånd" },
         { label: "Ny trekning (seed 20261003) mot F", value: "−0,00143 (−6,6 %)", ci: "[−0,00205, −0,00091]", good: true, note: "replikasjon, egen låst plan" },
+        { label: "Mot MEPS-ensemblet, 4 medlemmer fra 00 UTC", value: "+0,00028 (+1,4 %)", ci: "[−0,00039, +0,00105]", note: "ingen sikker forskjell; kontrollarmen +9,5 % [sikkert dårligere]" },
+        { label: "Pavo + Pavo 2 (8) mot MEPS-ensemblet, 15 medlemmer", value: "+0,00172 (+9,3 %)", ci: "[+0,00100, +0,00255]", note: "MEPS med 15 medlemmer er bedre; ROC 0,938 mot 0,915" },
         { label: "Begge trekningene sammen (8 medlemmer) mot kontrollarm + F", value: "−0,00162 (−7,6 %)", ci: "[−0,00224, −0,00109]", good: true, note: "utforskende; rå +0,00035 [−0,00052, +0,00116]; ROC 0,913 mot 0,860" },
         { label: "Kalibrering tilpasset valideringsperioden", value: "−0,00201 (−9,0 %)", ci: "[−0,00283, −0,00130]", good: true, note: "tabell fra apr–jul 2025 brukt uendret" },
         { label: "Bilineær punktuttrekk (gridpp-stil)", value: "−0,00146 (−6,8 %)", ci: "[−0,00210, −0,00091]", good: true },
@@ -172,6 +174,7 @@ export const SPOTLIGHT: Spotlight[] = [
       { label: "Mot vanlig Bris", value: "8 % bedre", good: true },
       { label: "Trent på nytt fra start", value: "6,6 % bedre", good: true, note: "resultatet gjentok seg" },
       { label: "To Pavo-modeller kjørt sammen", value: "7,6 % bedre", good: true, note: "mot to sammenligningsmodeller kjørt sammen" },
+      { label: "Mot METs fysiske modell, like mange varsler", value: "like god", note: "fire MEPS-medlemmer mot fire fra Pavo; hele MEPS-ensemblet på 15 er fortsatt bedre" },
       { label: "Målt slik MET selv måler", value: "6,8 % bedre", good: true },
       { label: "Uten kalibrering", value: "6,5 % dårligere", note: "fordi den overdriver" },
       { label: "Hvert steds våteste dager", value: "4,6 % bedre", good: true, note: "de 1 % våteste dagene på hvert sted, rundt fire i året" },
@@ -225,6 +228,8 @@ export const SPOTLIGHT: Spotlight[] = [
       results: [
         { label: "Kalibrert Brier, 20 mm, mot kontrollarmen", value: "−0,00133 (−6,1 %)", ci: "[−0,00194, −0,00083]", good: true, note: "låst plan for variantene" },
         { label: "Ny trekning (A2, seed 20261003) mot F, kalibrert 20 mm", value: "−0,00055 (−2,6 %)", ci: "[−0,00111, −0,00003]", good: true, note: "låst plan bestått; rå −2,8 %, ROC 0,858 mot 0,856. Under halvparten av As gevinst" },
+        { label: "Mot MEPS-ensemblet, 4 medlemmer fra 00 UTC", value: "+0,00050 (+2,5 %)", ci: "[−0,00041, +0,00150]", note: "ingen sikker forskjell; kontrollarmen +9,5 % [sikkert dårligere]. 242 243 stasjonsdøgn der alle MEPS-medlemmer finnes" },
+        { label: "A + A2 (8) mot MEPS-ensemblet, 15 medlemmer", value: "+0,00146 (+7,9 %)", ci: "[+0,00064, +0,00239]", note: "MEPS med 15 medlemmer er bedre; ROC 0,938 mot 0,901" },
         { label: "A + A2 sammen (8 medlemmer) mot kontrollarm + F", value: "−0,00181 (−8,4 %)", ci: "[−0,00242, −0,00129]", good: true, note: "utforskende; rå −0,00207 (−9,3 %) [−0,00266, −0,00156]; ROC 0,900 mot 0,860. A3 (seed 20261024) trenes for å teste det" },
         { label: "Rå Brier, 20 mm", value: "0,02163 mot 0,02250 (−3,9 %)", good: true, note: "intervall ikke regnet ut ennå" },
         { label: "Bilineær punktuttrekk (gridpp-stil)", value: "−0,00134 (−6,2 %)", ci: "[−0,00196, −0,00085]", good: true },
@@ -280,6 +285,7 @@ export const SPOTLIGHT: Spotlight[] = [
       { label: "Mot sammenligningsmodellen", value: "6,1 % bedre", good: true, note: "sikkert, ikke tilfeldig" },
       { label: "Samme oppskrift, trent på nytt", value: "2,6 % bedre", good: true, note: "fortsatt sikkert bedre, men mindre enn første gang" },
       { label: "To A-modeller kjørt sammen", value: "8,4 % bedre", good: true, note: "også 9,3 % bedre uten kalibrering; de to utfyller hverandre" },
+      { label: "Mot METs fysiske modell, like mange varsler", value: "like god", note: "fire MEPS-medlemmer mot fire fra A; hele MEPS-ensemblet på 15 er fortsatt bedre" },
       { label: "Mot vanlig Bris", value: "7 % bedre", good: true },
       { label: "Uten kalibrering", value: "3,9 % bedre", good: true, note: "den eneste varianten som er det" },
       { label: "Målt slik MET selv måler", value: "6,2 % bedre", good: true },
