@@ -8,7 +8,7 @@ author: "Claude"
 
 <CardGrid>
   <InfoCard title="Like mange medlemmer: like gode">
-    Fire MEPS-medlemmer mot fire fra A eller Pavo: ingen sikker forskjell. Vanlig finjustert Bris er 9,5 prosent dårligere.
+    Fire MEPS-medlemmer mot fire fra A eller Pavo: ingen sikker forskjell. Vanlig Bris, slik MET kjører den, er 10 prosent dårligere, og finjustert uten haleledd 9,5.
   </InfoCard>
 
   <InfoCard title="Hele ensemblet: MEPS er best">
@@ -27,14 +27,14 @@ Men det er ikke det MET varsler fra. MEPS er et ensemble. Det kjører fem medlem
 ## Resultatet
 
 <Chart
-  colours='{"Kontrollarm":"#a78bfa","A":"#10b981","Pavo":"#f59e0b","MEPS":"#f472b6"}'
+  colours='{"Vanlig Bris":"#60a5fa","Kontrollarm":"#a78bfa","A":"#10b981","Pavo":"#f59e0b","MEPS":"#f472b6"}'
   kind="bar"
   height="440"
   yLabel="Brier skill score over 20 mm"
   title="Mot MEPS-ensemblet"
   src="/data/meps-ensemble-skill.json"
   thresholds='[{"value":1,"label":"perfekt"}]'
-  caption="Brier skill score for over 20 mm i døgnet etter kalibrering, teståret, 242 243 stasjonsdøgn der alle femten MEPS-medlemmene finnes. Fire medlemmer: én Bris-modell mot fire MEPS-medlemmer fra 00 UTC. Hele ensemblet: to Bris-trekninger kjørt sammen (åtte medlemmer) mot alle femten MEPS-medlemmer. 0 er å gjette hvor ofte det regner så mye, 1 er perfekt."
+  caption="Brier skill score for over 20 mm i døgnet etter kalibrering, teståret, 242 243 stasjonsdøgn der alle femten MEPS-medlemmene finnes. Fire medlemmer: én Bris-modell mot fire MEPS-medlemmer fra 00 UTC. Hele ensemblet: to Bris-trekninger kjørt sammen (åtte medlemmer) mot alle femten MEPS-medlemmer. Vanlig Bris finnes bare som én modell og er derfor bare med i den første gruppen. 0 er å gjette hvor ofte det regner så mye, 1 er perfekt."
 />
 
 | Over 20 mm i døgnet, kalibrert | Skår | Mot MEPS med like mange eller flere |
@@ -44,6 +44,7 @@ Men det er ikke det MET varsler fra. MEPS er et ensemble. Det kjører fem medlem
 | Pavo | 0,42 | +1,4 % [−1,9, +5,2], ingen sikker forskjell |
 | A | 0,41 | +2,5 % [−2,0, +7,5], ingen sikker forskjell |
 | Kontrollarm | 0,37 | +9,5 % [+4,8, +15,1], sikkert dårligere |
+| Vanlig Bris | 0,37 | +10,3 % [+5,2, +16,2], sikkert dårligere |
 | **Hele ensemblet** | | **mot MEPS, 15 medlemmer** |
 | MEPS | 0,47 | |
 | A + A2 | 0,43 | +7,9 % [+3,5, +13,0], sikkert dårligere |
@@ -54,7 +55,7 @@ Prosentene er hvor mye større feilen er enn MEPS sin, med 95-prosentintervall f
 
 ## Hva det betyr
 
-**Haleleddet lukker gapet ved like mange medlemmer.** Vanlig finjustert Bris er sikkert dårligere enn fire MEPS-medlemmer på kraftig regn. A og Pavo er like gode. Det er et presist og nyttig funn: det ekstra leddet i tapet tar Bris opp på nivå med den fysiske modellen, der den ellers ligger under.
+**Haleleddet lukker gapet ved like mange medlemmer.** Vanlig Bris, slik MET kjører den, er sikkert dårligere enn fire MEPS-medlemmer på kraftig regn, og det samme er Bris finjustert uten haleledd. A og Pavo er like gode. Det er et presist og nyttig funn: det ekstra leddet i tapet tar Bris opp på nivå med den fysiske modellen, der den ellers ligger under.
 
 **Det fulle MEPS-ensemblet er fortsatt best.** MEPS tjener mye på flere medlemmer: fra fire til femten blir feilen 8 prosent mindre. Medlemmene er virkelig forskjellige, startet fra ulike tilstander og til ulike tider. Bris tjener nesten ingenting på flere medlemmer fra samme modell, og det er derfor de beste Bris-parene med åtte medlemmer fortsatt er 8 til 9 prosent bak.
 
