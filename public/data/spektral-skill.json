@@ -1,0 +1,6 @@
+[{"x":0,"y":0.357,"label":"Over 20 mm i døgnet","group":"Vanlig Bris"},
+{"x":1,"y":0.364,"label":"Over 20 mm i døgnet","group":"Kontrollarm"},
+{"x":2,"y":0.391,"label":"Over 20 mm i døgnet","group":"Kontrollarm + spektral"},
+{"x":3,"y":0.403,"label":"Over 20 mm i døgnet","group":"A"},
+{"x":4,"y":0.386,"label":"Over 20 mm i døgnet","group":"A + spektral"},
+{"x":5,"y":0.409,"label":"Over 20 mm i døgnet","group":"Pavo"}]
