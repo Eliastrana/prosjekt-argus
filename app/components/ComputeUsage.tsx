@@ -52,96 +52,55 @@ export default function ComputeUsage() {
     USAGE.h200Hours * PRICES.h200HyperscalerPerHour +
     USAGE.a100Hours * PRICES.a100HyperscalerPerHour;
 
-  const tiles = [
-    {
-      label: "CPU-timer",
-      value: nb(USAGE.cpuHours),
-      detail: `${USAGE.jobs} jobber på eX3`,
-      cost: nok(cpuCost),
-      costNote: `${nb(PRICES.cpuPerHour * USD_NOK.rate, 2)} kr per vCPU-time`,
-    },
-    {
-      label: "GPU-timer",
-      value: nb(gpuHours, 1),
-      detail: `${nb(USAGE.h200Hours)} på NVIDIA H200, ${nb(USAGE.a100Hours)} på A100`,
-      cost: nok(gpuCost),
-      costNote: `${nb(PRICES.h200PerHour * USD_NOK.rate, 2)} kr per H200-time, ${nb(PRICES.a100PerHour * USD_NOK.rate, 2)} kr per A100-time`,
-    },
-    {
-      label: "Til markedspris",
-      value: nok(total),
-      detail: "CPU og GPU samlet",
-      cost: `ca. ${nok(hyperscalerTotal)}`,
-      costNote: "hos AWS, Azure eller Oracle",
-    },
+  const stats = [
+    { value: nb(USAGE.cpuHours), label: "CPU-timer" },
+    { value: nb(Math.round(gpuHours)), label: "GPU-timer" },
+    { value: nok(total), label: "til markedspris" },
   ];
+
+  const link = "underline decoration-foreground/20 underline-offset-2 hover:text-foreground";
 
   return (
     <section>
-      <div>
-        <h2 className="text-lg font-semibold">Regnekraft brukt</h2>
-        <p className="mt-1 text-sm text-muted">
-          Tildelt tid på eX3 ved Simula, per {USAGE.asOf}, og hva det ville
-          kostet å leie de samme ressursene.
-        </p>
-      </div>
+      <h2 className="text-lg font-semibold">Regnekraft brukt</h2>
+      <p className="mt-1 text-sm text-muted">eX3 ved Simula, per {USAGE.asOf}.</p>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-3">
-        {tiles.map((tile) => (
-          <div
-            key={tile.label}
-            className="rounded-[10px] bg-foreground/[0.04] p-5"
-          >
-            <p className="text-sm font-medium text-muted">
-              {tile.label}
-            </p>
-            <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums">
-              {tile.value}
-            </p>
-            <p className="mt-1 text-sm text-muted">{tile.detail}</p>
-            <div className="mt-5 border-t border-foreground/10 pt-4">
-              <p className="text-base font-semibold tabular-nums">{tile.cost}</p>
-              <p className="text-xs text-muted">{tile.costNote}</p>
-            </div>
+      <div className="mt-4 grid grid-cols-3 gap-3 rounded-[10px] bg-foreground/[0.04] p-4 sm:gap-4 sm:p-6">
+        {stats.map((s) => (
+          <div key={s.label}>
+            <p className="whitespace-nowrap text-xl font-semibold tracking-tight tabular-nums sm:text-3xl">{s.value}</p>
+            <p className="mt-1 text-sm text-muted">{s.label}</p>
           </div>
         ))}
       </div>
 
-      <p className="mt-3 text-xs leading-relaxed text-muted">
-        Tildelt tid teller også jobber som feilet eller ble avbrutt, og
-        CPU-timene inkluderer kjernene som fulgte GPU-jobbene. Prisene er
-        on-demand-priser for tilsvarende ressurser, ikke hva prosjektet
-        betaler, oppgitt i dollar og omregnet med {nb(USD_NOK.rate, 2)} kr per
-        dollar ({USD_NOK.asOf}). Kilder:{" "}
-        <a
-          href="https://getdeploying.com/gpus/nvidia-h200"
-          className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
-        >
-          H200-priser
-        </a>
-        ,{" "}
-        <a
-          href="https://getdeploying.com/gpus/nvidia-a100"
-          className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
-        >
-          A100-priser
-        </a>
-        ,{" "}
-        <a
-          href="https://instances.vantage.sh/aws/ec2/c7a.2xlarge"
-          className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
-        >
-          AWS c7a
-        </a>
-        ,{" "}
-        <a
-          href="https://wise.com/us/currency-converter/usd-to-nok-rate/history"
-          className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
-        >
-          valutakurs
-        </a>
-        .
-      </p>
+      <details className="group mt-3 text-xs leading-relaxed text-muted">
+        <summary className="cursor-pointer list-none transition hover:text-foreground [&::-webkit-details-marker]:hidden">
+          <span className="underline decoration-foreground/20 underline-offset-2">Slik er det regnet</span>
+        </summary>
+        <div className="mt-2 flex max-w-3xl flex-col gap-2">
+          <p>
+            Tildelt tid i {USAGE.jobs} jobber, også de som feilet eller ble avbrutt, og CPU-timene
+            inkluderer kjernene som fulgte GPU-jobbene. {nb(USAGE.h200Hours)} GPU-timer var på NVIDIA
+            H200 og {nb(USAGE.a100Hours)} på A100.
+          </p>
+          <p>
+            Markedsprisen er on-demand-priser for tilsvarende ressurser, ikke hva prosjektet betaler:{" "}
+            {nb(PRICES.cpuPerHour * USD_NOK.rate, 2)} kr per vCPU-time ({nok(cpuCost)}),{" "}
+            {nb(PRICES.h200PerHour * USD_NOK.rate, 2)} kr per H200-time og{" "}
+            {nb(PRICES.a100PerHour * USD_NOK.rate, 2)} kr per A100-time ({nok(gpuCost)}). Hos AWS,
+            Azure eller Oracle ville det kostet rundt {nok(hyperscalerTotal)}. Prisene er i dollar,
+            omregnet med {nb(USD_NOK.rate, 2)} kr per dollar ({USD_NOK.asOf}).
+          </p>
+          <p>
+            Kilder:{" "}
+            <a href="https://getdeploying.com/gpus/nvidia-h200" className={link}>H200-priser</a>,{" "}
+            <a href="https://getdeploying.com/gpus/nvidia-a100" className={link}>A100-priser</a>,{" "}
+            <a href="https://instances.vantage.sh/aws/ec2/c7a.2xlarge" className={link}>AWS c7a</a>,{" "}
+            <a href="https://wise.com/us/currency-converter/usd-to-nok-rate/history" className={link}>valutakurs</a>.
+          </p>
+        </div>
+      </details>
     </section>
   );
 }
