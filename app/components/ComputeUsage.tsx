@@ -7,25 +7,32 @@
 // From sacct -X -D: CPUTimeRAW summed for CPU-hours, elapsed time times the
 // GPUs in AllocTRES for GPU-hours. -D keeps the runs Slurm requeued after g003
 // crashed on 3 and 4 October, since those hours were allocated and spent.
-// Running jobs count up to the moment of the snapshot.
+// Running jobs count up to the moment of the snapshot. GPU-hours are split by
+// node: g003 holds the H200s, g002 the A100s; the few hours on other GPU
+// nodes are counted with the A100s.
 const USAGE = {
-  asOf: "5. oktober 2026",
-  jobs: 354,
-  cpuHours: 28791.3,
-  gpuHours: 253.33,
+  asOf: "29. oktober 2026",
+  jobs: 560,
+  cpuHours: 38761.0,
+  h200Hours: 490.9,
+  a100Hours: 378.4,
 };
 
 // List prices for the same resources bought on demand. Chosen to match the
-// hardware: eX3's CPU nodes are AMD EPYC and most GPU hours ran on an H200.
+// hardware: eX3's CPU nodes are AMD EPYC, the GPUs H200 and A100. Medians
+// from getdeploying.com on 29 October 2026; the hyperscaler prices are
+// Oracle's, which sit between AWS and Azure for both.
 const PRICES = {
   cpuPerHour: 0.0513, // USD per vCPU-hour, AWS c7a (AMD EPYC), on demand
-  gpuPerHour: 4.29, // USD per GPU-hour, median on-demand NVIDIA H200
-  gpuHyperscalerPerHour: 10.0, // USD per GPU-hour, AWS/Azure/Oracle H200
+  h200PerHour: 4.54, // USD per GPU-hour, median on-demand NVIDIA H200
+  a100PerHour: 1.99, // USD per GPU-hour, median on-demand NVIDIA A100
+  h200HyperscalerPerHour: 10.0, // USD per GPU-hour, Oracle H200
+  a100HyperscalerPerHour: 3.05, // USD per GPU-hour, Oracle A100
 };
 
 // The prices are quoted in dollars, so they are converted once, at a stated
 // rate, rather than restated as kroner that would hide where they came from.
-const USD_NOK = { rate: 9.33, asOf: "15. september 2026" };
+const USD_NOK = { rate: 9.274, asOf: "29. oktober 2026" };
 
 const nb = (value: number, digits = 0) =>
   value.toLocaleString("nb-NO", {
@@ -37,9 +44,13 @@ const nok = (usdValue: number) => `${nb(Math.round(usdValue * USD_NOK.rate))} kr
 
 export default function ComputeUsage() {
   const cpuCost = USAGE.cpuHours * PRICES.cpuPerHour;
-  const gpuCost = USAGE.gpuHours * PRICES.gpuPerHour;
+  const gpuHours = USAGE.h200Hours + USAGE.a100Hours;
+  const gpuCost = USAGE.h200Hours * PRICES.h200PerHour + USAGE.a100Hours * PRICES.a100PerHour;
   const total = cpuCost + gpuCost;
-  const hyperscalerTotal = cpuCost + USAGE.gpuHours * PRICES.gpuHyperscalerPerHour;
+  const hyperscalerTotal =
+    cpuCost +
+    USAGE.h200Hours * PRICES.h200HyperscalerPerHour +
+    USAGE.a100Hours * PRICES.a100HyperscalerPerHour;
 
   const tiles = [
     {
@@ -51,10 +62,10 @@ export default function ComputeUsage() {
     },
     {
       label: "GPU-timer",
-      value: nb(USAGE.gpuHours, 1),
-      detail: "for det meste NVIDIA H200",
+      value: nb(gpuHours, 1),
+      detail: `${nb(USAGE.h200Hours)} på NVIDIA H200, ${nb(USAGE.a100Hours)} på A100`,
       cost: nok(gpuCost),
-      costNote: `${nb(PRICES.gpuPerHour * USD_NOK.rate, 2)} kr per GPU-time`,
+      costNote: `${nb(PRICES.h200PerHour * USD_NOK.rate, 2)} kr per H200-time, ${nb(PRICES.a100PerHour * USD_NOK.rate, 2)} kr per A100-time`,
     },
     {
       label: "Til markedspris",
@@ -107,6 +118,13 @@ export default function ComputeUsage() {
           className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
         >
           H200-priser
+        </a>
+        ,{" "}
+        <a
+          href="https://getdeploying.com/gpus/nvidia-a100"
+          className="underline decoration-foreground/20 underline-offset-2 hover:text-foreground"
+        >
+          A100-priser
         </a>
         ,{" "}
         <a
