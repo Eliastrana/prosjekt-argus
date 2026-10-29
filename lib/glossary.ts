@@ -170,6 +170,11 @@ export const GLOSSARY_GROUPS: GlossaryGroup[] = [
         text: "Å trene videre fra Bris sine ferdige vekter, med lav læringsrate, i stedet for å trene fra bunnen.",
       },
       {
+        term: "Rollout",
+        aka: ["flere steg i treningen"],
+        text: "Hvor mange 6-timers steg modellen varsler på rad under treningen før feilen regnes ut. Bris ble trent med seks, altså 36 timer. Finjusteringene i prosjektet bruker ett, så modellen lærer bare å bli god på de neste seks timene.",
+      },
+      {
         term: "Kontrollarmen",
         aka: ["control", "control2000"],
         text: "Bris finjustert nøyaktig som de andre, men uten noe ekstra ledd. Den viser hva finjusteringen alene gjør, så forskjellen til de andre kan føres tilbake til leddet.",

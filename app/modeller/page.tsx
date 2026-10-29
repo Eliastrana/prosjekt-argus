@@ -100,8 +100,11 @@ const SECTIONS: Section[] = [
         dose: "–",
         steps: "2 000",
         seed: "20260909",
-        status: "trener",
-        note: "Bris' eget spektralledd tilbake, vekt 0,1; referansen A + spektral måles mot, etter låst plan",
+        result: "−4,3 %",
+        better: true,
+        roc: "0,86",
+        status: "ferdig",
+        note: "Bris' eget spektralledd tilbake, vekt 0,1. Den sterkeste referansen: mot den er Pavo −2,9 % (sikkert), A −1,9 % og A + spektral +0,9 % (ikke sikre)",
       },
     ],
   },
@@ -134,6 +137,7 @@ const SECTIONS: Section[] = [
         better: true,
         roc: "0,87",
         status: "ferdig",
+        note: "sterkest ved 12 timer (−5,7 % på seks-timers regn), borte fra 24 timer",
       },
       {
         name: "A, ny trekning",
@@ -275,7 +279,7 @@ const SECTIONS: Section[] = [
         better: true,
         roc: "0,91",
         status: "ferdig",
-        note: "bekreftet etter låst plan",
+        note: "bekreftet etter låst plan. Gevinsten sitter i første døgn: −5,3 % ved 12 timer, 0 ved 36 timer (seks-timers regn)",
       },
       {
         name: "Pavo, ny trekning",
@@ -305,6 +309,17 @@ const SECTIONS: Section[] = [
         status: "ferdig",
         note: "mot kontrollarmen ved steg 3 000; bekreftet etter låst plan",
       },
+      {
+        name: "Pavo + spektral",
+        tag: "tailCfft2000",
+        threshold: "ingen",
+        weight: "39,09",
+        dose: "1/11",
+        steps: "2 000",
+        seed: "20260909",
+        status: "i kø",
+        note: "Pavos ledd med Bris' spektralledd; venter på et ledig H200-kort. Måles mot kontrollarm + spektral etter låst plan",
+      },
     ],
   },
 ];
@@ -329,7 +344,8 @@ const RUNS: Run[] = [
   { when: "22.–23. okt", tags: ["tailA2000s2"], hours: "18,6 t", status: "ferdig" },
   { when: "23.–24. okt", tags: ["tailAfft2000"], hours: "18,7 t", status: "ferdig" },
   { when: "24.–25. okt", tags: ["tailA2000s3"], hours: "20,5 t", status: "ferdig" },
-  { when: "26.–27. okt", tags: ["controlfft2000"], hours: "~20 t", note: "startet 08:55, resultat ventet tirsdag ettermiddag", status: "trener" },
+  { when: "26.–27. okt", tags: ["controlfft2000"], hours: "24 t", note: "stoppet av tidsgrensen ved steg ~2 300; sjekkpunktet ved steg 2 000 er brukt", status: "ferdig" },
+  { when: "tidligst 4. nov", tags: ["tailCfft2000"], note: "H200-kortet er opptatt av andre brukere til da", status: "i kø" },
 ];
 
 /* Beyond heavy rain: mean daily precipitation relative to observed (1,00 is
@@ -356,6 +372,7 @@ const GENERAL: Record<string, { mean?: string; t2m?: [string, Sig]; wind?: [stri
   tailA2000s2: { mean: "0,99", t2m: ["−0,3 %", "none"], wind: ["−1,3 %", "better"] },
   tailA2000s3: { mean: "0,85", t2m: ["−1,1 %", "better"], wind: ["−0,9 %", "better"] },
   tailAfft2000: { mean: "0,90", t2m: ["−1,1 %", "better"], wind: ["−3,9 %", "better"] },
+  controlfft2000: { mean: "0,98", t2m: ["−0,6 %", "better"], wind: ["−3,7 %", "better"] },
 };
 
 const SIG_STYLE: Record<Sig, string> = {
@@ -379,13 +396,14 @@ const COMMON: { term: string; value: string }[] = [
   { term: "Trening", value: "1. oktober 2023 – 31. mars 2025" },
   { term: "Validering", value: "1. april – 31. juli 2025" },
   { term: "Testår", value: "1. august 2025 – 6. september 2026, aldri sett av noen modell" },
-  { term: "Grunntap", value: "almost-fair kernel CRPS, α = 0,95, på alle variabler" },
+  { term: "Grunntap", value: "almost-fair kernel CRPS på alle variabler; α = 0,95 i oppsettet, men 1,0 i praksis, som hos MET" },
   { term: "Ekstra ledd", value: "det samme tapet én gang til, bare på nedbør og bare over Norden" },
   { term: "Ensemble", value: "3 medlemmer i trening, 4 i varsling" },
   { term: "Læringsrate", value: "cosinus fra 3,75·10⁻⁶ til 3,75·10⁻⁷ over 3 000 steg, 100 steg oppvarming" },
-  { term: "Steg", value: "ett 6-timers steg om gangen, én tilstand per steg" },
+  { term: "Steg", value: "ett 6-timers steg om gangen (rollout 1), én tilstand per steg; Bris ble trent med seks steg på rad" },
   { term: "Maskinvare", value: "ett H200-kort, omtrent 18,5 timer per 2 000 steg" },
-  { term: "Mangler", value: "spektralleddet Bris opprinnelig ble trent med, som ikke finnes i anemoi 0.5.1" },
+  { term: "Spektralledd", value: "finnes ikke i anemoi 0.5.1; overført fra METs kode og med i modellene merket spektral" },
+  { term: "Mangler", value: "trening over flere steg på rad. Gevinsten på kraftig regn er størst ved 12–18 timer og borte ved 36" },
 ];
 
 const STATUS_STYLE: Record<Status, string> = {
