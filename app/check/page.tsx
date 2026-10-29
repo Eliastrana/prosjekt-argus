@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Arrow } from "@/app/components/Arrow";
 
 type HeatPoint = { lat: number; lon: number; risk: number };
 
@@ -201,7 +202,7 @@ export default function CheckRiskPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <h1 className="page-title">Sjekk risiko med posisjon</h1>
                     <Link href="/map" className="text-sm text-muted hover:text-foreground transition">
-                        Se kart →
+                        Se kart <Arrow />
                     </Link>
                 </div>
 

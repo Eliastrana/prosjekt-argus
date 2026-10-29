@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ModelLineage, { type LineageInfo } from "@/app/components/ModelLineage";
+import { Arrow } from "@/app/components/Arrow";
 
 export const metadata: Metadata = {
   title: "Modellene",
@@ -498,7 +499,7 @@ function CalibrationBody() {
           <Formula>
             kalibrert(p) = antall døgn over 20 mm da modellen sa p / antall døgn modellen sa p
             <br />
-            <span className="text-muted">eksempel: Pavo sa 75 % på 3 429 døgn, 1 576 fikk over 20 mm → 46 %</span>
+            <span className="text-muted">eksempel: Pavo sa 75 % på 3 429 døgn, 1 576 fikk over 20 mm <Arrow /> 46 %</span>
           </Formula>
           <p className="text-sm text-muted">
             <span className="text-foreground">2. Tabellen må gå oppover.</span> Flere medlemmer kan aldri

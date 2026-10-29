@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { SPOTLIGHT } from "@/lib/spotlight";
+import { Arrow } from "@/app/components/Arrow";
 
 /* The two models that work, as cards under the front-page video. Each links
    to its own page (/modeller/pavo, /modeller/a); the content for both lives
-   in lib/spotlight.ts. */
+   in lib/spotlight.ts. Both cards show the same two numbers, Brier score
+   over 20 mm a day after calibration, against the same two references, so
+   they can be read side by side. */
 
 export default function ModelSpotlight() {
   return (
@@ -17,7 +20,7 @@ export default function ModelSpotlight() {
           </p>
         </div>
         <Link href="/modeller" className="shrink-0 text-sm text-muted transition hover:text-foreground">
-          Alle modellene →
+          Alle modellene <Arrow />
         </Link>
       </div>
 
@@ -34,19 +37,16 @@ export default function ModelSpotlight() {
                 <div className="text-xs text-muted">{m.subtitle}</div>
               </div>
               <span className="shrink-0 rounded-full bg-tint px-3 py-1 text-xs font-semibold text-foreground transition group-hover:bg-accent group-hover:text-accent-foreground">
-                Les mer →
+                Les mer <Arrow />
               </span>
             </div>
-            <p className="text-sm text-muted">{m.oneLiner}</p>
-            <div className="flex gap-6">
-              <div>
-                <div className="text-2xl font-semibold text-accent">{m.headline.value}</div>
-                <div className="text-xs text-muted">{m.headline.label}</div>
-              </div>
-              <div>
-                <div className="text-2xl font-semibold text-foreground">{m.secondary.value}</div>
-                <div className="text-xs text-muted">{m.secondary.label}</div>
-              </div>
+            <div className="grid grid-cols-2 gap-6">
+              {[m.headline, m.secondary].map((h) => (
+                <div key={h.label}>
+                  <div className="text-2xl font-semibold text-accent">{h.value}</div>
+                  <div className="text-xs text-muted">{h.label}</div>
+                </div>
+              ))}
             </div>
           </Link>
         ))}

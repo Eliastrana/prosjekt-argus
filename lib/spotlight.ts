@@ -141,8 +141,8 @@ export const SPOTLIGHT: Spotlight[] = [
     subtitle: "Bris trent til å ta all nedbør mer på alvor",
     oneLiner:
       "Vanlig Bris trent videre med en ekstra straff for feil i nedbøren. Den varsler kraftig regn for ofte, men er best til å skjelne dagene som faktisk blir våte.",
-    headline: { value: "7 %", label: "mer treffsikre varsler om kraftig regn" },
-    secondary: { value: "44 %", label: "færre kraftige regndøgn den bommer helt på" },
+    headline: { value: "8 %", label: "bedre enn vanlig Bris på kraftig regn" },
+    secondary: { value: "7 %", label: "bedre enn Bris trent videre uten straffen" },
     story: [
       "Pavo er en versjon av Bris som er trent videre med én endring: hver gang den bommer på nedbøren under treningen, får den en ekstra straff. Straffen gjelder all nedbør, fra lett yr til styrtregn, og bare over Norden. Alt annet er som før.",
       "Med den ekstra straffen lærer modellen å ta nedbøren mer på alvor. Den sier oftere at det kan komme kraftig regn, også på dager der det ikke kommer. Men den overser langt færre av dagene der det faktisk kommer mye regn.",
@@ -255,8 +255,8 @@ export const SPOTLIGHT: Spotlight[] = [
     subtitle: "Bris trent til å passe ekstra på de våteste dagene",
     oneLiner:
       "Vanlig Bris trent videre med en mild ekstra straff, men bare for de kraftigste regnbygene. Bedre på kraftig regn uten noen justering i etterkant, og den treffer nedbørsmengden i snitt.",
-    headline: { value: "6 %", label: "mer treffsikre varsler om kraftig regn" },
-    secondary: { value: "4 %", label: "bedre også uten noen justering" },
+    headline: { value: "7 %", label: "bedre enn vanlig Bris på kraftig regn" },
+    secondary: { value: "6 %", label: "bedre enn Bris trent videre uten straffen" },
     story: [
       "A er en versjon av Bris som er trent videre med en ekstra straff når den bommer på nedbøren. I motsetning til Pavo gjelder straffen bare de kraftigste regnbygene, over 20 millimeter på seks timer. Vanlig regn påvirker den ikke.",
       "Det var den opprinnelige ideen i prosjektet. Det første forsøket brukte en ti ganger så sterk straff, og da ble modellen ikke bedre. A er det samme forsøket med en mye mildere straff, og da virket det.",

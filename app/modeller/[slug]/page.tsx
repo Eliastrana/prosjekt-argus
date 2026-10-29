@@ -7,6 +7,8 @@ import {
   spotlightById,
   type Spotlight,
 } from "@/lib/spotlight";
+import { Arrow } from "@/app/components/Arrow";
+import { withArrows } from "@/app/components/withArrows";
 
 /* One page per front-page model: what was done to Bris, step by step, then
    the full comparison and the results. The data lives in lib/spotlight.ts so
@@ -262,8 +264,8 @@ function ExpertView({ model }: { model: Spotlight }) {
                   className="border-b border-foreground/5 align-top last:border-0"
                 >
                   <td className="px-4 py-2.5 text-muted">{r.label}</td>
-                  <td className="px-4 py-2.5 text-muted">{r.bris}</td>
-                  <td className="px-4 py-2.5 text-muted">{r.control}</td>
+                  <td className="px-4 py-2.5 text-muted">{withArrows(r.bris)}</td>
+                  <td className="px-4 py-2.5 text-muted">{withArrows(r.control)}</td>
                   <td
                     className={`px-4 py-2.5 ${r.model === "samme" ? "text-muted" : "font-medium text-foreground"}`}
                   >
@@ -316,7 +318,7 @@ t = ${e.threshold}
           ].map((t) => (
             <li key={t} className="flex gap-2">
               <span className="mt-2 size-1.5 shrink-0 rounded-full bg-muted" />
-              {t}
+              <span>{withArrows(t)}</span>
             </li>
           ))}
         </ul>
@@ -370,7 +372,7 @@ t = ${e.threshold}
           ].map((t) => (
             <li key={t} className="flex gap-2">
               <span className="mt-2 size-1.5 shrink-0 rounded-full bg-muted" />
-              {t}
+              <span>{withArrows(t)}</span>
             </li>
           ))}
         </ul>
@@ -653,26 +655,26 @@ vekt:         ${model.code.weight}`}
               href={`/modeller/${other.id}${met ? "?for=met" : ""}`}
               className="text-sm text-muted transition hover:text-foreground"
             >
-              Les om {other.name} →
+              Les om {other.name} <Arrow />
             </Link>
           ) : null}
           <Link
             href="/blog/bris-artikkelens-figurer"
             className="text-sm text-muted transition hover:text-foreground"
           >
-            Målt slik MET målte Bris →
+            Målt slik MET målte Bris <Arrow />
           </Link>
           <Link
             href="/modeller"
             className="text-sm text-muted transition hover:text-foreground"
           >
-            Se alle modellene i prosjektet →
+            Se alle modellene i prosjektet <Arrow />
           </Link>
           <Link
             href="/ordliste"
             className="text-sm text-muted transition hover:text-foreground"
           >
-            Ordliste →
+            Ordliste <Arrow />
           </Link>
         </footer>
       </article>

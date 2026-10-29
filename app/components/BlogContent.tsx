@@ -5,6 +5,7 @@ import type {
 } from "react";
 import Image from "next/image";
 import { Chart } from "@/app/components/Chart";
+import { Arrow } from "@/app/components/Arrow";
 
 type ContentBlockProps = {
   children: ReactNode;
@@ -79,6 +80,7 @@ export function Pill({ children }: { children?: React.ReactNode }) {
 }
 
 export const blogMdxComponents = {
+  Arrow,
   Chart,
   Pill,
   CardGrid,

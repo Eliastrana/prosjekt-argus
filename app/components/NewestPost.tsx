@@ -1,6 +1,7 @@
 import { getAllPosts } from "@/lib/blog";
 import BlogCard from "./BlogCard";
 import Link from "next/link";
+import { Arrow } from "@/app/components/Arrow";
 
 export default function NewestPost() {
   const posts = getAllPosts().slice(0, 3);
@@ -20,7 +21,7 @@ export default function NewestPost() {
           href="/blog"
           className="text-sm text-muted hover:text-foreground transition"
         >
-          Se alle →
+          Se alle <Arrow />
         </Link>
       </div>
 

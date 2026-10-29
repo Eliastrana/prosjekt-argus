@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Arrow } from "@/app/components/Arrow";
 
 const BASE = "/bris";
 
@@ -130,7 +131,7 @@ export default function BrisShowcase() {
           href="/bris"
           className="text-sm text-muted transition hover:text-foreground"
         >
-          Åpne kartet →
+          Åpne kartet <Arrow />
         </Link>
       </div>
 
@@ -183,7 +184,7 @@ export default function BrisShowcase() {
             className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition hover:opacity-90"
           >
             Se hele kartet
-            <span aria-hidden="true">→</span>
+            <Arrow />
           </Link>
         </div>
       </div>

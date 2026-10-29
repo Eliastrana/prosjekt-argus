@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getRelevantPapers } from "@/lib/papers";
 import PaperCard from "./PaperCard";
+import { Arrow } from "@/app/components/Arrow";
 
 export default function RelevantPapers() {
   // Four, not five: the grid is two-up, so an odd count leaves a gap in the
@@ -22,7 +23,7 @@ export default function RelevantPapers() {
           href="/papers"
           className="text-sm text-muted transition hover:text-foreground"
         >
-          Se alle →
+          Se alle <Arrow />
         </Link>
       </div>
 

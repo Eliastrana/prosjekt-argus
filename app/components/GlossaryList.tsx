@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { termSlug, type GlossaryGroup } from "@/lib/glossary";
+import { Arrow } from "@/app/components/Arrow";
 
 /* The glossary with a search box. Matches on the term, its other names and
    the explanation, so "afCRPS" and "almost-fair" find the same entry. */
@@ -73,7 +74,7 @@ export default function GlossaryList({ groups }: { groups: GlossaryGroup[] }) {
                     <>
                       {" "}
                       <Link href={t.href} className="whitespace-nowrap text-accent hover:underline">
-                        Les mer →
+                        Les mer <Arrow />
                       </Link>
                     </>
                   ) : null}
