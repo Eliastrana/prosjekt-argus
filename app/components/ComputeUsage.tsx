@@ -65,11 +65,11 @@ export default function ComputeUsage() {
       <h2 className="text-lg font-semibold">Regnekraft brukt</h2>
       <p className="mt-1 text-sm text-muted">eX3 ved Simula, per {USAGE.asOf}.</p>
 
-      <div className="mt-4 grid grid-cols-3 gap-3 rounded-[10px] bg-foreground/[0.04] p-4 sm:gap-4 sm:p-6">
+      <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-4">
         {stats.map((s) => (
-          <div key={s.label}>
-            <p className="whitespace-nowrap text-xl font-semibold tracking-tight tabular-nums sm:text-3xl">{s.value}</p>
-            <p className="mt-1 text-sm text-muted">{s.label}</p>
+          <div key={s.label} className="rounded-[10px] bg-foreground/[0.04] px-3 py-5 sm:px-5 sm:py-8">
+            <p className="whitespace-nowrap text-lg font-semibold tracking-tight tabular-nums sm:text-3xl">{s.value}</p>
+            <p className="mt-2 text-sm text-muted">{s.label}</p>
           </div>
         ))}
       </div>

@@ -15,8 +15,6 @@ export default function HomePage() {
       <section className="mx-auto max-w-5xl px-6 py-16">
           <ModelSpotlight />
 
-          <BrisShowcase />
-
         <NewestPost />
 
           <main className="h-[calc(100dvh-20rem)] w-full overflow-hidden bg-background text-foreground">
@@ -26,6 +24,8 @@ export default function HomePage() {
           <ComputeUsage />
 
           <RelevantPapers />
+
+          <BrisShowcase />
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
           {/*<Link*/}
