@@ -134,10 +134,11 @@ export default function ArgusIdea({ theme = "dark" }: { theme?: GraphicTheme }) 
 }
 
 /* The same idea standing up, for an iPhone 12 screen: 1170 by 2532 pixels.
-   168 px (56 pt) of air on each side, and the content ends 168 px above the
-   bottom edge, so it stays clear of the notch (47 pt at the top) and the home
-   indicator (34 pt at the bottom) with room to spare. Text is 56 px, 19 pt at
-   full width. */
+   The picture is drawn on a 834 wide design box and then scaled to 60 % and
+   centred, which leaves 335 px (112 pt) of air on each side and about 614 px
+   above and below. That is clear of the notch and the home indicator, and of
+   the bars an app lays over a full-screen picture. Text ends up 34 px, 11 pt,
+   in the sentences and 25 px, 8 pt, in the source line. */
 export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
   const c = PALETTE[theme];
   const X = 168;
@@ -153,6 +154,15 @@ export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
   const rare = 9124 / 259178;
   const barW = 500;
 
+  // Design box, in the drawing's own units, and where it lands on the screen.
+  const SCALE = 0.6;
+  const BOX_LEFT = 168;
+  const BOX_W = 834;
+  const BOX_TOP = 174;
+  const BOX_H = 2171;
+  const tx = (PHONE_W - BOX_W * SCALE) / 2 - BOX_LEFT * SCALE;
+  const ty = (PHONE_H - BOX_H * SCALE) / 2 - BOX_TOP * SCALE;
+
   return (
     <svg
       viewBox={`0 0 ${PHONE_W} ${PHONE_H}`}
@@ -161,6 +171,7 @@ export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
       style={{ fontFamily: PAGE_FONT }}
     >
       <rect width={PHONE_W} height={PHONE_H} fill={c.bg} />
+      <g transform={`translate(${tx} ${ty}) scale(${SCALE})`}>
 
       <circle cx={X + 13} cy={206} r={13} fill={c.accent} />
       <text x={X + 42} y={222} fontSize={48} fontWeight={600} fill={c.fg}>
@@ -203,8 +214,9 @@ export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
         <text y={424} {...sub}>mest i første døgn</text>
       </g>
 
-      <text x={X} y={2290} fontSize={36} fontWeight={400} fill={c.muted}>Over 20 mm i døgnet, etter kalibrering.</text>
-      <text x={X} y={2334} fontSize={36} fontWeight={400} fill={c.muted}>Testår 1. august 2025 til 6. september 2026.</text>
+      <text x={X} y={2284} fontSize={42} fontWeight={400} fill={c.muted}>Over 20 mm i døgnet, etter kalibrering.</text>
+      <text x={X} y={2336} fontSize={42} fontWeight={400} fill={c.muted}>Testår 1. aug 2025 til 6. sep 2026.</text>
+      </g>
     </svg>
   );
 }
