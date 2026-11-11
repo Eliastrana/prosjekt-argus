@@ -134,23 +134,24 @@ export default function ArgusIdea({ theme = "dark" }: { theme?: GraphicTheme }) 
 }
 
 /* The same idea standing up, for an iPhone 12 screen: 1170 by 2532 pixels.
-   Content keeps clear of the notch (47 pt, 141 px, at the top) and the home
-   indicator (34 pt, 102 px, at the bottom), and sits 84 px, 28 pt, from each
-   side. Text is 64 px, 21 pt at full width, so it reads without zooming. */
+   168 px (56 pt) of air on each side, and the content ends 168 px above the
+   bottom edge, so it stays clear of the notch (47 pt at the top) and the home
+   indicator (34 pt at the bottom) with room to spare. Text is 56 px, 19 pt at
+   full width. */
 export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
   const c = PALETTE[theme];
-  const X = 84;
-  const W = PHONE_W - 2 * X; // 1002
-  const CARD_H = 490;
+  const X = 168;
+  const W = PHONE_W - 2 * X; // 834
+  const CARD_H = 470;
   const CARD_GAP = 30;
-  const CARDS_Y = 780;
+  const CARDS_Y = 735;
   const cardY = (i: number) => CARDS_Y + i * (CARD_H + CARD_GAP);
-  const IN = 60; // padding inside a card
-  const number = { fontSize: 220, fontWeight: 700, letterSpacing: -5 } as const;
-  const line = { fontSize: 64, fontWeight: 600, fill: c.fg } as const;
-  const sub = { fontSize: 52, fontWeight: 400, fill: c.muted } as const;
+  const IN = 48; // padding inside a card
+  const number = { fontSize: 200, fontWeight: 700, letterSpacing: -5 } as const;
+  const line = { fontSize: 56, fontWeight: 600, fill: c.fg } as const;
+  const sub = { fontSize: 46, fontWeight: 400, fill: c.muted } as const;
   const rare = 9124 / 259178;
-  const barW = 560;
+  const barW = 500;
 
   return (
     <svg
@@ -161,49 +162,49 @@ export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
     >
       <rect width={PHONE_W} height={PHONE_H} fill={c.bg} />
 
-      <circle cx={X + 14} cy={196} r={14} fill={c.accent} />
-      <text x={X + 46} y={212} fontSize={52} fontWeight={600} fill={c.fg}>
+      <circle cx={X + 13} cy={206} r={13} fill={c.accent} />
+      <text x={X + 42} y={222} fontSize={48} fontWeight={600} fill={c.fg}>
         Prosjekt Argus
       </text>
 
-      <text x={X} y={390} fontSize={150} fontWeight={700} letterSpacing={-4} fill={c.fg}>Kan KI varsle</text>
-      <text x={X} y={540} fontSize={150} fontWeight={700} letterSpacing={-4} fill={c.accentText}>kraftig regn</text>
-      <text x={X} y={690} fontSize={150} fontWeight={700} letterSpacing={-4} fill={c.fg}>bedre?</text>
+      <text x={X} y={385} fontSize={130} fontWeight={700} letterSpacing={-3.5} fill={c.fg}>Kan KI varsle</text>
+      <text x={X} y={520} fontSize={130} fontWeight={700} letterSpacing={-3.5} fill={c.accentText}>kraftig regn</text>
+      <text x={X} y={655} fontSize={130} fontWeight={700} letterSpacing={-3.5} fill={c.fg}>bedre?</text>
 
       {[0, 1, 2].map((i) => (
-        <rect key={i} x={X} y={cardY(i)} width={W} height={CARD_H} rx={36} fill={c.card} />
+        <rect key={i} x={X} y={cardY(i)} width={W} height={CARD_H} rx={32} fill={c.card} />
       ))}
 
       <g transform={`translate(${X + IN} ${cardY(0)})`}>
-        <text y={220} fill={c.fg} {...number}>3,5 %</text>
-        <rect y={246} width={barW} height={18} rx={9} fill={c.track} />
-        <rect y={246} width={barW * rare} height={18} rx={8} fill={c.accent} />
-        <text y={330} {...line}>av dagene har over</text>
-        <text y={394} {...line}>20 mm regn</text>
-        <text y={452} {...sub}>målt på 715 stasjoner, ett år</text>
+        <text y={196} fill={c.fg} {...number}>3,5 %</text>
+        <rect y={222} width={barW} height={16} rx={8} fill={c.track} />
+        <rect y={222} width={barW * rare} height={16} rx={7} fill={c.accent} />
+        <text y={314} {...line}>av dagene har over</text>
+        <text y={372} {...line}>20 mm regn</text>
+        <text y={424} {...sub}>målt på 715 stasjoner, ett år</text>
       </g>
 
       <g transform={`translate(${X + IN} ${cardY(1)})`}>
-        <rect x={0} y={44} width={130} height={170} rx={8} fill={c.bar} />
-        <rect x={180} y={154} width={130} height={60} rx={8} fill={c.bar} />
-        <line x1={0} y1={44} x2={310} y2={44} stroke={c.accent} strokeWidth={5} strokeDasharray="14 11" />
-        <line x1={245} y1={56} x2={245} y2={142} stroke={c.accent} strokeWidth={6} strokeLinecap="round" />
-        <path d="M230 72 L245 54 L260 72 M230 126 L245 144 L260 126" fill="none" stroke={c.accent} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
-        <text x={344} y={118} fontSize={56} fontWeight={600} fill={c.accentText}>straff</text>
-        <text y={306} {...line}>Bris trent videre med</text>
-        <text y={370} {...line}>ekstra straff for å</text>
-        <text y={434} {...line}>bomme på kraftig regn</text>
+        <rect x={0} y={44} width={116} height={150} rx={8} fill={c.bar} />
+        <rect x={160} y={142} width={116} height={52} rx={8} fill={c.bar} />
+        <line x1={0} y1={44} x2={276} y2={44} stroke={c.accent} strokeWidth={5} strokeDasharray="13 10" />
+        <line x1={218} y1={55} x2={218} y2={131} stroke={c.accent} strokeWidth={6} strokeLinecap="round" />
+        <path d="M204 70 L218 53 L232 70 M204 116 L218 133 L232 116" fill="none" stroke={c.accent} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
+        <text x={310} y={106} fontSize={50} fontWeight={600} fill={c.accentText}>straff</text>
+        <text y={292} {...line}>Bris trent videre med</text>
+        <text y={350} {...line}>ekstra straff for å</text>
+        <text y={408} {...line}>bomme på kraftig regn</text>
       </g>
 
       <g transform={`translate(${X + IN} ${cardY(2)})`}>
-        <text y={220} fill={c.accentText} {...number}>8 %</text>
-        <text y={330} {...line}>bedre enn vanlig Bris</text>
-        <text y={394} {...line}>på kraftig regn</text>
-        <text y={452} {...sub}>mest i første døgn</text>
+        <text y={196} fill={c.accentText} {...number}>8 %</text>
+        <text y={314} {...line}>bedre enn vanlig Bris</text>
+        <text y={372} {...line}>på kraftig regn</text>
+        <text y={424} {...sub}>mest i første døgn</text>
       </g>
 
-      <text x={X} y={2358} fontSize={38} fontWeight={400} fill={c.muted}>Over 20 mm i døgnet, etter kalibrering.</text>
-      <text x={X} y={2404} fontSize={38} fontWeight={400} fill={c.muted}>Testår 1. august 2025 til 6. september 2026.</text>
+      <text x={X} y={2290} fontSize={36} fontWeight={400} fill={c.muted}>Over 20 mm i døgnet, etter kalibrering.</text>
+      <text x={X} y={2334} fontSize={36} fontWeight={400} fill={c.muted}>Testår 1. august 2025 til 6. september 2026.</text>
     </svg>
   );
 }
