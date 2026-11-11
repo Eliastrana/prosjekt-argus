@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import ArgusIdea, { GRAPHIC_H, GRAPHIC_W, type GraphicTheme } from "./graphics/ArgusIdea";
+import ArgusIdea, {
+  ArgusIdeaPhone,
+  GRAPHIC_H,
+  GRAPHIC_W,
+  PHONE_H,
+  PHONE_W,
+  type GraphicTheme,
+} from "./graphics/ArgusIdea";
 
 /* One downloadable picture: the SVG shown at full width, a switch between the
    dark and the light version, and buttons that save it as PNG or SVG, or hand
@@ -11,8 +18,16 @@ import ArgusIdea, { GRAPHIC_H, GRAPHIC_W, type GraphicTheme } from "./graphics/A
    access to the page's fonts, so without that the text would fall back to
    whatever the viewer has installed. */
 
+/* Every picture comes in two formats: wide for the web and stories, and an
+   iPhone 12 screen (1170 by 2532) for the lock screen and a phone gallery. */
+const FORMATS = {
+  wide: { label: "16:9", w: GRAPHIC_W, h: GRAPHIC_H },
+  phone: { label: "iPhone 12", w: PHONE_W, h: PHONE_H },
+} as const;
+type Format = keyof typeof FORMATS;
+
 const GRAPHICS = {
-  "argus-idea": ArgusIdea,
+  "argus-idea": { wide: ArgusIdea, phone: ArgusIdeaPhone },
 } as const;
 
 export type GraphicId = keyof typeof GRAPHICS;
@@ -37,11 +52,11 @@ function fontDataUri(): Promise<string> {
   return fontCache;
 }
 
-async function standaloneSvg(svg: SVGSVGElement): Promise<string> {
+async function standaloneSvg(svg: SVGSVGElement, w: number, h: number): Promise<string> {
   const clone = svg.cloneNode(true) as SVGSVGElement;
   clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  clone.setAttribute("width", String(GRAPHIC_W));
-  clone.setAttribute("height", String(GRAPHIC_H));
+  clone.setAttribute("width", String(w));
+  clone.setAttribute("height", String(h));
   clone.removeAttribute("role");
   clone.style.fontFamily = `'${EXPORT_FONT}', system-ui, sans-serif`;
   const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
@@ -50,18 +65,18 @@ async function standaloneSvg(svg: SVGSVGElement): Promise<string> {
   return new XMLSerializer().serializeToString(clone);
 }
 
-async function renderPng(svg: SVGSVGElement): Promise<Blob> {
-  const url = URL.createObjectURL(new Blob([await standaloneSvg(svg)], { type: "image/svg+xml;charset=utf-8" }));
+async function renderPng(svg: SVGSVGElement, w: number, h: number): Promise<Blob> {
+  const url = URL.createObjectURL(new Blob([await standaloneSvg(svg, w, h)], { type: "image/svg+xml;charset=utf-8" }));
   try {
     const img = new Image();
     img.src = url;
     await img.decode();
     const canvas = document.createElement("canvas");
-    canvas.width = GRAPHIC_W;
-    canvas.height = GRAPHIC_H;
+    canvas.width = w;
+    canvas.height = h;
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("fikk ikke tegne");
-    ctx.drawImage(img, 0, 0, GRAPHIC_W, GRAPHIC_H);
+    ctx.drawImage(img, 0, 0, w, h);
     return await new Promise((resolve, reject) =>
       canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("fikk ikke lage bildet"))), "image/png"),
     );
@@ -90,7 +105,9 @@ export default function GraphicCard({
   title: string;
   description: string;
 }) {
-  const Graphic = GRAPHICS[id];
+  const [format, setFormat] = useState<Format>("wide");
+  const Graphic = GRAPHICS[id][format];
+  const { w, h } = FORMATS[format];
   const [theme, setTheme] = useState<GraphicTheme>("dark");
   const [busy, setBusy] = useState<"png" | "svg" | "share" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +123,8 @@ export default function GraphicCard({
     }
   }, []);
 
-  const filename = (ext: string) => `${id}-${theme === "dark" ? "mork" : "lys"}.${ext}`;
+  const filename = (ext: string) =>
+    `${id}-${format === "phone" ? "iphone-" : ""}${theme === "dark" ? "mork" : "lys"}.${ext}`;
 
   async function run(kind: "png" | "svg" | "share") {
     const svg = wrap.current?.querySelector("svg");
@@ -115,9 +133,9 @@ export default function GraphicCard({
     setError(null);
     try {
       if (kind === "svg") {
-        save(new Blob([await standaloneSvg(svg)], { type: "image/svg+xml" }), filename("svg"));
+        save(new Blob([await standaloneSvg(svg, w, h)], { type: "image/svg+xml" }), filename("svg"));
       } else {
-        const png = await renderPng(svg);
+        const png = await renderPng(svg, w, h);
         if (kind === "png") {
           save(png, filename("png"));
         } else {
@@ -144,8 +162,16 @@ export default function GraphicCard({
         <p className="mt-1 max-w-2xl text-sm text-muted">{description}</p>
       </div>
 
-      <div ref={wrap} className="overflow-hidden rounded-[10px] border border-foreground/10">
-        <Graphic theme={theme} />
+      <div
+        className={
+          format === "phone"
+            ? "mx-auto w-full max-w-[19rem] sm:max-w-xs"
+            : "w-full"
+        }
+      >
+        <div ref={wrap} className="overflow-hidden rounded-[10px] border border-foreground/10">
+          <Graphic theme={theme} />
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -155,7 +181,7 @@ export default function GraphicCard({
           disabled={busy !== null}
           className={`${pill} bg-accent text-accent-foreground hover:opacity-90`}
         >
-          {busy === "png" ? "Lager bildet" : `Last ned PNG, ${GRAPHIC_W} × ${GRAPHIC_H}`}
+          {busy === "png" ? "Lager bildet" : `Last ned PNG, ${w} × ${h}`}
         </button>
         <button
           type="button"
@@ -176,7 +202,23 @@ export default function GraphicCard({
           </button>
         ) : null}
 
-        <div role="group" aria-label="Fargeversjon" className="ml-auto flex rounded-full bg-foreground/[0.06] p-1 text-sm">
+        <div className="ml-auto flex flex-wrap gap-2">
+        <div role="group" aria-label="Format" className="flex rounded-full bg-foreground/[0.06] p-1 text-sm">
+          {(Object.keys(FORMATS) as Format[]).map((f) => (
+            <button
+              key={f}
+              type="button"
+              aria-pressed={format === f}
+              onClick={() => setFormat(f)}
+              className={`rounded-full px-3 py-1 transition ${
+                format === f ? "bg-background font-semibold text-foreground shadow-sm" : "text-muted hover:text-foreground"
+              }`}
+            >
+              {FORMATS[f].label}
+            </button>
+          ))}
+        </div>
+        <div role="group" aria-label="Fargeversjon" className="flex rounded-full bg-foreground/[0.06] p-1 text-sm">
           {(["dark", "light"] as const).map((t) => (
             <button
               key={t}
@@ -190,6 +232,7 @@ export default function GraphicCard({
               {t === "dark" ? "Mørk" : "Lys"}
             </button>
           ))}
+        </div>
         </div>
       </div>
 

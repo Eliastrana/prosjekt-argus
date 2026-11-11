@@ -13,8 +13,8 @@ export default function GraphicsPage() {
         <header className="flex flex-col gap-2">
           <h1 className="page-title">Grafikk</h1>
           <p className="max-w-2xl text-sm text-muted md:text-base">
-            Bilder til å laste ned og dele. De er 16:9, 1920 × 1080, og har så lite tekst at de kan leses på en
-            mobilskjerm.
+            Bilder til å laste ned og dele, i 16:9 (1920 × 1080) og i skjermformatet til iPhone 12 (1170 × 2532).
+            De har så lite tekst at de kan leses på en mobilskjerm.
           </p>
         </header>
 

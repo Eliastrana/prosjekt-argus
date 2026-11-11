@@ -17,9 +17,13 @@
 export const GRAPHIC_W = 1920;
 export const GRAPHIC_H = 1080;
 
+/* iPhone 12, 13 and 14: 390 by 844 points at three pixels a point. */
+export const PHONE_W = 1170;
+export const PHONE_H = 2532;
+
 export type GraphicTheme = "dark" | "light";
 
-const PALETTE = {
+export const PALETTE = {
   dark: {
     bg: "#09090b",
     fg: "#f4f4f5",
@@ -125,6 +129,81 @@ export default function ArgusIdea({ theme = "dark" }: { theme?: GraphicTheme }) 
       <text x={MARGIN} y={1046} fontSize={36} fontWeight={400} fill={c.muted}>
         Over 20 mm i døgnet, etter kalibrering. Testår 1. august 2025 til 6. september 2026.
       </text>
+    </svg>
+  );
+}
+
+/* The same idea standing up, for an iPhone 12 screen: 1170 by 2532 pixels.
+   Content keeps clear of the notch (47 pt, 141 px, at the top) and the home
+   indicator (34 pt, 102 px, at the bottom), and sits 84 px, 28 pt, from each
+   side. Text is 64 px, 21 pt at full width, so it reads without zooming. */
+export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
+  const c = PALETTE[theme];
+  const X = 84;
+  const W = PHONE_W - 2 * X; // 1002
+  const CARD_H = 490;
+  const CARD_GAP = 30;
+  const CARDS_Y = 780;
+  const cardY = (i: number) => CARDS_Y + i * (CARD_H + CARD_GAP);
+  const IN = 60; // padding inside a card
+  const number = { fontSize: 220, fontWeight: 700, letterSpacing: -5 } as const;
+  const line = { fontSize: 64, fontWeight: 600, fill: c.fg } as const;
+  const sub = { fontSize: 52, fontWeight: 400, fill: c.muted } as const;
+  const rare = 9124 / 259178;
+  const barW = 560;
+
+  return (
+    <svg
+      viewBox={`0 0 ${PHONE_W} ${PHONE_H}`}
+      role="img"
+      aria-label="Kan KI varsle kraftig regn bedre? 3,5 prosent av dagene har over 20 millimeter regn. Bris trent videre med ekstra straff for å bomme på kraftig regn. Resultatet er 8 prosent bedre enn vanlig Bris på kraftig regn, mest i første døgn."
+      style={{ fontFamily: PAGE_FONT }}
+    >
+      <rect width={PHONE_W} height={PHONE_H} fill={c.bg} />
+
+      <circle cx={X + 14} cy={196} r={14} fill={c.accent} />
+      <text x={X + 46} y={212} fontSize={52} fontWeight={600} fill={c.fg}>
+        Prosjekt Argus
+      </text>
+
+      <text x={X} y={390} fontSize={150} fontWeight={700} letterSpacing={-4} fill={c.fg}>Kan KI varsle</text>
+      <text x={X} y={540} fontSize={150} fontWeight={700} letterSpacing={-4} fill={c.accentText}>kraftig regn</text>
+      <text x={X} y={690} fontSize={150} fontWeight={700} letterSpacing={-4} fill={c.fg}>bedre?</text>
+
+      {[0, 1, 2].map((i) => (
+        <rect key={i} x={X} y={cardY(i)} width={W} height={CARD_H} rx={36} fill={c.card} />
+      ))}
+
+      <g transform={`translate(${X + IN} ${cardY(0)})`}>
+        <text y={220} fill={c.fg} {...number}>3,5 %</text>
+        <rect y={246} width={barW} height={18} rx={9} fill={c.track} />
+        <rect y={246} width={barW * rare} height={18} rx={8} fill={c.accent} />
+        <text y={330} {...line}>av dagene har over</text>
+        <text y={394} {...line}>20 mm regn</text>
+        <text y={452} {...sub}>målt på 715 stasjoner, ett år</text>
+      </g>
+
+      <g transform={`translate(${X + IN} ${cardY(1)})`}>
+        <rect x={0} y={44} width={130} height={170} rx={8} fill={c.bar} />
+        <rect x={180} y={154} width={130} height={60} rx={8} fill={c.bar} />
+        <line x1={0} y1={44} x2={310} y2={44} stroke={c.accent} strokeWidth={5} strokeDasharray="14 11" />
+        <line x1={245} y1={56} x2={245} y2={142} stroke={c.accent} strokeWidth={6} strokeLinecap="round" />
+        <path d="M230 72 L245 54 L260 72 M230 126 L245 144 L260 126" fill="none" stroke={c.accent} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
+        <text x={344} y={118} fontSize={56} fontWeight={600} fill={c.accentText}>straff</text>
+        <text y={306} {...line}>Bris trent videre med</text>
+        <text y={370} {...line}>ekstra straff for å</text>
+        <text y={434} {...line}>bomme på kraftig regn</text>
+      </g>
+
+      <g transform={`translate(${X + IN} ${cardY(2)})`}>
+        <text y={220} fill={c.accentText} {...number}>8 %</text>
+        <text y={330} {...line}>bedre enn vanlig Bris</text>
+        <text y={394} {...line}>på kraftig regn</text>
+        <text y={452} {...sub}>mest i første døgn</text>
+      </g>
+
+      <text x={X} y={2358} fontSize={38} fontWeight={400} fill={c.muted}>Over 20 mm i døgnet, etter kalibrering.</text>
+      <text x={X} y={2404} fontSize={38} fontWeight={400} fill={c.muted}>Testår 1. august 2025 til 6. september 2026.</text>
     </svg>
   );
 }
