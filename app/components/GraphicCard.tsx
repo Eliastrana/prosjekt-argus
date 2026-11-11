@@ -5,6 +5,7 @@ import ArgusIdea, {
   ArgusIdeaPhone,
   GRAPHIC_H,
   GRAPHIC_W,
+  PHONE_DEFAULT_PADDING,
   PHONE_H,
   PHONE_W,
   type GraphicTheme,
@@ -109,6 +110,8 @@ export default function GraphicCard({
   const Graphic = GRAPHICS[id][format];
   const { w, h } = FORMATS[format];
   const [theme, setTheme] = useState<GraphicTheme>("dark");
+  // Air on each side of the phone picture, in points (3 pixels each).
+  const [padPt, setPadPt] = useState(PHONE_DEFAULT_PADDING / 3);
   const [busy, setBusy] = useState<"png" | "svg" | "share" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [canShare, setCanShare] = useState(false);
@@ -170,7 +173,7 @@ export default function GraphicCard({
         }
       >
         <div ref={wrap} className="overflow-hidden rounded-[10px] border border-foreground/10">
-          <Graphic theme={theme} />
+          <Graphic theme={theme} padding={padPt * 3} />
         </div>
       </div>
 
@@ -235,6 +238,23 @@ export default function GraphicCard({
         </div>
         </div>
       </div>
+
+      {format === "phone" ? (
+        <label className="flex max-w-md items-center gap-3 text-sm">
+          <span className="shrink-0 text-muted">Luft rundt</span>
+          <input
+            type="range"
+            min={24}
+            max={140}
+            step={4}
+            value={padPt}
+            onChange={(e) => setPadPt(Number(e.target.value))}
+            aria-valuetext={`${padPt} punkter`}
+            className="h-1 w-full cursor-pointer accent-accent"
+          />
+          <span className="w-16 shrink-0 text-right tabular-nums">{padPt} pt</span>
+        </label>
+      ) : null}
 
       {error ? <p className="text-sm text-[#f59e0b]">{error}</p> : null}
     </article>

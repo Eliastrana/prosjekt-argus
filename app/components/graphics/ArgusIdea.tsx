@@ -23,6 +23,15 @@ export const PHONE_H = 2532;
 
 export type GraphicTheme = "dark" | "light";
 
+/* What every picture accepts. Padding is the air on each side in pixels and
+   only the phone format uses it; the page lets the reader set it. */
+export type GraphicProps = { theme?: GraphicTheme; padding?: number };
+
+/* The air on each side of the phone picture when nobody has changed it:
+   336 px, which is 112 pt on the screen. Change it here to change the default;
+   the slider on /grafikk overrides it per download. */
+export const PHONE_DEFAULT_PADDING = 336;
+
 export const PALETTE = {
   dark: {
     bg: "#09090b",
@@ -59,7 +68,7 @@ const TEXT_X = 560; // where the sentence starts inside a row
    The export replaces it with the embedded copy of the same font. */
 export const PAGE_FONT = "var(--font-space-grotesk), 'Space Grotesk', system-ui, sans-serif";
 
-export default function ArgusIdea({ theme = "dark" }: { theme?: GraphicTheme }) {
+export default function ArgusIdea({ theme = "dark" }: GraphicProps) {
   const c = PALETTE[theme];
   const rowY = (i: number) => ROWS_Y + i * (ROW_H + ROW_GAP);
   const number = { fontSize: 128, fontWeight: 700, letterSpacing: -3 } as const;
@@ -134,12 +143,12 @@ export default function ArgusIdea({ theme = "dark" }: { theme?: GraphicTheme }) 
 }
 
 /* The same idea standing up, for an iPhone 12 screen: 1170 by 2532 pixels.
-   The picture is drawn on a 834 wide design box and then scaled to 60 % and
-   centred, which leaves 335 px (112 pt) of air on each side and about 614 px
-   above and below. That is clear of the notch and the home indicator, and of
-   the bars an app lays over a full-screen picture. Text ends up 34 px, 11 pt,
-   in the sentences and 25 px, 8 pt, in the source line. */
-export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
+   The picture is drawn on an 834 wide design box and then scaled to leave
+   `padding` px of air on each side (default 336 px, 112 pt) and centred. The
+   scale is capped so it never reaches the notch or the home indicator. At the
+   default it is 60 %, which makes the sentences 34 px, 11 pt, and the source
+   line 25 px, 8 pt. Less padding gives bigger text. */
+export function ArgusIdeaPhone({ theme = "dark", padding = PHONE_DEFAULT_PADDING }: GraphicProps) {
   const c = PALETTE[theme];
   const X = 168;
   const W = PHONE_W - 2 * X; // 834
@@ -155,11 +164,13 @@ export function ArgusIdeaPhone({ theme = "dark" }: { theme?: GraphicTheme }) {
   const barW = 500;
 
   // Design box, in the drawing's own units, and where it lands on the screen.
-  const SCALE = 0.6;
   const BOX_LEFT = 168;
   const BOX_W = 834;
   const BOX_TOP = 174;
   const BOX_H = 2171;
+  // Fit the box between the side padding and the notch and home indicator.
+  const SAFE_TOP_BOTTOM = 150;
+  const SCALE = Math.min((PHONE_W - 2 * padding) / BOX_W, (PHONE_H - 2 * SAFE_TOP_BOTTOM) / BOX_H);
   const tx = (PHONE_W - BOX_W * SCALE) / 2 - BOX_LEFT * SCALE;
   const ty = (PHONE_H - BOX_H * SCALE) / 2 - BOX_TOP * SCALE;
 
