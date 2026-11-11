@@ -27,10 +27,10 @@ export type GraphicTheme = "dark" | "light";
    only the phone format uses it; the page lets the reader set it. */
 export type GraphicProps = { theme?: GraphicTheme; padding?: number };
 
-/* The air on each side of the phone picture when nobody has changed it:
-   336 px, which is 112 pt on the screen. Change it here to change the default;
-   the slider on /grafikk overrides it per download. */
-export const PHONE_DEFAULT_PADDING = 336;
+/* The air on each side of the phone pictures when nobody has changed it:
+   204 px, which is 68 pt on the screen. Change it here to change the default
+   for every phone picture; the slider on /grafikk overrides it per download. */
+export const PHONE_DEFAULT_PADDING = 204;
 
 export const PALETTE = {
   dark: {
@@ -144,10 +144,10 @@ export default function ArgusIdea({ theme = "dark" }: GraphicProps) {
 
 /* The same idea standing up, for an iPhone 12 screen: 1170 by 2532 pixels.
    The picture is drawn on an 834 wide design box and then scaled to leave
-   `padding` px of air on each side (default 336 px, 112 pt) and centred. The
+   `padding` px of air on each side (default 204 px, 68 pt) and centred. The
    scale is capped so it never reaches the notch or the home indicator. At the
-   default it is 60 %, which makes the sentences 34 px, 11 pt, and the source
-   line 25 px, 8 pt. Less padding gives bigger text. */
+   default it is 91 %, which makes the sentences 51 px, 17 pt. Less padding
+   gives bigger text. */
 export function ArgusIdeaPhone({ theme = "dark", padding = PHONE_DEFAULT_PADDING }: GraphicProps) {
   const c = PALETTE[theme];
   const X = 168;

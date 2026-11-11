@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import GraphicCard from "../components/GraphicCard";
+import GraphicCard, { GraphicSeries } from "../components/GraphicCard";
 
 export const metadata: Metadata = {
   title: "Grafikk",
@@ -18,12 +18,46 @@ export default function GraphicsPage() {
           </p>
         </header>
 
-        <div className="mt-8 flex flex-col gap-12">
+        <div className="mt-8 flex flex-col gap-16">
           <GraphicCard
             id="argus-idea"
             title="Hovedideen"
             description="Kraftig regn er sjeldent og vanskelig å varsle. Jeg trente Bris videre med en ekstra straff for å bomme på det, og målte resultatet."
           />
+
+          <section className="flex flex-col gap-4">
+            <div>
+              <h2 className="text-lg font-semibold">Steg for steg</h2>
+              <p className="mt-1 max-w-2xl text-sm text-muted">
+                Fire bilder i iPhone-formatet som forklarer prosjektet i rekkefølge, til å legge ut etter hverandre.
+                Luft og farge gjelder alle fire.
+              </p>
+            </div>
+            <GraphicSeries
+              items={[
+                {
+                  id: "steg-1-problemet",
+                  title: "1. Problemet",
+                  description: "Kraftig regn er sjeldent, så modellene lærer mest av de vanlige dagene.",
+                },
+                {
+                  id: "steg-2-situasjonen",
+                  title: "2. Situasjonen",
+                  description: "Utgangspunktet er METs KI-værmodell Bris.",
+                },
+                {
+                  id: "steg-3-det-jeg-prover",
+                  title: "3. Det jeg prøver",
+                  description: "Trene Bris videre med en ekstra straff for å bomme på kraftig regn.",
+                },
+                {
+                  id: "steg-4-resultater",
+                  title: "4. Foreløpige resultater",
+                  description: "Bedre på kraftig regn enn vanlig Bris, mest i første døgn.",
+                },
+              ]}
+            />
+          </section>
         </div>
       </div>
     </main>
