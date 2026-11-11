@@ -31,12 +31,10 @@ import {
 } from "./ArgusIdea";
 
 const BOX_W = 834;
-/* Extra air above the header, on top of the padding, in pixels. 96 px is 32 pt:
-   the header then sits about 100 pt from the top edge at the default padding. */
+/* Extra air above the first line, on top of the padding, in pixels. 96 px is
+   32 pt. The design box still has room for a header line at its top, 160 units
+   high, so the first line, the eyebrow, starts about 160 px below this margin. */
 const TOP_EXTRA = 96;
-/* The slides used to start with a header line. It is gone, so the drawing is
-   moved up by the space it took and the first line sits where the header did. */
-const HEADER_H = 160;
 
 type Colours = (typeof PALETTE)[GraphicTheme];
 
@@ -50,7 +48,7 @@ function Frame({
   const c = PALETTE[theme];
   const top = Math.max(padding, 200) + TOP_EXTRA;
   const bottom = Math.max(padding, 170);
-  const scale = Math.min((PHONE_W - 2 * padding) / BOX_W, (PHONE_H - top - bottom) / (height - HEADER_H));
+  const scale = Math.min((PHONE_W - 2 * padding) / BOX_W, (PHONE_H - top - bottom) / height);
   const left = (PHONE_W - BOX_W * scale) / 2;
 
   return (
@@ -61,7 +59,7 @@ function Frame({
       style={{ fontFamily: PAGE_FONT }}
     >
       <rect width={PHONE_W} height={PHONE_H} fill={c.bg} />
-      <g transform={`translate(${left} ${top - HEADER_H * scale}) scale(${scale})`}>
+      <g transform={`translate(${left} ${top}) scale(${scale})`}>
         {children(c)}
       </g>
     </svg>
@@ -275,7 +273,7 @@ export function SlideResults(props: GraphicProps) {
   return (
     <Frame
       {...props}
-      height={2250}
+      height={2222}
       alt="Steg 4 av 5, foreløpige resultater. Bedre på kraftig regn. Hvor mye bedre enn vanlig Bris, over 20 millimeter i døgnet, etter kalibrering. Vanlig Bris er utgangspunktet, 0 prosent. Pavo 8 prosent, A 7 prosent, kontrollarm med spektralledd 5 prosent, kontrollarm 1 prosent. Hvorfor en kontrollarm. Mer trening gir gevinst alene, uten straffen. Kontrollarmen får samme trening og viser dermed hva straffen gir i tillegg. Mest i første døgn, borte ved 36 timer. Må kalibreres, Pavo varsler for mye regn. Foreløpig, ett år og 715 stasjoner, én trekning av hver modell."
     >
       {(c) => (
@@ -290,7 +288,7 @@ export function SlideResults(props: GraphicProps) {
           </text>
 
           {RESULTS.map((r, i) => {
-            const y = 770 + i * 140;
+            const y = 770 + i * 133;
             const ref = r.kind === "ref";
             return (
               <g key={r.name}>
@@ -315,33 +313,33 @@ export function SlideResults(props: GraphicProps) {
           })}
 
           {/* why there is a control arm */}
-          <rect y={1460} width={BOX_W} height={350} rx={32} fill={c.card} />
-          <text x={40} y={1536} fontSize={52} fontWeight={700} fill={c.fg}>
+          <rect y={1432} width={BOX_W} height={350} rx={32} fill={c.card} />
+          <text x={40} y={1508} fontSize={52} fontWeight={700} fill={c.fg}>
             Hvorfor en kontrollarm?
           </text>
           {WHY_CONTROL.map((line, i) => (
-            <text key={line} x={40} y={1604 + i * 54} fontSize={46} fontWeight={400} fill={c.muted}>
+            <text key={line} x={40} y={1576 + i * 54} fontSize={46} fontWeight={400} fill={c.muted}>
               {line}
             </text>
           ))}
 
-          <text y={1920} fontSize={52} fontWeight={600} fill={c.fg}>
+          <text y={1892} fontSize={52} fontWeight={600} fill={c.fg}>
             Mest i første døgn
           </text>
-          <text y={1978} fontSize={46} fontWeight={400} fill={c.muted}>
+          <text y={1950} fontSize={46} fontWeight={400} fill={c.muted}>
             borte ved 36 timer
           </text>
-          <text y={2056} fontSize={52} fontWeight={600} fill={c.fg}>
+          <text y={2028} fontSize={52} fontWeight={600} fill={c.fg}>
             Må kalibreres
           </text>
-          <text y={2114} fontSize={46} fontWeight={400} fill={c.muted}>
+          <text y={2086} fontSize={46} fontWeight={400} fill={c.muted}>
             Pavo varsler for mye regn
           </text>
 
-          <text y={2200} fontSize={38} fontWeight={400} fill={c.muted}>
+          <text y={2172} fontSize={38} fontWeight={400} fill={c.muted}>
             Foreløpig, ett år og 715 stasjoner,
           </text>
-          <text y={2244} fontSize={38} fontWeight={400} fill={c.muted}>
+          <text y={2216} fontSize={38} fontWeight={400} fill={c.muted}>
             én trekning av hver modell.
           </text>
         </>
