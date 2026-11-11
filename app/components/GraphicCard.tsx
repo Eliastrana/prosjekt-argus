@@ -244,7 +244,7 @@ export default function GraphicCard({
           <span className="shrink-0 text-muted">Luft rundt</span>
           <input
             type="range"
-            min={24}
+            min={52}
             max={140}
             step={4}
             value={padPt}
