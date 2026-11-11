@@ -141,7 +141,7 @@ export function SlideProblem(props: GraphicProps) {
 const FACTS = [
   { key: "2,5 km", lines: ["Bris varsler været over Norden", "i et rutenett på 2,5 km, i steg", "på seks timer."] },
   { key: "246 mill.", lines: ["parametre i nettverket.", "Treningen fyller ett grafikkort", "på 140 GB."] },
-  { key: "Ingen", lines: ["ferdige treningsdata fantes.", "Jeg bygde dem selv fra", "METs åpne data."] },
+  { key: "KI-modell", lines: ["Bris lærer av tidligere vær, i", "stedet for å regne ut været med", "fysikkligninger, som MEPS."] },
 ];
 
 export function SlideSituation(props: GraphicProps) {
@@ -153,7 +153,7 @@ export function SlideSituation(props: GraphicProps) {
       {...props}
       step={2}
       height={2000}
-      alt="Steg 2 av 4, situasjonen. Jeg starter med Bris, METs KI-værmodell for Norden. Den varsler i et rutenett på 2,5 kilometer, i steg på seks timer. Nettverket har 246 millioner parametre, og treningen fyller ett grafikkort på 140 gigabyte. Det fantes ingen ferdige treningsdata, så jeg bygde dem selv fra METs åpne data. Testet mot 715 målestasjoner i ett år."
+      alt="Steg 2 av 4, situasjonen. Jeg starter med Bris, METs KI-værmodell for Norden. Den varsler i et rutenett på 2,5 kilometer, i steg på seks timer. Nettverket har 246 millioner parametre, og treningen fyller ett grafikkort på 140 gigabyte. Bris er en KI-modell som lærer av tidligere vær, i stedet for å regne ut været med fysikkligninger, som METs MEPS. Testet mot 715 målestasjoner i ett år."
     >
       {(c) => (
         <>
@@ -263,10 +263,18 @@ export function SlideApproach(props: GraphicProps) {
 /* 4. results so far ---------------------------------------------------- */
 
 const RESULTS = [
-  { name: "Pavo", value: 8.1, strong: true },
-  { name: "A", value: 7.1, strong: true },
-  { name: "Kontrollarm + spektral", value: 5.3, strong: false },
-  { name: "Kontrollarm", value: 1.1, strong: false },
+  { name: "Vanlig Bris", value: 0, kind: "ref" },
+  { name: "Pavo", value: 8.1, kind: "strong" },
+  { name: "A", value: 7.1, kind: "strong" },
+  { name: "Kontrollarm + spektral", value: 5.3, kind: "control" },
+  { name: "Kontrollarm", value: 1.1, kind: "control" },
+] as const;
+
+const WHY_CONTROL = [
+  "Mer trening gir gevinst alene,",
+  "uten straffen. Kontrollarmen får",
+  "samme trening og viser dermed",
+  "hva straffen gir i tillegg.",
 ];
 
 export function SlideResults(props: GraphicProps) {
@@ -274,60 +282,73 @@ export function SlideResults(props: GraphicProps) {
     <Frame
       {...props}
       step={4}
-      height={2140}
-      alt="Steg 4 av 4, foreløpige resultater. Bedre på kraftig regn. Hvor mye bedre enn vanlig Bris, over 20 millimeter i døgnet, etter kalibrering. Pavo 8 prosent, A 7 prosent, kontrollarm med spektralledd 5 prosent, kontrollarm 1 prosent. Mest i første døgn. Ved 36 timer og mer er forskjellen borte. Pavo varsler for mye regn i snitt, så den må kalibreres. Foreløpig, ett år, 715 stasjoner, én trekning per modell."
+      height={2250}
+      alt="Steg 4 av 4, foreløpige resultater. Bedre på kraftig regn. Hvor mye bedre enn vanlig Bris, over 20 millimeter i døgnet, etter kalibrering. Vanlig Bris er utgangspunktet, 0 prosent. Pavo 8 prosent, A 7 prosent, kontrollarm med spektralledd 5 prosent, kontrollarm 1 prosent. Hvorfor en kontrollarm. Mer trening gir gevinst alene, uten straffen. Kontrollarmen får samme trening og viser dermed hva straffen gir i tillegg. Mest i første døgn, borte ved 36 timer. Må kalibreres, Pavo varsler for mye regn. Foreløpig, ett år og 715 stasjoner, én trekning av hver modell."
     >
       {(c) => (
         <>
           <Heading c={c} eyebrow="Foreløpige resultater" lines={["Bedre på", "kraftig regn"]} />
 
-          <text y={610} fontSize={46} fontWeight={400} fill={c.muted}>
+          <text y={590} fontSize={46} fontWeight={400} fill={c.muted}>
             Hvor mye bedre enn vanlig Bris,
           </text>
-          <text y={664} fontSize={46} fontWeight={400} fill={c.muted}>
+          <text y={644} fontSize={46} fontWeight={400} fill={c.muted}>
             over 20 mm i døgnet
           </text>
 
           {RESULTS.map((r, i) => {
-            const y = 820 + i * 175;
+            const y = 770 + i * 140;
+            const ref = r.kind === "ref";
             return (
               <g key={r.name}>
-                <text y={y} fontSize={52} fontWeight={600} fill={c.fg}>
+                <text y={y} fontSize={52} fontWeight={600} fill={ref ? c.muted : c.fg}>
                   {r.name}
                 </text>
-                <text x={BOX_W} y={y} textAnchor="end" fontSize={60} fontWeight={700} fill={r.strong ? c.accentText : c.muted}>
+                <text x={BOX_W} y={y} textAnchor="end" fontSize={60} fontWeight={700} fill={r.kind === "strong" ? c.accentText : c.muted}>
                   {Math.round(r.value)} %
                 </text>
                 <rect y={y + 22} width={BOX_W} height={32} rx={16} fill={c.track} />
-                <rect y={y + 22} width={Math.max((BOX_W * r.value) / 10, 32)} height={32} rx={16} fill={r.strong ? c.accent : c.bar} />
+                {ref ? null : (
+                  <rect
+                    y={y + 22}
+                    width={Math.max((BOX_W * r.value) / 10, 32)}
+                    height={32}
+                    rx={16}
+                    fill={r.kind === "strong" ? c.accent : c.bar}
+                  />
+                )}
               </g>
             );
           })}
 
-          <text y={1620} fontSize={52} fontWeight={600} fill={c.fg}>
+          {/* why there is a control arm */}
+          <rect y={1460} width={BOX_W} height={350} rx={32} fill={c.card} />
+          <text x={40} y={1536} fontSize={52} fontWeight={700} fill={c.fg}>
+            Hvorfor en kontrollarm?
+          </text>
+          {WHY_CONTROL.map((line, i) => (
+            <text key={line} x={40} y={1604 + i * 54} fontSize={46} fontWeight={400} fill={c.muted}>
+              {line}
+            </text>
+          ))}
+
+          <text y={1920} fontSize={52} fontWeight={600} fill={c.fg}>
             Mest i første døgn
           </text>
-          <text y={1678} fontSize={46} fontWeight={400} fill={c.muted}>
-            Ved 36 timer og mer er
+          <text y={1978} fontSize={46} fontWeight={400} fill={c.muted}>
+            borte ved 36 timer
           </text>
-          <text y={1732} fontSize={46} fontWeight={400} fill={c.muted}>
-            forskjellen borte.
-          </text>
-
-          <text y={1860} fontSize={52} fontWeight={600} fill={c.fg}>
+          <text y={2056} fontSize={52} fontWeight={600} fill={c.fg}>
             Må kalibreres
           </text>
-          <text y={1918} fontSize={46} fontWeight={400} fill={c.muted}>
+          <text y={2114} fontSize={46} fontWeight={400} fill={c.muted}>
             Pavo varsler for mye regn
           </text>
-          <text y={1972} fontSize={46} fontWeight={400} fill={c.muted}>
-            i snitt.
-          </text>
 
-          <text y={2070} fontSize={38} fontWeight={400} fill={c.muted}>
+          <text y={2200} fontSize={38} fontWeight={400} fill={c.muted}>
             Foreløpig, ett år og 715 stasjoner,
           </text>
-          <text y={2116} fontSize={38} fontWeight={400} fill={c.muted}>
+          <text y={2244} fontSize={38} fontWeight={400} fill={c.muted}>
             én trekning av hver modell.
           </text>
         </>

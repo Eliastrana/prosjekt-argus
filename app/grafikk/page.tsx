@@ -53,7 +53,7 @@ export default function GraphicsPage() {
                 {
                   id: "steg-4-resultater",
                   title: "4. Foreløpige resultater",
-                  description: "Bedre på kraftig regn enn vanlig Bris, mest i første døgn.",
+                  description: "Bedre på kraftig regn enn vanlig Bris, og hvorfor jeg trenger en kontrollarm.",
                 },
               ]}
             />
