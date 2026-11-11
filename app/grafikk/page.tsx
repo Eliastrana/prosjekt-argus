@@ -29,8 +29,8 @@ export default function GraphicsPage() {
             <div>
               <h2 className="text-lg font-semibold">Steg for steg</h2>
               <p className="mt-1 max-w-2xl text-sm text-muted">
-                Fire bilder i iPhone-formatet som forklarer prosjektet i rekkefølge, til å legge ut etter hverandre.
-                Luft og farge gjelder alle fire.
+                Fem bilder i iPhone-formatet som forklarer prosjektet i rekkefølge, til å legge ut etter hverandre.
+                Luft og farge gjelder alle fem.
               </p>
             </div>
             <GraphicSeries
@@ -54,6 +54,11 @@ export default function GraphicsPage() {
                   id: "steg-4-resultater",
                   title: "4. Foreløpige resultater",
                   description: "Bedre på kraftig regn enn vanlig Bris, og hvorfor jeg trenger en kontrollarm.",
+                },
+                {
+                  id: "steg-5-venter",
+                  title: "5. Neste steg",
+                  description: "Pavo med spektralledd står i kø, og H200-kortene er ikke ledige.",
                 },
               ]}
             />

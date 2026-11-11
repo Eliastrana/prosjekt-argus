@@ -1,6 +1,6 @@
-/* The explanation in four steps, one picture each, for an iPhone 12 screen
-   (1170 by 2532): the problem, the situation, what I am trying, and the
-   results so far. Meant to be posted one after another, so they share a frame:
+/* The explanation in five steps, one picture each, for an iPhone 12 screen
+   (1170 by 2532): the problem, the situation, what I am trying, the
+   results so far, and what I am waiting for. Meant to be posted one after another, so they share a frame:
    the same header, the same type sizes and the same top edge.
 
    Each slide is drawn on a design box 834 wide and as tall as it needs, then
@@ -31,7 +31,7 @@ import {
 } from "./ArgusIdea";
 
 const BOX_W = 834;
-const TOTAL = 4;
+const TOTAL = 5;
 
 type Colours = (typeof PALETTE)[GraphicTheme];
 
@@ -99,7 +99,7 @@ export function SlideProblem(props: GraphicProps) {
       {...props}
       step={1}
       height={2080}
-      alt="Steg 1 av 4, problemet. Kraftig regn er sjeldent. 3,5 prosent av dagene har over 20 millimeter regn. Modellene trenes til å bomme minst mulig i snitt. METs egen artikkel sier at Bris undervarsler ekstreme verdier."
+      alt="Steg 1 av 5, problemet. Kraftig regn er sjeldent. 3,5 prosent av dagene har over 20 millimeter regn. Modellene trenes til å bomme minst mulig i snitt. METs egen artikkel sier at Bris undervarsler ekstreme verdier."
     >
       {(c) => (
         <>
@@ -153,7 +153,7 @@ export function SlideSituation(props: GraphicProps) {
       {...props}
       step={2}
       height={2000}
-      alt="Steg 2 av 4, situasjonen. Jeg starter med Bris, METs KI-værmodell for Norden. Den varsler i et rutenett på 2,5 kilometer, i steg på seks timer. Nettverket har 246 millioner parametre, og treningen fyller ett grafikkort på 140 gigabyte. Bris er en KI-modell som lærer av tidligere vær, i stedet for å regne ut været med fysikkligninger, som METs MEPS. Testet mot 715 målestasjoner i ett år."
+      alt="Steg 2 av 5, situasjonen. Jeg starter med Bris, METs KI-værmodell for Norden. Den varsler i et rutenett på 2,5 kilometer, i steg på seks timer. Nettverket har 246 millioner parametre, og treningen fyller ett grafikkort på 140 gigabyte. Bris er en KI-modell som lærer av tidligere vær, i stedet for å regne ut været med fysikkligninger, som METs MEPS. Testet mot 715 målestasjoner i ett år."
     >
       {(c) => (
         <>
@@ -203,7 +203,7 @@ export function SlideApproach(props: GraphicProps) {
       {...props}
       step={3}
       height={2140}
-      alt="Steg 3 av 4, det jeg prøver. Jeg trener Bris videre med en ekstra straff for å bomme på kraftig regn. Tre steg. Ta Bris som den er. Tren videre i 2 000 runder. Straff ekstra når den bommer på kraftig regn. Tre modeller. Pavo straffer all nedbør. A straffer bare over 20 millimeter på seks timer. Kontroll har samme trening uten straff."
+      alt="Steg 3 av 5, det jeg prøver. Jeg trener Bris videre med en ekstra straff for å bomme på kraftig regn. Tre steg. Ta Bris som den er. Tren videre i 2 000 runder. Straff ekstra når den bommer på kraftig regn. Tre modeller. Pavo straffer all nedbør. A straffer bare over 20 millimeter på seks timer. Kontroll har samme trening uten straff."
     >
       {(c) => (
         <>
@@ -283,7 +283,7 @@ export function SlideResults(props: GraphicProps) {
       {...props}
       step={4}
       height={2250}
-      alt="Steg 4 av 4, foreløpige resultater. Bedre på kraftig regn. Hvor mye bedre enn vanlig Bris, over 20 millimeter i døgnet, etter kalibrering. Vanlig Bris er utgangspunktet, 0 prosent. Pavo 8 prosent, A 7 prosent, kontrollarm med spektralledd 5 prosent, kontrollarm 1 prosent. Hvorfor en kontrollarm. Mer trening gir gevinst alene, uten straffen. Kontrollarmen får samme trening og viser dermed hva straffen gir i tillegg. Mest i første døgn, borte ved 36 timer. Må kalibreres, Pavo varsler for mye regn. Foreløpig, ett år og 715 stasjoner, én trekning av hver modell."
+      alt="Steg 4 av 5, foreløpige resultater. Bedre på kraftig regn. Hvor mye bedre enn vanlig Bris, over 20 millimeter i døgnet, etter kalibrering. Vanlig Bris er utgangspunktet, 0 prosent. Pavo 8 prosent, A 7 prosent, kontrollarm med spektralledd 5 prosent, kontrollarm 1 prosent. Hvorfor en kontrollarm. Mer trening gir gevinst alene, uten straffen. Kontrollarmen får samme trening og viser dermed hva straffen gir i tillegg. Mest i første døgn, borte ved 36 timer. Må kalibreres, Pavo varsler for mye regn. Foreløpig, ett år og 715 stasjoner, én trekning av hver modell."
     >
       {(c) => (
         <>
@@ -350,6 +350,71 @@ export function SlideResults(props: GraphicProps) {
           </text>
           <text y={2244} fontSize={38} fontWeight={400} fill={c.muted}>
             én trekning av hver modell.
+          </text>
+        </>
+      )}
+    </Frame>
+  );
+}
+
+/* 5. what I am waiting for --------------------------------------------- */
+
+export function SlideWaiting(props: GraphicProps) {
+  return (
+    <Frame
+      {...props}
+      step={5}
+      height={1880}
+      alt="Steg 5 av 5, neste steg. Nå venter jeg på Pavo med spektralledd. Den tester om spektralleddet også stopper at Pavo glir utover i varselet. Men H200-kortene på Simulas supercomputer er ikke ledige akkurat nå. Pavo med spektralledd står i kø. Jeg står i kø, med en utmattet smilefjes-emoji."
+    >
+      {(c) => (
+        <>
+          <Heading c={c} eyebrow="Neste steg" lines={["Nå venter jeg", "på Pavo +", "spektralledd"]} />
+
+          {/* the only two H200 cards on the cluster, not free right now */}
+          {[0, 1].map((i) => {
+            const x = i * (400 + 34);
+            return (
+              <g key={i}>
+                <rect x={x} y={720} width={400} height={280} rx={32} fill={c.card} />
+                <text x={x + 200} y={850} textAnchor="middle" fontSize={84} fontWeight={700} letterSpacing={-2} fill={c.fg}>
+                  H200
+                </text>
+                <text x={x + 200} y={930} textAnchor="middle" fontSize={46} fontWeight={500} fill={c.muted}>
+                  ikke ledig
+                </text>
+              </g>
+            );
+          })}
+
+          {/* the job in the queue */}
+          <rect x={2} y={1042} width={BOX_W - 4} height={108} rx={54} fill="none" stroke={c.accent} strokeWidth={4} strokeDasharray="16 12" />
+          <text x={BOX_W / 2} y={1112} textAnchor="middle" fontSize={52} fontWeight={600} fill={c.accentText}>
+            Pavo + spektral, i kø
+          </text>
+
+          <text y={1290} fontSize={56} fontWeight={600} fill={c.fg}>
+            Den tester om spektralleddet
+          </text>
+          <text y={1354} fontSize={56} fontWeight={600} fill={c.fg}>
+            også stopper at Pavo glir
+          </text>
+          <text y={1418} fontSize={56} fontWeight={600} fill={c.fg}>
+            utover i varselet.
+          </text>
+
+          <text y={1520} fontSize={48} fontWeight={400} fill={c.muted}>
+            Men H200-kortene på Simulas
+          </text>
+          <text y={1578} fontSize={48} fontWeight={400} fill={c.muted}>
+            supercomputer er ikke ledige
+          </text>
+          <text y={1636} fontSize={48} fontWeight={400} fill={c.muted}>
+            akkurat nå.
+          </text>
+
+          <text y={1810} fontSize={84} fontWeight={700} letterSpacing={-2} fill={c.fg}>
+            Jeg står i kø 😩
           </text>
         </>
       )}

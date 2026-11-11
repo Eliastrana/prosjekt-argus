@@ -10,7 +10,7 @@ import ArgusIdea, {
   PHONE_W,
   type GraphicTheme,
 } from "./graphics/ArgusIdea";
-import { SlideApproach, SlideProblem, SlideResults, SlideSituation } from "./graphics/slides";
+import { SlideApproach, SlideProblem, SlideResults, SlideSituation, SlideWaiting } from "./graphics/slides";
 
 /* One downloadable picture: the SVG shown at full width, a switch between the
    dark and the light version, and buttons that save it as PNG or SVG, or hand
@@ -31,13 +31,14 @@ type Format = keyof typeof FORMATS;
 type Picture = (props: { theme?: GraphicTheme; padding?: number }) => React.ReactElement;
 type Entry = { wide?: Picture; phone: Picture };
 
-/* The overview comes in both formats. The four steps are phone only. */
+/* The overview comes in both formats. The five steps are phone only. */
 const GRAPHICS: Record<string, Entry> = {
   "argus-idea": { wide: ArgusIdea, phone: ArgusIdeaPhone },
   "steg-1-problemet": { phone: SlideProblem },
   "steg-2-situasjonen": { phone: SlideSituation },
   "steg-3-det-jeg-prover": { phone: SlideApproach },
   "steg-4-resultater": { phone: SlideResults },
+  "steg-5-venter": { phone: SlideWaiting },
 };
 
 export type GraphicId = string;
@@ -287,7 +288,7 @@ export function GraphicSeries({ items }: { items: { id: GraphicId; title: string
         <PaddingSlider padPt={padPt} onChange={setPadPt} />
         <ThemeSwitch theme={theme} onChange={setTheme} />
       </div>
-      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
           <GraphicCard key={item.id} {...item} shared={{ theme, padPt }} />
         ))}
