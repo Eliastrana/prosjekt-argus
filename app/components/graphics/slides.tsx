@@ -34,6 +34,9 @@ const BOX_W = 834;
 /* Extra air above the header, on top of the padding, in pixels. 96 px is 32 pt:
    the header then sits about 100 pt from the top edge at the default padding. */
 const TOP_EXTRA = 96;
+/* The slides used to start with a header line. It is gone, so the drawing is
+   moved up by the space it took and the first line sits where the header did. */
+const HEADER_H = 160;
 
 type Colours = (typeof PALETTE)[GraphicTheme];
 
@@ -47,7 +50,7 @@ function Frame({
   const c = PALETTE[theme];
   const top = Math.max(padding, 200) + TOP_EXTRA;
   const bottom = Math.max(padding, 170);
-  const scale = Math.min((PHONE_W - 2 * padding) / BOX_W, (PHONE_H - top - bottom) / height);
+  const scale = Math.min((PHONE_W - 2 * padding) / BOX_W, (PHONE_H - top - bottom) / (height - HEADER_H));
   const left = (PHONE_W - BOX_W * scale) / 2;
 
   return (
@@ -58,11 +61,7 @@ function Frame({
       style={{ fontFamily: PAGE_FONT }}
     >
       <rect width={PHONE_W} height={PHONE_H} fill={c.bg} />
-      <g transform={`translate(${left} ${top}) scale(${scale})`}>
-        <circle cx={13} cy={26} r={13} fill={c.accent} />
-        <text x={42} y={42} fontSize={44} fontWeight={600} fill={c.fg}>
-          Prosjekt Argus
-        </text>
+      <g transform={`translate(${left} ${top - HEADER_H * scale}) scale(${scale})`}>
         {children(c)}
       </g>
     </svg>
