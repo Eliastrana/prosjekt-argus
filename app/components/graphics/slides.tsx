@@ -5,7 +5,7 @@
 
    Each slide is drawn on a design box 834 wide and as tall as it needs, then
    scaled so the box leaves `padding` px of air on each side, and placed with
-   the same air above. Everything is written in the box's own units, at the
+   the same air above plus TOP_EXTRA. Everything is written in the box's own units, at the
    default padding (204 px, 68 pt) the scale is 0,91, so the 56 px sentences
    come out at 51 px, 17 pt.
 
@@ -31,20 +31,21 @@ import {
 } from "./ArgusIdea";
 
 const BOX_W = 834;
-const TOTAL = 5;
+/* Extra air above the header, on top of the padding, in pixels. 96 px is 32 pt:
+   the header then sits about 100 pt from the top edge at the default padding. */
+const TOP_EXTRA = 96;
 
 type Colours = (typeof PALETTE)[GraphicTheme];
 
 function Frame({
   theme = "dark",
   padding = PHONE_DEFAULT_PADDING,
-  step,
   height,
   alt,
   children,
-}: GraphicProps & { step: number; height: number; alt: string; children: (c: Colours) => ReactNode }) {
+}: GraphicProps & { height: number; alt: string; children: (c: Colours) => ReactNode }) {
   const c = PALETTE[theme];
-  const top = Math.max(padding, 200);
+  const top = Math.max(padding, 200) + TOP_EXTRA;
   const bottom = Math.max(padding, 170);
   const scale = Math.min((PHONE_W - 2 * padding) / BOX_W, (PHONE_H - top - bottom) / height);
   const left = (PHONE_W - BOX_W * scale) / 2;
@@ -61,9 +62,6 @@ function Frame({
         <circle cx={13} cy={26} r={13} fill={c.accent} />
         <text x={42} y={42} fontSize={44} fontWeight={600} fill={c.fg}>
           Prosjekt Argus
-        </text>
-        <text x={BOX_W} y={42} textAnchor="end" fontSize={44} fontWeight={500} fill={c.muted}>
-          {step} av {TOTAL}
         </text>
         {children(c)}
       </g>
@@ -97,7 +95,6 @@ export function SlideProblem(props: GraphicProps) {
   return (
     <Frame
       {...props}
-      step={1}
       height={2080}
       alt="Steg 1 av 5, problemet. Kraftig regn er sjeldent. 3,5 prosent av dagene har over 20 millimeter regn. Modellene trenes til å bomme minst mulig i snitt. METs egen artikkel sier at Bris undervarsler ekstreme verdier."
     >
@@ -151,7 +148,6 @@ export function SlideSituation(props: GraphicProps) {
   return (
     <Frame
       {...props}
-      step={2}
       height={2000}
       alt="Steg 2 av 5, situasjonen. Jeg starter med Bris, METs KI-værmodell for Norden. Den varsler i et rutenett på 2,5 kilometer, i steg på seks timer. Nettverket har 246 millioner parametre, og treningen fyller ett grafikkort på 140 gigabyte. Bris er en KI-modell som lærer av tidligere vær, i stedet for å regne ut været med fysikkligninger, som METs MEPS. Testet mot 715 målestasjoner i ett år."
     >
@@ -201,7 +197,6 @@ export function SlideApproach(props: GraphicProps) {
   return (
     <Frame
       {...props}
-      step={3}
       height={2140}
       alt="Steg 3 av 5, det jeg prøver. Jeg trener Bris videre med en ekstra straff for å bomme på kraftig regn. Tre steg. Ta Bris som den er. Tren videre i 2 000 runder. Straff ekstra når den bommer på kraftig regn. Tre modeller. Pavo straffer all nedbør. A straffer bare over 20 millimeter på seks timer. Kontroll har samme trening uten straff."
     >
@@ -281,7 +276,6 @@ export function SlideResults(props: GraphicProps) {
   return (
     <Frame
       {...props}
-      step={4}
       height={2250}
       alt="Steg 4 av 5, foreløpige resultater. Bedre på kraftig regn. Hvor mye bedre enn vanlig Bris, over 20 millimeter i døgnet, etter kalibrering. Vanlig Bris er utgangspunktet, 0 prosent. Pavo 8 prosent, A 7 prosent, kontrollarm med spektralledd 5 prosent, kontrollarm 1 prosent. Hvorfor en kontrollarm. Mer trening gir gevinst alene, uten straffen. Kontrollarmen får samme trening og viser dermed hva straffen gir i tillegg. Mest i første døgn, borte ved 36 timer. Må kalibreres, Pavo varsler for mye regn. Foreløpig, ett år og 715 stasjoner, én trekning av hver modell."
     >
@@ -363,7 +357,6 @@ export function SlideWaiting(props: GraphicProps) {
   return (
     <Frame
       {...props}
-      step={5}
       height={1880}
       alt="Steg 5 av 5, neste steg. Nå venter jeg på Pavo med spektralledd. Den tester om spektralleddet også stopper at Pavo glir utover i varselet. Men H200-kortene på Simulas supercomputer er ikke ledige akkurat nå. Pavo med spektralledd står i kø. Jeg står i kø, med en utmattet smilefjes-emoji."
     >
