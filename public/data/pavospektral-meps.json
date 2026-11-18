@@ -1,0 +1,9 @@
+[{"x":0,"y":0.501,"label":"Over 10 mm","group":"MEPS"},
+{"x":1,"y":0.488,"label":"Over 10 mm","group":"Pavo + spektral"},
+{"x":2,"y":0.470,"label":"Over 10 mm","group":"Kontrollarm + spektral"},
+{"x":3,"y":0.424,"label":"Over 20 mm","group":"MEPS"},
+{"x":4,"y":0.423,"label":"Over 20 mm","group":"Pavo + spektral"},
+{"x":5,"y":0.400,"label":"Over 20 mm","group":"Kontrollarm + spektral"},
+{"x":6,"y":0.239,"label":"Over 50 mm","group":"MEPS"},
+{"x":7,"y":0.151,"label":"Over 50 mm","group":"Pavo + spektral"},
+{"x":8,"y":0.131,"label":"Over 50 mm","group":"Kontrollarm + spektral"}]

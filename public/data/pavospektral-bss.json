@@ -1,0 +1,5 @@
+[{"x":0,"y":0.357,"label":"Vanlig Bris","group":"Vanlig Bris"},
+{"x":1,"y":0.364,"label":"Kontrollarm","group":"Kontrollarm"},
+{"x":2,"y":0.391,"label":"Kontrollarm + spektral","group":"Kontrollarm + spektral"},
+{"x":3,"y":0.409,"label":"Pavo","group":"Pavo"},
+{"x":4,"y":0.415,"label":"Pavo + spektral","group":"Pavo + spektral"}]
