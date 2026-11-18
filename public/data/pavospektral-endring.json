@@ -1,3 +1,6 @@
-[{"x":0,"y":-3.8,"label":"Over 10 mm","group":"Pavo + spektral"},
-{"x":1,"y":-3.9,"label":"Over 20 mm","group":"Pavo + spektral"},
-{"x":2,"y":-2.0,"label":"Over 50 mm","group":"Pavo + spektral"}]
+[{"x":0,"y":-3.8,"label":"Over 10 mm","group":"Mot kontrollarm + spektral"},
+{"x":1,"y":2.7,"label":"Over 10 mm","group":"Mot MEPS"},
+{"x":2,"y":-3.9,"label":"Over 20 mm","group":"Mot kontrollarm + spektral"},
+{"x":3,"y":0.3,"label":"Over 20 mm","group":"Mot MEPS"},
+{"x":4,"y":-2.0,"label":"Over 50 mm","group":"Mot kontrollarm + spektral"},
+{"x":5,"y":11.4,"label":"Over 50 mm","group":"Mot MEPS"}]

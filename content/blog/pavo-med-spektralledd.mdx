@@ -41,22 +41,22 @@ Svaret er ja, innenfor det jeg har målt. Alt under er første trinn av hele tes
   yLabel="Brier skill score"
   title="Kraftig regn over 20 mm, 30 timer fram"
   src="/data/pavospektral-bss.json"
-  caption="Brier skill score for over 20 mm i døgnet etter kalibrering, 259 178 stasjonsdøgn. Høyere er bedre. Søylene viser punktverdier, og forskjellene mellom dem er testet i tabellen under."
+  caption="Brier skill score for over 20 mm i døgnet etter kalibrering, 259 178 stasjonsdøgn. Høyere er bedre. MEPS er ikke med her fordi den er scoret på et litt mindre sett døgn, 242 243, og står i egen graf lenger ned. Søylene viser punktverdier, og forskjellene mellom dem er testet i tabellen under."
 />
 
 Pavo med spektralledd ligger høyest av de fem, med 0,415. Vanlig Bris har 0,357 og kontrollarmen med spektralledd, som er Bris sin egen oppskrift, har 0,391. Søylene ser nær hverandre ut, og det er riktig, for kalibrering gjør alle modellene mye bedre og jevner ut det meste. Det som teller er forskjellen på samme dager.
 
-## Forskjellen mot kontrollarmen
+## Forskjellen mot kontrollarmen og mot MEPS
 
 <Chart
-  colours='{"Pavo + spektral":"#10b981"}'
+  colours='{"Mot kontrollarm + spektral":"#22d3ee","Mot MEPS":"#94a3b8"}'
   kind="bar"
-  height="260"
+  height="300"
   unit="%"
   yLabel="endring i Brier"
-  title="Pavo med spektralledd mot kontrollarmen med spektralledd"
+  title="Pavo med spektralledd mot kontrollarmen og mot MEPS"
   src="/data/pavospektral-endring.json"
-  caption="Prosentvis endring i kalibrert Brier mot kontrollarmen med spektralledd. Under null er bedre. Over 50 mm er det bare 603 tilfeller, og intervallet krysser null."
+  caption="Prosentvis endring i kalibrert Brier for Pavo med spektralledd. Under null er den bedre enn den den måles mot. Mot kontrollarmen er det de 259 178 stasjonsdøgnene, mot MEPS de 242 243 der MEPS finnes. Mot MEPS krysser intervallene null ved 10 og 20 mm, så der er det ingen påvist forskjell. Over 50 mm er det bare 603 og 590 tilfeller."
 />
 
 | Kalibrert Brier mot kontrollarm + spektral | Endring | 95 prosent intervall |
@@ -66,7 +66,8 @@ Pavo med spektralledd ligger høyest av de fem, med 0,415. Vanlig Bris har 0,357
 | Over 50 mm | −2,0 % | −6,8 til +2,8 |
 
 - **Gevinsten er sikker ved 10 og 20 mm.** Begge intervallene ligger helt under null.
-- **Den er likt stor ved begge terskler**, rundt fire prosent, og peker samme vei ved 50 mm, selv om 603 tilfeller er for få til å avgjøre noe.
+- **Mot MEPS** er forskjellen +2,7 prosent ved 10 mm og +0,3 ved 20, og intervallene krysser null. Ved 50 mm er den +11,4 prosent, og der er Pavo med spektralledd sikkert bak.
+- **Gevinsten mot kontrollarmen er likt stor ved 10 og 20 mm**, rundt fire prosent, og peker samme vei ved 50 mm, selv om 603 tilfeller er for få til å avgjøre noe.
 - **Mot Pavo alene** er forskjellen −1,0 prosent over 20 mm [−2,5, +0,5]. Det er ikke påvist at spektralleddet gir noe mer på kalibrert Brier. På rå Brier er det en sikker forbedring, −0,0020 [−0,0026, −0,0015], men kalibreringen jevner mye av den ut.
 
 ## Hvor gevinsten ligger
