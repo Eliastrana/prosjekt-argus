@@ -47,7 +47,16 @@ const TREE: TreeNode = {
       children: [
         { tag: "control2000", label: "Kontrollarm, steg 2 000", change: "stoppet tidligere", kind: "reference", checkpoint: true },
         { tag: "control2000s2", label: "F", change: "nytt seed", kind: "reference" },
-        { tag: "controlfft2000", label: "Kontrollarm + spektral", change: "Bris' spektralledd", kind: "reference" },
+        {
+          tag: "controlfft2000", label: "Kontrollarm + spektral",
+          change: "Bris' spektralledd",
+          kind: "reference",
+          children: [
+            { tag: "controlfft2000s2", label: "Ny trekning", change: "nytt seed", kind: "reference" },
+            { tag: "controlfft2000s3", label: "Tredje trekning", change: "nytt seed", kind: "reference" },
+            { tag: "controlfft2000os", label: "+ oversampling", change: "våte dager oftere", kind: "reference" },
+          ],
+        },
         {
           tag: "tail", label: "Opprinnelig halearm",
           change: "+ haleledd, hard 20 mm",
@@ -76,6 +85,16 @@ const TREE: TreeNode = {
                 { tag: "tailE2000", label: "E", change: "1/3 av Pavos vekt", kind: "low" },
                 { tag: "tailC2000s2", label: "Pavo, ny trekning", change: "nytt seed", kind: "low" },
                 { tag: "tailC3000", label: "Pavo, 3 000 steg", change: "hele planen", kind: "low" },
+                {
+                  tag: "tailCfft2000", label: "Pavo + spektral",
+                  change: "Bris' spektralledd",
+                  kind: "low",
+                  children: [
+                    { tag: "tailCfft2000s2", label: "Ny trekning", change: "nytt seed", kind: "low" },
+                    { tag: "tailCfft2000s3", label: "Tredje trekning", change: "nytt seed", kind: "low" },
+                    { tag: "tailCfft2000os", label: "+ oversampling", change: "våte dager oftere", kind: "low" },
+                  ],
+                },
               ],
             },
           ],
