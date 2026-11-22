@@ -1,0 +1,50 @@
+[
+{
+"x": 0,
+"y": -0.6,
+"label": "Temperatur",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 1,
+"y": 1.3,
+"label": "Temperatur",
+"group": "Kontrollarm + spektral + oversampling"
+},
+{
+"x": 2,
+"y": -0.2,
+"label": "Temperatur",
+"group": "Pavo + spektral"
+},
+{
+"x": 3,
+"y": 1.2,
+"label": "Temperatur",
+"group": "Pavo + spektral + oversampling"
+},
+{
+"x": 4,
+"y": -3.7,
+"label": "Vind",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 5,
+"y": -4.9,
+"label": "Vind",
+"group": "Kontrollarm + spektral + oversampling"
+},
+{
+"x": 6,
+"y": -5.1,
+"label": "Vind",
+"group": "Pavo + spektral"
+},
+{
+"x": 7,
+"y": -4.9,
+"label": "Vind",
+"group": "Pavo + spektral + oversampling"
+}
+]

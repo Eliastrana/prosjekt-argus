@@ -1,0 +1,14 @@
+[
+{
+"x": 0,
+"y": 14.7,
+"label": "Uten oversampling",
+"group": "Våte tilstander"
+},
+{
+"x": 1,
+"y": 40.9,
+"label": "Med oversampling",
+"group": "Våte tilstander"
+}
+]

@@ -1,0 +1,50 @@
+[
+{
+"x": 0,
+"y": -7.5,
+"label": "Tørre døgn",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 1,
+"y": 7.2,
+"label": "Tørre døgn",
+"group": "Pavo + spektral"
+},
+{
+"x": 2,
+"y": 0.7,
+"label": "1 til 20 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 3,
+"y": 2.9,
+"label": "1 til 20 mm",
+"group": "Pavo + spektral"
+},
+{
+"x": 4,
+"y": -0.6,
+"label": "Over 20 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 5,
+"y": 0.3,
+"label": "Over 20 mm",
+"group": "Pavo + spektral"
+},
+{
+"x": 6,
+"y": -0.2,
+"label": "Alle døgn",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 7,
+"y": 2.9,
+"label": "Alle døgn",
+"group": "Pavo + spektral"
+}
+]
