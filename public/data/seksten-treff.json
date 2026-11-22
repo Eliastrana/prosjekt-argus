@@ -1,0 +1,38 @@
+[
+{
+"x": 0,
+"y": 52.8,
+"label": "Treffrate",
+"group": "MEPS"
+},
+{
+"x": 1,
+"y": 60.7,
+"label": "Treffrate",
+"group": "Pavo + spektral"
+},
+{
+"x": 2,
+"y": 49.0,
+"label": "Treffrate",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 3,
+"y": 31.3,
+"label": "Andel falske alarmer",
+"group": "MEPS"
+},
+{
+"x": 4,
+"y": 36.9,
+"label": "Andel falske alarmer",
+"group": "Pavo + spektral"
+},
+{
+"x": 5,
+"y": 32.4,
+"label": "Andel falske alarmer",
+"group": "Kontrollarm + spektral"
+}
+]

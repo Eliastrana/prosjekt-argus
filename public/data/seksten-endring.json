@@ -1,0 +1,38 @@
+[
+{
+"x": 0,
+"y": -3.6,
+"label": "Over 10 mm",
+"group": "Mot kontrollarm + spektral"
+},
+{
+"x": 1,
+"y": 0.1,
+"label": "Over 10 mm",
+"group": "Mot MEPS"
+},
+{
+"x": 2,
+"y": -5.2,
+"label": "Over 20 mm",
+"group": "Mot kontrollarm + spektral"
+},
+{
+"x": 3,
+"y": 0.4,
+"label": "Over 20 mm",
+"group": "Mot MEPS"
+},
+{
+"x": 4,
+"y": -1.2,
+"label": "Over 50 mm",
+"group": "Mot kontrollarm + spektral"
+},
+{
+"x": 5,
+"y": 1.9,
+"label": "Over 50 mm",
+"group": "Mot MEPS"
+}
+]

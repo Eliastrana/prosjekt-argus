@@ -1,0 +1,38 @@
+[
+{
+"x": 0,
+"y": 0.369,
+"label": "4 medlemmer",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 1,
+"y": 0.398,
+"label": "4 medlemmer",
+"group": "Pavo + spektral"
+},
+{
+"x": 2,
+"y": 0.402,
+"label": "4 medlemmer",
+"group": "MEPS"
+},
+{
+"x": 3,
+"y": 0.415,
+"label": "16 medlemmer, MEPS 15",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 4,
+"y": 0.446,
+"label": "16 medlemmer, MEPS 15",
+"group": "Pavo + spektral"
+},
+{
+"x": 5,
+"y": 0.448,
+"label": "16 medlemmer, MEPS 15",
+"group": "MEPS"
+}
+]
