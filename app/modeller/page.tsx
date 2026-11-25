@@ -16,7 +16,8 @@ export const metadata: Metadata = {
    zero. Update the rows here when a run is scored; nothing else reads them. */
 
 // "varsles": trained, its test-year forecasts are being made, no result yet.
-type Status = "ferdig" | "trener" | "varsles" | "i kø" | "publisert";
+// "skåres": forecasts for the test year are done, the scoring is not.
+type Status = "ferdig" | "trener" | "varsles" | "skåres" | "i kø" | "publisert";
 
 type Model = {
   name: string;
@@ -52,7 +53,7 @@ const SECTIONS: Section[] = [
         better: false,
         roc: "0,81",
         status: "publisert",
-        note: "ikke finjustert; sammenlignet med kontrollarmen ved steg 2 000",
+        note: "ikke finjustert; sammenlignet med kontrollarmen ved steg 2 000. Med 16 medlemmer på 160 dager er Pavo + spektral −7,1 % mot den (sikkert), og den ligger +8,1 % bak MEPS med alle 15 medlemmer",
       },
       {
         name: "Kontrollarm",
@@ -115,7 +116,7 @@ const SECTIONS: Section[] = [
         dose: "–",
         steps: "2 000",
         seed: "20261003",
-        status: "varsles",
+        status: "skåres",
         note: "varslene for teståret er ferdige; referanse for Pavo + spektral med samme seed",
       },
       {
@@ -126,8 +127,8 @@ const SECTIONS: Section[] = [
         dose: "–",
         steps: "2 000",
         seed: "20261024",
-        status: "i kø",
-        note: "starter når tredje trekning av Pavo + spektral er ferdig",
+        status: "skåres",
+        note: "varslene for teståret er ferdige; referanse for tredje trekning av Pavo + spektral",
       },
       {
         name: "Kontrollarm + spektral + oversampling",
@@ -137,8 +138,11 @@ const SECTIONS: Section[] = [
         dose: "–",
         steps: "2 000",
         seed: "20260909",
-        status: "varsles",
-        note: "oversampling alene, uten haleledd; varsler for teståret lages nå",
+        result: "+0,4 %",
+        better: false,
+        roc: "0,86",
+        status: "ferdig",
+        note: "oversampling alene, uten haleledd, mot kontrollarm + spektral etter låst plan. Ingen påvist gevinst [−1,6, +2,8], og temperaturen blir 1,3 % dårligere",
       },
     ],
   },
@@ -365,7 +369,7 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "2 000",
         seed: "20261003",
-        status: "varsles",
+        status: "skåres",
         note: "varslene for teståret er ferdige; scores sammen med tredje trekning",
       },
       {
@@ -376,8 +380,8 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "2 000",
         seed: "20261024",
-        status: "trener",
-        note: "snittet over de tre trekningene er hovedmålet i seed-planen",
+        status: "skåres",
+        note: "varslene for teståret er ferdige; snittet over de tre trekningene er hovedmålet i seed-planen",
       },
       {
         name: "Pavo + spektral + oversampling",
@@ -387,8 +391,11 @@ const SECTIONS: Section[] = [
         dose: "1/11",
         steps: "2 000",
         seed: "20260909",
-        status: "varsles",
-        note: "de våteste tilstandene trukket fire ganger så ofte; varslene for teståret er ferdige",
+        result: "−3,3 %",
+        better: true,
+        roc: "0,90",
+        status: "ferdig",
+        note: "de våteste tilstandene trukket fire ganger så ofte, mot kontrollarm + spektral. Mot Pavo + spektral uten oversampling +0,5 % over 20 mm (ikke sikkert) og +1,3 % over 10 mm (sikkert dårligere)",
       },
     ],
   },
@@ -420,8 +427,8 @@ const RUNS: Run[] = [
   { when: "19.–20. nov", tags: ["controlfft2000s2"], hours: "18,6 t", status: "ferdig" },
   { when: "20.–21. nov", tags: ["tailCfft2000os"], hours: "18,7 t", status: "ferdig" },
   { when: "21.–22. nov", tags: ["controlfft2000os"], hours: "18,6 t", status: "ferdig" },
-  { when: "22.–23. nov", tags: ["tailCfft2000s3"], note: "startet 03:43", status: "trener" },
-  { when: "23.–24. nov", tags: ["controlfft2000s3"], note: "starter når den forrige er ferdig", status: "i kø" },
+  { when: "22. nov", tags: ["tailCfft2000s3"], hours: "18,7 t", status: "ferdig" },
+  { when: "22.–23. nov", tags: ["controlfft2000s3"], hours: "18,6 t", status: "ferdig" },
 ];
 
 /* Beyond heavy rain: mean daily precipitation relative to observed (1,00 is
@@ -449,7 +456,9 @@ const GENERAL: Record<string, { mean?: string; t2m?: [string, Sig]; wind?: [stri
   tailA2000s3: { mean: "0,85", t2m: ["−1,1 %", "better"], wind: ["−0,9 %", "better"] },
   tailAfft2000: { mean: "0,90", t2m: ["−1,1 %", "better"], wind: ["−3,9 %", "better"] },
   controlfft2000: { mean: "0,98", t2m: ["−0,6 %", "better"], wind: ["−3,7 %", "better"] },
-  tailCfft2000: { mean: "1,09", wind: ["−5,1 %", "better"] },
+  tailCfft2000: { mean: "1,09", t2m: ["−0,2 %", "none"], wind: ["−5,1 %", "better"] },
+  controlfft2000os: { mean: "0,98", t2m: ["+1,3 %", "worse"], wind: ["−4,9 %", "better"] },
+  tailCfft2000os: { mean: "1,11", t2m: ["+1,2 %", "worse"], wind: ["−4,9 %", "better"] },
 };
 
 const SIG_STYLE: Record<Sig, string> = {
@@ -488,6 +497,7 @@ const STATUS_STYLE: Record<Status, string> = {
   publisert: "bg-foreground/5 text-muted",
   trener: "bg-accent/15 text-accent",
   varsles: "bg-accent/15 text-accent",
+  skåres: "bg-accent/15 text-accent",
   "i kø": "bg-foreground/5 text-muted",
 };
 
@@ -673,7 +683,7 @@ export default function ModelsPage() {
   const info: Record<string, LineageInfo> = byTag;
   const scored = all.filter((m) => m.better !== undefined || m.result === "referanse");
   const better = all.filter((m) => m.better);
-  const running = all.filter((m) => m.status === "trener" || m.status === "varsles" || m.status === "i kø");
+  const running = all.filter((m) => m.status === "trener" || m.status === "varsles" || m.status === "skåres" || m.status === "i kø");
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -693,7 +703,7 @@ export default function ModelsPage() {
               { value: String(all.length), label: "modeller" },
               { value: String(scored.length), label: "scoret på teståret" },
               { value: String(better.length), label: "sikkert bedre enn kontrollarmen" },
-              { value: String(running.length), label: "kjører nå" },
+              { value: String(running.length), label: "ikke ferdig" },
             ].map((s) => (
               <div key={s.label} className="rounded-[10px] bg-foreground/[0.04] px-4 py-3">
                 <div className="text-2xl font-semibold tracking-tight">{s.value}</div>
