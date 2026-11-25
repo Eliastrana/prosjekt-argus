@@ -1,0 +1,50 @@
+[
+{
+"x": 0,
+"y": 41.7,
+"label": "Treffrate",
+"group": "Vanlig Bris"
+},
+{
+"x": 1,
+"y": 49.0,
+"label": "Treffrate",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 2,
+"y": 60.7,
+"label": "Treffrate",
+"group": "Pavo + spektral"
+},
+{
+"x": 3,
+"y": 52.8,
+"label": "Treffrate",
+"group": "MEPS"
+},
+{
+"x": 4,
+"y": 28.3,
+"label": "Andel falske alarmer",
+"group": "Vanlig Bris"
+},
+{
+"x": 5,
+"y": 32.4,
+"label": "Andel falske alarmer",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 6,
+"y": 36.9,
+"label": "Andel falske alarmer",
+"group": "Pavo + spektral"
+},
+{
+"x": 7,
+"y": 31.3,
+"label": "Andel falske alarmer",
+"group": "MEPS"
+}
+]

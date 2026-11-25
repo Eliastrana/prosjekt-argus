@@ -1,0 +1,38 @@
+[
+{
+"x": 0,
+"y": -1.6,
+"label": "Over 10 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 1,
+"y": -5.0,
+"label": "Over 10 mm",
+"group": "Pavo + spektral"
+},
+{
+"x": 2,
+"y": -2.0,
+"label": "Over 20 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 3,
+"y": -7.1,
+"label": "Over 20 mm",
+"group": "Pavo + spektral"
+},
+{
+"x": 4,
+"y": -4.0,
+"label": "Over 50 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 5,
+"y": -5.0,
+"label": "Over 50 mm",
+"group": "Pavo + spektral"
+}
+]

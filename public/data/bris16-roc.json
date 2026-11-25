@@ -1,0 +1,74 @@
+[
+{
+"x": 0,
+"y": 0.91,
+"label": "Over 10 mm",
+"group": "Vanlig Bris"
+},
+{
+"x": 1,
+"y": 0.931,
+"label": "Over 10 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 2,
+"y": 0.947,
+"label": "Over 10 mm",
+"group": "Pavo + spektral"
+},
+{
+"x": 3,
+"y": 0.949,
+"label": "Over 10 mm",
+"group": "MEPS"
+},
+{
+"x": 4,
+"y": 0.883,
+"label": "Over 20 mm",
+"group": "Vanlig Bris"
+},
+{
+"x": 5,
+"y": 0.915,
+"label": "Over 20 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 6,
+"y": 0.942,
+"label": "Over 20 mm",
+"group": "Pavo + spektral"
+},
+{
+"x": 7,
+"y": 0.937,
+"label": "Over 20 mm",
+"group": "MEPS"
+},
+{
+"x": 8,
+"y": 0.686,
+"label": "Over 50 mm",
+"group": "Vanlig Bris"
+},
+{
+"x": 9,
+"y": 0.767,
+"label": "Over 50 mm",
+"group": "Kontrollarm + spektral"
+},
+{
+"x": 10,
+"y": 0.888,
+"label": "Over 50 mm",
+"group": "Pavo + spektral"
+},
+{
+"x": 11,
+"y": 0.847,
+"label": "Over 50 mm",
+"group": "MEPS"
+}
+]
